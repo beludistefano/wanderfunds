@@ -6,6 +6,8 @@ const pool = require('./db.js');
 const app = express();
 const port = process.env.PORT;
 
+app.use(express.json());
+
 // Demo user with mariabelendistefano@gmail.com email
 const DEMO_USER_ID = "c8379535-2cd7-4248-8c45-1c09ebac140f"
 
@@ -34,15 +36,56 @@ app.get('/api/trips', async (req, res) => {
 
         const tripsResult = await pool.query(query, [DEMO_USER_ID]);
         
-        res.send(tripsResult.rows)
+        return res.status(200).send(tripsResult.rows)
 
     } catch (err) {
-        console.error('Error fetching trips:', err);
-        res.status(500).send('Server error');
+        return res.status(500).send('Server error');
     }
 });
 
+/**
+ * This POST request will create a Trip and a User Role as Owner
+ */
+app.post('/api/trip', async (req, res) => {
 
+    const { destination, from_date, to_date, description, default_split, auto_add } = req.body;
+
+    if(destination == ""){
+        return res.status(400).send("Error: destination cannot be empty")
+    }
+
+    if(from_date > to_date){
+        return res.status(400).send("Error: Trip must start before end date")
+    }
+
+    const tripQuery = `
+      INSERT INTO trips (ownerid, destination, from_date, to_date, description, default_split, auto_add)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING tripid
+    `;
+
+    const roleQuery = `
+      INSERT INTO user_role (tripid, user_id, role)
+      VALUES ($1, $2, $3)
+    `;
+
+    const tripValues = [DEMO_USER_ID, destination, from_date, to_date, description, default_split, auto_add]
+
+    try {       
+        const tripResult = await pool.query(tripQuery, tripValues);
+
+        const newTripID = tripResult.rows[0]?.tripid
+
+        const roleValues = [newTripID, DEMO_USER_ID, "Owner"]
+
+        const roleResult = await pool.query(roleQuery, roleValues)
+
+        return res.status(200).send(roleResult)
+
+    } catch (err) {
+        return res.status(500).send('Error in trip creation');
+    }
+});
 
 
 app.listen(port, () => {
