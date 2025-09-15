@@ -1,13 +1,20 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import ReactDOM from 'react-dom/client'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.css'
+import Main from './pages/main'
+import TripDashboard from "./pages/TripDashboard"
 
 function App() {
 
   return (
     <>
-      <p>Just confirming Github is set up well</p>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Main />} />
+        <Route path="/trip/:tripid" element={<TripDashboard />} />
+      </Routes>
+    </BrowserRouter>
     </>
   )
 }

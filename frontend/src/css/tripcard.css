@@ -1,0 +1,42 @@
+
+.tripCard{
+    background-color: #E9F1F7;
+    width: 90%;
+    display: flex;
+    border-radius: 5%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 0;
+}
+
+.tripPictureContainer{
+    padding: 0;
+}
+
+.tripDataContainer, .tripStatusContainer{
+    padding: 10px;
+}
+
+.statusContainer{
+    padding: 5px 15px;
+    border-radius: 8%;
+    color: white;
+    min-width: 100px;
+}
+
+.statusContainer>p{
+    margin: 0px;
+}
+
+.statusConfirmed{
+    background-color: #91CD91;
+}
+
+.statusPlanning{
+    background-color: #FF4A9E;
+}
+.statusOnTrip{
+    background-color: #4A98FF;
+}
+.statusPast{
+    background-color: #9f004a;
+}
