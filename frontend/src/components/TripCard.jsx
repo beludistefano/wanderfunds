@@ -6,10 +6,11 @@ export default function TripCard({ trip }) {
   const { tripID, destination, from_date, to_date, status } = trip;
 
   return (
-    <Link >
+    <div className="mainCardContainer">
+    <Link className="linkCard" >
     <div className="tripCard">
         <div className="tripPictureContainer">
-            <img src="#" alt="tripPicture" />
+            <img className="tripBackgroundImage" src="./src/assets/backgroundplaceholder.png" alt="tripPicture" />
         </div>
         <div className="tripDataContainer">
           <p className="textMain">{destination}</p>
@@ -25,5 +26,6 @@ export default function TripCard({ trip }) {
         </div>
     </div>
     </Link>
+    </div>
   );
 }

@@ -1,0 +1,24 @@
+#mainSideBar{
+    background-color: #8ebed8;
+}
+
+#mainSideBar ul{
+    list-style: none;
+    text-align: left;
+    color: white;
+}
+
+.listLinks{
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.listLinks .links {
+    color: white;
+    transition: all 0.2s ease;
+}
+
+
+.listLinks .links:hover{
+    color: #8BA5BA;
+}
