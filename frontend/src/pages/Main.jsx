@@ -16,7 +16,9 @@ export default function Main() {
       try {
         const tripData = await fetch("http://localhost:3000/api/trips");
         const trips = await tripData.json();
-        console.log(trips);
+
+        setTrips(trips);
+        setLoading(false);
       } catch (e) {
         console.log(e);
       }
