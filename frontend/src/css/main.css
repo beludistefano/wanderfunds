@@ -1,26 +1,30 @@
-
-#cardContainer{
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+#cardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
 }
 
-#buttonContainer{
-    display: flex;
-    justify-content: end;
-    margin-bottom: 10px;
+#buttonContainer {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 10px;
 }
 
-#mainContent{
-    display: flex;
-    height: 100%;
+#mainContent {
+  display: flex;
+  height: 100%;
 }
 
-#centerSection{
-    width: 85%;
+#centerSection {
+  width: 85%;
+  height: 100%;
 }
 
-#mainSideBar{
-    width: 15%;
-    min-height: 100%;
+#mainSideBar {
+  width: 15%;
+  min-height: 100%;
+}
+
+#centralDiv {
+  height: 100vh;
 }

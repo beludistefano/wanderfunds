@@ -30,7 +30,7 @@ export default function Main() {
   }, []);
 
   return (
-    <div>
+    <div id="centralDiv">
       <Header></Header>
       <div id="mainContent">
         <MainSideBar id="mainSideBar" />
