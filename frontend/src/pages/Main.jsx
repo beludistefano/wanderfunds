@@ -45,17 +45,19 @@ export default function Main() {
           <div id="cardContainer">
             {!loading ? (
               trips.map((t) => {
-                <TripCard
-                  className="tripCard"
-                  key={t.tripid}
-                  trip={{
-                    tripID: t.tripid,
-                    destination: t.destination,
-                    from_date: t.from_date,
-                    to_date: t.to_date,
-                    status: t.status,
-                  }}
-                />;
+                return (
+                  <TripCard
+                    className="tripCard"
+                    key={t.tripid}
+                    trip={{
+                      tripID: t.tripid,
+                      destination: t.destination,
+                      from_date: t.from_date,
+                      to_date: t.to_date,
+                      status: t.status,
+                    }}
+                  />
+                );
               })
             ) : (
               <p>Loading...</p>
