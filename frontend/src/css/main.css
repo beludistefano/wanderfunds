@@ -13,6 +13,7 @@
 
 #mainContent{
     display: flex;
+    height: 100%;
 }
 
 #centerSection{
@@ -21,4 +22,5 @@
 
 #mainSideBar{
     width: 15%;
+    min-height: 100%;
 }
