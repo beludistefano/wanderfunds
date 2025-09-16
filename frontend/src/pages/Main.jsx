@@ -39,36 +39,20 @@ export default function Main() {
             </button>
           </div>
           <div id="cardContainer">
-            <TripCard
-              className="tripCard"
-              trip={{
-                tripID: "ABC",
-                destination: "Aruba",
-                from_date: "Nov 12",
-                to_date: "Nov 25",
-                status: "Confirmed",
-              }}
-            />
-            <TripCard
-              className="tripCard"
-              trip={{
-                tripID: "ABC",
-                destination: "Aruba",
-                from_date: "Nov 12",
-                to_date: "Nov 25",
-                status: "Confirmed",
-              }}
-            />
-            <TripCard
-              className="tripCard"
-              trip={{
-                tripID: "ABC",
-                destination: "Aruba",
-                from_date: "Nov 12",
-                to_date: "Nov 25",
-                status: "Confirmed",
-              }}
-            />
+            {!loading ? (
+              <TripCard
+                className="tripCard"
+                trip={{
+                  tripID: "ABC",
+                  destination: "Aruba",
+                  from_date: "Nov 12",
+                  to_date: "Nov 25",
+                  status: "Confirmed",
+                }}
+              />
+            ) : (
+              <p>Loading...</p>
+            )}
           </div>
         </div>
       </div>
