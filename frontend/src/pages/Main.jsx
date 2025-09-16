@@ -17,6 +17,8 @@ export default function Main() {
         const tripData = await fetch("http://localhost:3000/api/trips");
         const trips = await tripData.json();
 
+        console.log(trips);
+
         setTrips(trips);
         setLoading(false);
       } catch (e) {
@@ -42,16 +44,19 @@ export default function Main() {
           </div>
           <div id="cardContainer">
             {!loading ? (
-              <TripCard
-                className="tripCard"
-                trip={{
-                  tripID: "ABC",
-                  destination: "Aruba",
-                  from_date: "Nov 12",
-                  to_date: "Nov 25",
-                  status: "Confirmed",
-                }}
-              />
+              trips.map((t) => {
+                <TripCard
+                  className="tripCard"
+                  key={t.tripid}
+                  trip={{
+                    tripID: t.tripid,
+                    destination: t.destination,
+                    from_date: t.from_date,
+                    to_date: t.to_date,
+                    status: t.status,
+                  }}
+                />;
+              })
             ) : (
               <p>Loading...</p>
             )}
