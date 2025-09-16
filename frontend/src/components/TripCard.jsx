@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import "../css/tripcard.css";
+import "../css/components/tripcard.css";
 
 export default function TripCard({ trip }) {
   const { tripID, destination, from_date, to_date, status } = trip;
