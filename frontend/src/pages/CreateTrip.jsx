@@ -7,7 +7,24 @@ import Header from "../components/header";
 import TripCard from "../components/tripCard";
 
 export default function CreateTrip() {
-  function createTrip() {}
+  function createTrip(e) {
+    e.preventDefault();
+
+    const destination = document.getElementById("destination").value.trim();
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const members = document.getElementById("members").value.trim();
+
+    if (destination == "" || fromDate == "" || toDate == "") {
+      console.log("Destination cannot be empty");
+      return;
+    }
+
+    const formatFromDate = new Date(fromDate);
+    const formatToDate = new Date(toDate);
+    console.log(formatFromDate);
+    console.log(formatToDate);
+  }
 
   return (
     <div>
@@ -42,8 +59,8 @@ export default function CreateTrip() {
                   type="date"
                 />
                 <input
-                  id="fromDate"
-                  name="fromDate"
+                  id="toDate"
+                  name="toDate"
                   className="formInputDate"
                   type="date"
                 />
@@ -96,7 +113,7 @@ export default function CreateTrip() {
               onClick={createTrip}
             ></input>
           </form>
-          <Link>
+          <Link to="/">
             <button className="button buttonCancel">Cancel</button>
           </Link>
         </div>
