@@ -12,7 +12,7 @@ import TripCard from "../components/tripCard";
 export default function CreateTrip() {
   const [defaultMember, setDefaultMember] = useState(1);
 
-  function createTrip(e) {
+  async function createTrip(e) {
     e.preventDefault();
 
     const destination = document.getElementById("destination").value.trim();
@@ -55,10 +55,20 @@ export default function CreateTrip() {
     newTrip["to_date"] = formatToDate;
     newTrip["default_split"] = defaultSplit;
     newTrip["description"] = description;
+    newTrip["status"] = status;
     newTrip["members"] = members;
     newTrip["auto_add"] = autoAdd;
 
-    console.log(newTrip);
+    try {
+      const creationResponse = await fetch("http://localhost:3000/api/trip", {
+        method: "POST",
+        body: JSON.stringify(newTrip),
+      });
+      console.log(creationResponse);
+    } catch (e) {
+      const error = await e.json();
+      console.log(error);
+    }
   }
 
   return (

@@ -94,9 +94,9 @@ app.post("/api/trip", async (req, res) => {
 
     const roleResult = await pool.query(roleQuery, roleValues);
 
-    return res.status(200).send(roleResult);
+    return res.status(200).json(roleResult);
   } catch (err) {
-    return res.status(500).send("Error in trip creation");
+    return res.status(500).json(err);
   }
 });
 
