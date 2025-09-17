@@ -62,11 +62,20 @@ export default function CreateTrip() {
     try {
       const creationResponse = await fetch("http://localhost:3000/api/trip", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(newTrip),
       });
-      console.log(creationResponse);
+
+      if (creationResponse.status == 200) {
+        // REDIRECT!
+      } else {
+        // HANDLE ERROR VISUALLY
+        console.log("Error");
+      }
     } catch (e) {
-      const error = await e.json();
+      // HANDLE ERROR VISUALLY
       console.log(error);
     }
   }
