@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 
-import "../css/main.css";
+import "../css/createtrip.css";
 
 import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
 import TripCard from "../components/tripCard";
 
 export default function CreateTrip() {
+  function createTrip() {}
+
   return (
     <div>
       <Header></Header>
@@ -32,18 +34,20 @@ export default function CreateTrip() {
             </div>
             <div className="formRow">
               <label className="formLabel">Dates</label>
-              <input
-                id="fromDate"
-                name="fromDate"
-                className="formInput formDate"
-                type="date"
-              />
-              <input
-                id="fromDate"
-                name="fromDate"
-                className="formInput formDate"
-                type="date"
-              />
+              <div className="formDate">
+                <input
+                  id="fromDate"
+                  name="fromDate"
+                  className="formInputDate"
+                  type="date"
+                />
+                <input
+                  id="fromDate"
+                  name="fromDate"
+                  className="formInputDate"
+                  type="date"
+                />
+              </div>
             </div>
             <div className="formRow">
               <label className="formLabel" for="status">
@@ -67,7 +71,7 @@ export default function CreateTrip() {
               />
             </div>
             <div className="formRow">
-              <label className="formlabel" for="defaultSplit">
+              <label className="formLabel" for="defaultSplit">
                 Default Split
               </label>
               <input
@@ -81,12 +85,20 @@ export default function CreateTrip() {
               />
             </div>
             <div className="formRow inline">
-              <label className="formlabel" for="autoAdd">
+              <label className="formLabel" for="autoAdd">
                 Auto-add expenses?
               </label>
               <input type="checkbox" name="autoAdd" />
             </div>
+            <input
+              className="button buttonOK"
+              type="submit"
+              onClick={createTrip}
+            ></input>
           </form>
+          <Link>
+            <button className="button buttonCancel">Cancel</button>
+          </Link>
         </div>
       </div>
     </div>

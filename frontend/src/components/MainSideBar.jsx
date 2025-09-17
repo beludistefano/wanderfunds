@@ -7,7 +7,9 @@ export default function MainSideBar() {
     <div id="mainSideBar">
       <ul>
         <li className="listLinks">
-          <Link className="links">Home</Link>
+          <Link to="/" className="links">
+            Home
+          </Link>
         </li>
         <li className="listLinks">
           <Link className="links">Expense Log</Link>
