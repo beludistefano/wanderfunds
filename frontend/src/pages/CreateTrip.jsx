@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import "../css/createtrip.css";
@@ -10,6 +10,8 @@ import TripCard from "../components/tripCard";
 // OWNER ID FOR NOW
 
 export default function CreateTrip() {
+  const navigate = useNavigate();
+
   const [defaultMember, setDefaultMember] = useState(1);
 
   async function createTrip(e) {
@@ -69,14 +71,14 @@ export default function CreateTrip() {
       });
 
       if (creationResponse.status == 200) {
-        // REDIRECT!
+        navigate("/");
       } else {
         // HANDLE ERROR VISUALLY
         console.log("Error");
       }
     } catch (e) {
       // HANDLE ERROR VISUALLY
-      console.log(error);
+      console.log(e);
     }
   }
 
