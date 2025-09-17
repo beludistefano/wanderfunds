@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 import "../css/createtrip.css";
 
@@ -9,6 +10,8 @@ import TripCard from "../components/tripCard";
 // OWNER ID FOR NOW
 
 export default function CreateTrip() {
+  const [defaultMember, setDefaultMember] = useState(1);
+
   function createTrip(e) {
     e.preventDefault();
 
@@ -21,11 +24,6 @@ export default function CreateTrip() {
     const autoAdd = document.getElementById("autoAdd").checked;
     const defaultSplit = document.getElementById("defaultSplit").value;
     const description = document.getElementById("description").value;
-
-    console.log(status);
-    console.log(autoAdd);
-    console.log(defaultSplit);
-    console.log(description);
 
     if (destination == "" || fromDate == "" || toDate == "") {
       console.log("Destination cannot be empty");
@@ -53,9 +51,14 @@ export default function CreateTrip() {
 
     const newTrip = {};
     newTrip["destination"] = destination;
-    newTrip["from_date"] = fromDate;
-    newTrip["to_date"] = toDate;
-    newTrip["defaultSplit"] = destination;
+    newTrip["from_date"] = formatFromDate;
+    newTrip["to_date"] = formatToDate;
+    newTrip["default_split"] = defaultSplit;
+    newTrip["description"] = description;
+    newTrip["members"] = members;
+    newTrip["auto_add"] = autoAdd;
+
+    console.log(newTrip);
   }
 
   return (
@@ -127,6 +130,8 @@ export default function CreateTrip() {
                 className="formInput"
                 type="number"
                 min="0"
+                value={defaultMember}
+                onChange={(e) => setDefaultMember(e.target.value)}
               />
             </div>
             <div className="formRow">
