@@ -12,7 +12,7 @@ export default function TripCard({ trip }) {
 
   return (
     <div className="mainCardContainer">
-      <Link className="linkCard">
+      <Link className="linkCard" to={"/trip/" + tripID}>
         <div className="tripCard">
           <div className="tripPictureContainer">
             <img

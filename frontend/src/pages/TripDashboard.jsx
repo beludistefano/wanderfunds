@@ -1,10 +1,10 @@
-import TripCard from "../components/tripCard";
+import Header from "../components/header";
 
 export default function TripDashboard() {
-
   return (
     <div>
-        Hello
+      <Header></Header>
+      <div id="mainContent"></div>
     </div>
   );
 }

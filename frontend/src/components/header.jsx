@@ -1,22 +1,21 @@
 import "../css/components/header.css";
+import logo from "../assets/oneLogo.png";
+import notif from "../assets/iconNotif.png";
+import prof from "../assets/iconProf.png";
 
 export default function Header() {
   return (
     <header id="header">
       <div id="logoSection">
-        <img src="./src/assets/oneLogo.png" alt="WanderFunds Logo" />
+        <img src={logo} alt="WanderFunds Logo" />
       </div>
       <div id="functionalitiesHeader">
         <img
-          src="./src/assets/iconNotif.png"
+          src={notif}
           className="smallLogo notifLogo"
           alt="Notifications Logo"
         />
-        <img
-          src="./src/assets/iconProf.png"
-          className="smallLogo profileLogo"
-          alt="Profile Logo"
-        />
+        <img src={prof} className="smallLogo profileLogo" alt="Profile Logo" />
       </div>
     </header>
   );
