@@ -100,7 +100,28 @@ app.post("/api/trip", async (req, res) => {
   }
 });
 
-app.delete("/api/trip", async (req, res) => {});
+app.delete("/api/trip", (req, res) =>
+  res.status(400).json({ error: "Trip ID is required" })
+);
+
+app.delete("/api/trip/:tripID", async (req, res) => {
+  const { tripID } = req.params;
+
+  if (!tripID || tripID == "") {
+    return res.status(400).json("Trip ID is required");
+  }
+
+  const deleteTrip = `
+  DELETE FROM trips
+  WHERE tripid = $1`;
+
+  try {
+    const deleteTripResult = await pool.query(deleteTrip, [tripID]);
+    return res.status(200).json(deleteTripResult);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+});
 
 app.put("api/trip", async (req, res) => {});
 
