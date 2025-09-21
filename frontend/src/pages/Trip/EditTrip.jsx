@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import "../../css/edittrip.css";
 import { useState } from "react";
+import Confirm from "../../components/Confirmation";
 
 export default function EditTrip({ trip }) {
   const navigate = useNavigate();
@@ -14,6 +15,8 @@ export default function EditTrip({ trip }) {
     trip.default_split
   );
   const [updateAutoAdd, setUpdateAutoAdd] = useState(trip.auto_add);
+
+  const [displayConfirm, setDisplayConfirm] = useState(false);
 
   async function updateTrip(e) {
     e.preventDefault();
@@ -83,8 +86,10 @@ export default function EditTrip({ trip }) {
     }
   }
 
-  async function deleteTrip(e) {
+  const deleteTrip = async (e) => {
     e.preventDefault();
+
+    setDisplayConfirm(false);
 
     try {
       const deleteResp = await fetch(
@@ -104,7 +109,7 @@ export default function EditTrip({ trip }) {
       // HANDLE ERROR VISUALLY
       console.log(e);
     }
-  }
+  };
 
   return (
     <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
@@ -217,11 +222,45 @@ export default function EditTrip({ trip }) {
           onClick={updateTrip}
         ></input>
       </form>
-      <div style={{ display: "flex", justifyContent: "flex-start" }}>
-        <button onClick={deleteTrip} id="buttonDelete" className="button">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <button
+          onClick={() => {
+            setDisplayConfirm(true);
+          }}
+          id="buttonDelete"
+          className="button"
+        >
           DELETE TRIP
         </button>
       </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-start",
+        }}
+      >
+        <button
+          onClick={() => {
+            navigate("/");
+          }}
+          id="buttonCancel"
+          className="button"
+        >
+          CANCEL
+        </button>
+      </div>
+      <Confirm
+        text={"Are you sure you want to delete?"}
+        options={{ ok: "Delete", cancel: "Cancel" }}
+        isOpen={displayConfirm}
+        onConfirmOk={deleteTrip}
+        onConfirmNo={() => setDisplayConfirm(false)}
+      />
     </div>
   );
 }

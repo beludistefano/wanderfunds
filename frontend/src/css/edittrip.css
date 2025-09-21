@@ -42,3 +42,12 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+#buttonCancel {
+  background-color: #8e8e8e;
+  border: none;
+}
+
+#buttonCancel:hover {
+  border: none;
+}
