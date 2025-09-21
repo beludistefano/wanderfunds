@@ -100,6 +100,14 @@ app.post("/api/trip", async (req, res) => {
   }
 });
 
+app.delete("/api/trip", async (req, res) => {});
+
+app.put("api/trip", async (req, res) => {});
+
+app.get("api/trip/savings", async (req, res) => {});
+
+app.get("api/trip/expenses", async (req, res) => {});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
