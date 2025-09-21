@@ -1,0 +1,44 @@
+#topEditContainer {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 3%;
+  padding-right: 3%;
+  padding-top: 10px;
+}
+
+.ownerContainer {
+  display: inline-block;
+  padding: 5px 15px;
+  border-radius: 9999px;
+  background-color: #ff7373;
+  text-transform: uppercase;
+  color: white;
+  min-width: 100px;
+}
+
+.ownerContainer p {
+  margin: 0;
+  text-align: center;
+}
+
+#editForm {
+  text-align: left;
+}
+
+#buttonDelete {
+  background-color: #ff7373;
+  border: none;
+}
+
+#buttonDelete:hover {
+  border: none;
+}
+
+#buttonSave {
+  margin-top: 2%;
+  background-color: #8ebed8;
+  border: none;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+}
