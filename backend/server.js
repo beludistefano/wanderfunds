@@ -113,17 +113,71 @@ app.delete("/api/trip/:tripID", async (req, res) => {
 
   const deleteTrip = `
   DELETE FROM trips
-  WHERE tripid = $1`;
+  WHERE tripid = $1
+  RETURNING *`;
 
   try {
     const deleteTripResult = await pool.query(deleteTrip, [tripID]);
+
     return res.status(200).json(deleteTripResult);
   } catch (e) {
     return res.status(500).json(e);
   }
 });
 
-app.put("api/trip", async (req, res) => {});
+app.put("api/trip", async (req, res) => {
+  const {
+    tripID,
+    destination,
+    description,
+    from_date,
+    to_date,
+    status,
+    default_split,
+    auto_add,
+  } = req.body;
+
+  if (destination == "" || tripID == "") {
+    return res
+      .status(400)
+      .send("Error: destination and trip ID cannot be empty");
+  }
+
+  if (from_date > to_date) {
+    return res.status(400).send("Error: Trip must start before end date");
+  }
+
+  const tripQuery = `
+    UPDATE trips
+    SET
+      destination   = $1,
+      description   = $2,
+      from_date     = $3,
+      to_date       = $4,
+      status        = $5,
+      default_split = $6,
+      auto_add      = $7
+    WHERE tripid = $8;
+    `;
+
+  const tripNewValues = [
+    destination,
+    description,
+    from_date,
+    to_date,
+    status,
+    default_split,
+    auto_add,
+  ];
+
+  try {
+    const updateResult = await pool.query(tripQuery, tripNewValues);
+
+    return res.status(200).json(updateResult);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+});
 
 app.get("api/trip/savings", async (req, res) => {});
 
