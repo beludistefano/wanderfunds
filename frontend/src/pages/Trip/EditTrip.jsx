@@ -6,17 +6,25 @@ export default function EditTrip({ trip }) {
   const navigate = useNavigate();
 
   const [updateDestination, setUpdateDestination] = useState(trip.destination);
+  const [updateFromDate, setUpdateFromDate] = useState(trip.fromDate);
+  const [updateToDate, setUpdatetoDate] = useState(trip.toDate);
+  const [updateStatus, setUpdateStatus] = useState(trip.status);
+  const [updateDescription, setUpdateDescription] = useState(trip.description);
+  const [updateDefaultSplit, setUpdateDefaultSplit] = useState(
+    trip.default_split
+  );
+  const [updateAutoAdd, setUpdateAutoAdd] = useState(trip.auto_add);
 
   async function updateTrip(e) {
     e.preventDefault();
 
-    const destination = document.getElementById("destination").value.trim();
-    const fromDate = document.getElementById("fromDate").value;
-    const toDate = document.getElementById("toDate").value;
-    const status = document.getElementById("status").value;
-    const autoAdd = document.getElementById("autoAdd").checked;
-    const defaultSplit = document.getElementById("defaultSplit").value;
-    const description = document.getElementById("description").value;
+    const destination = updateDestination;
+    const fromDate = updateFromDate;
+    const toDate = updateToDate;
+    const status = updateStatus;
+    const autoAdd = updateAutoAdd;
+    const defaultSplit = updateDefaultSplit;
+    const description = updateDescription;
 
     if (destination == "" || fromDate == "" || toDate == "") {
       console.log("Destination cannot be empty");
@@ -43,7 +51,7 @@ export default function EditTrip({ trip }) {
     }
 
     const updateTrip = {};
-    updateTrip["destination"] = updateDestination;
+    updateTrip["destination"] = destination;
     updateTrip["from_date"] = formatFromDate;
     updateTrip["to_date"] = formatToDate;
     updateTrip["default_split"] = defaultSplit;
@@ -134,14 +142,16 @@ export default function EditTrip({ trip }) {
               name="fromDate"
               className="formInputDate"
               type="date"
-              value={trip.fromDate}
+              value={updateFromDate}
+              onChange={(e) => setUpdateFromDate(e.target.value)}
             />
             <input
               id="toDate"
               name="toDate"
               className="formInputDate"
               type="date"
-              value={trip.toDate}
+              value={updateToDate}
+              onChange={(e) => setUpdatetoDate(e.target.value)}
             />
           </div>
         </div>
@@ -149,15 +159,25 @@ export default function EditTrip({ trip }) {
           <label className="formLabel" for="description">
             Description
           </label>
-          <textarea id="description" className="formInput" name="description">
-            {trip.description}
+          <textarea
+            id="description"
+            className="formInput"
+            name="description"
+            onChange={(e) => setUpdateDescription(e.target.value)}
+          >
+            {updateDescription}
           </textarea>
         </div>
         <div className="formRow">
           <label className="formLabel" for="status">
             Status
           </label>
-          <select name="status" id="status">
+          <select
+            name="status"
+            id="status"
+            value={updateStatus}
+            onChange={(e) => setUpdateStatus(e.target.value)}
+          >
             <option value="Planning">Planning</option>
             <option value="Confirmed">Confirmed</option>
           </select>
@@ -172,7 +192,8 @@ export default function EditTrip({ trip }) {
             type="number"
             min="0"
             max="100"
-            value={trip.default_split}
+            value={updateDefaultSplit}
+            onChange={(e) => setUpdateDefaultSplit(e.target.value)}
             disabled
           />
         </div>
@@ -180,7 +201,13 @@ export default function EditTrip({ trip }) {
           <label className="formLabel" for="autoAdd">
             Auto-add expenses?
           </label>
-          <input type="checkbox" id="autoAdd" name="autoAdd" />
+          <input
+            type="checkbox"
+            id="autoAdd"
+            name="autoAdd"
+            checked={updateAutoAdd}
+            onChange={(e) => setUpdateAutoAdd(e.target.checked)}
+          />
         </div>
         <input
           id="buttonSave"

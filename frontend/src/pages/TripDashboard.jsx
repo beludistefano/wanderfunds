@@ -11,11 +11,11 @@ export default function TripDashboard() {
   const dummyTrip = {
     destination: "Aruba",
     description: "bla bla",
-    status: "Confirmed",
+    status: "Planning",
     fromDate: "2025-09-25",
     toDate: "2025-09-27",
     default_split: 0.5,
-    auto_add: true,
+    auto_add: false,
     tripid: "5b4360a5-6262-4f04-bbad-2b19c35b9d59",
   };
 
