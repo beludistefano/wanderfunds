@@ -181,9 +181,28 @@ app.put("/api/trip", async (req, res) => {
   }
 });
 
-app.get("api/trip/savings", async (req, res) => {});
+app.get("/api/trip/savings", async (req, res) => {});
 
-app.get("api/trip/expenses", async (req, res) => {});
+app.get("/api/trip/expenses/:tripID", async (req, res) => {
+  const { tripID } = req.params;
+
+  if (!tripID || tripID == "") {
+    return res.status(400).json("Trip ID is required");
+  }
+
+  try {
+    const query = `
+    SELECT *
+    FROM expected_expenses
+    WHERE trip_id = $1`;
+
+    const expensesResult = await pool.query(query, [tripID]);
+
+    return res.status(200).json(expensesResult.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
