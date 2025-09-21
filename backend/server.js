@@ -100,10 +100,16 @@ app.post("/api/trip", async (req, res) => {
   }
 });
 
+/**
+ * This DELETE request will handle incoming requests without a trip ID
+ */
 app.delete("/api/trip", (req, res) =>
   res.status(400).json({ error: "Trip ID is required" })
 );
 
+/**
+ * This DELETE request will delete a trip by its ID
+ */
 app.delete("/api/trip/:tripID", async (req, res) => {
   const { tripID } = req.params;
 
@@ -125,6 +131,9 @@ app.delete("/api/trip/:tripID", async (req, res) => {
   }
 });
 
+/**
+ * This PUT request will update a trip
+ */
 app.put("/api/trip", async (req, res) => {
   const {
     tripID,
@@ -181,6 +190,9 @@ app.put("/api/trip", async (req, res) => {
   }
 });
 
+/**
+ * This GET request will fetch the savings fund for the logged in user for a given trip
+ */
 app.get("/api/trip/savings", async (req, res) => {
   const { tripId, userId } = req.query;
 
@@ -204,6 +216,9 @@ app.get("/api/trip/savings", async (req, res) => {
   }
 });
 
+/**
+ * This GET request will fetch all expenses for a given trip
+ */
 app.get("/api/trip/expenses/:tripID", async (req, res) => {
   const { tripID } = req.params;
 
