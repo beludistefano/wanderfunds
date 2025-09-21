@@ -181,7 +181,28 @@ app.put("/api/trip", async (req, res) => {
   }
 });
 
-app.get("/api/trip/savings", async (req, res) => {});
+app.get("/api/trip/savings", async (req, res) => {
+  const { tripId, userId } = req.query;
+
+  if (tripId == "" || userId == "") {
+    return res.status(400).send("Error: Trip and User IDs cannot be empty");
+  }
+
+  const savingsQuery = `
+    SELECT *
+    FROM savings_funds
+    WHERE trip_id = $1
+    AND owner_id = $2
+  `;
+
+  try {
+    const savingsResult = await pool.query(savingsQuery, [tripId, userId]);
+
+    return res.status(200).json(savingsResult.rows);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+});
 
 app.get("/api/trip/expenses/:tripID", async (req, res) => {
   const { tripID } = req.params;
