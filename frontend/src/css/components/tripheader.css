@@ -1,0 +1,38 @@
+#tripHeaderContainer {
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  min-height: 150px;
+}
+
+#tripStatusContainer {
+  padding: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.statusContainer {
+  display: inline-block;
+}
+
+#destinationContainerParent {
+  display: flex;
+  justify-content: flex-start;
+}
+
+#destinationContainer {
+  display: inline-block;
+  width: 40%;
+  text-align: left;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  text-transform: uppercase;
+}
+
+.destinationText {
+  margin: 6px;
+  margin-left: 20px;
+  letter-spacing: 2px;
+  font-size: 2em;
+}

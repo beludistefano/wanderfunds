@@ -1,0 +1,14 @@
+#mainContent {
+  display: flex;
+  height: 100%;
+}
+
+#dashboardCenterSection {
+  width: 85%;
+  height: 100%;
+}
+
+#mainSideBar {
+  width: 15%;
+  min-height: 100%;
+}
