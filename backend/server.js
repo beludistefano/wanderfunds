@@ -125,7 +125,7 @@ app.delete("/api/trip/:tripID", async (req, res) => {
   }
 });
 
-app.put("api/trip", async (req, res) => {
+app.put("/api/trip", async (req, res) => {
   const {
     tripID,
     destination,
@@ -157,7 +157,8 @@ app.put("api/trip", async (req, res) => {
       status        = $5,
       default_split = $6,
       auto_add      = $7
-    WHERE tripid = $8;
+    WHERE tripid    = $8
+    RETURNING *;
     `;
 
   const tripNewValues = [
@@ -168,6 +169,7 @@ app.put("api/trip", async (req, res) => {
     status,
     default_split,
     auto_add,
+    tripID,
   ];
 
   try {
