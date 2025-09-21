@@ -1,7 +1,103 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../css/edittrip.css";
+import { useState } from "react";
 
 export default function EditTrip({ trip }) {
+  const navigate = useNavigate();
+
+  const [updateDestination, setUpdateDestination] = useState(trip.destination);
+
+  async function updateTrip(e) {
+    e.preventDefault();
+
+    const destination = document.getElementById("destination").value.trim();
+    const fromDate = document.getElementById("fromDate").value;
+    const toDate = document.getElementById("toDate").value;
+    const status = document.getElementById("status").value;
+    const autoAdd = document.getElementById("autoAdd").checked;
+    const defaultSplit = document.getElementById("defaultSplit").value;
+    const description = document.getElementById("description").value;
+
+    if (destination == "" || fromDate == "" || toDate == "") {
+      console.log("Destination cannot be empty");
+      return;
+    }
+
+    const today = new Date();
+    const formatFromDate = new Date(fromDate);
+    const formatToDate = new Date(toDate);
+
+    if (formatFromDate < today) {
+      console.log("Trip cannot start before today");
+      return;
+    }
+
+    if (formatToDate < formatFromDate) {
+      console.log("End date cannot be before start date");
+      return;
+    }
+
+    if (formatToDate.getDate() == formatFromDate.getDate()) {
+      console.log("Trip must last at least one day");
+      return;
+    }
+
+    const updateTrip = {};
+    updateTrip["destination"] = updateDestination;
+    updateTrip["from_date"] = formatFromDate;
+    updateTrip["to_date"] = formatToDate;
+    updateTrip["default_split"] = defaultSplit;
+    updateTrip["description"] = description;
+    updateTrip["status"] = status;
+    updateTrip["auto_add"] = autoAdd;
+    updateTrip["tripID"] = trip.tripid;
+
+    console.log(updateTrip);
+
+    try {
+      const updateResp = await fetch("http://localhost:3000/api/trip", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateTrip),
+      });
+
+      if (updateResp.status == 200) {
+        navigate("/");
+      } else {
+        // HANDLE ERROR VISUALLY
+        console.log("Error");
+      }
+    } catch (e) {
+      // HANDLE ERROR VISUALLY
+      console.log(e);
+    }
+  }
+
+  async function deleteTrip(e) {
+    e.preventDefault();
+
+    try {
+      const deleteResp = await fetch(
+        "http://localhost:3000/api/trip/" + trip.tripid,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (deleteResp.status == 200) {
+        navigate("/");
+      } else {
+        // HANDLE ERROR VISUALLY
+        console.log("Error");
+      }
+    } catch (e) {
+      // HANDLE ERROR VISUALLY
+      console.log(e);
+    }
+  }
+
   return (
     <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
       <div
@@ -26,7 +122,8 @@ export default function EditTrip({ trip }) {
             className="formInput"
             name="destination"
             type="text"
-            value={trip.destination}
+            value={updateDestination}
+            onChange={(e) => setUpdateDestination(e.target.value)}
           />
         </div>
         <div className="formRow">
@@ -90,13 +187,14 @@ export default function EditTrip({ trip }) {
           className="button"
           type="submit"
           value="SAVE"
+          onClick={updateTrip}
         ></input>
       </form>
-      <Link to="/" style={{ display: "flex", justifyContent: "flex-start" }}>
-        <button id="buttonDelete" className="button">
+      <div style={{ display: "flex", justifyContent: "flex-start" }}>
+        <button onClick={deleteTrip} id="buttonDelete" className="button">
           DELETE TRIP
         </button>
-      </Link>
+      </div>
     </div>
   );
 }
