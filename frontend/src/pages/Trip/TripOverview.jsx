@@ -53,8 +53,26 @@ export default function TripOverview() {
             <h3>Savings Fund</h3>
           </div>
           <div id="fundsCardsContainer">
-            <div></div>
-            <div></div>
+            <div className="fundsCardsRow">
+              <div className="fundsCard">
+                <h4>Pending Expenses:</h4>
+                <p>$ 466,66</p>
+              </div>
+              <div className="fundsCard">
+                <h4>Saved Funds:</h4>
+                <p>$ 250</p>
+              </div>
+              <div className="fundsCard balanceCard">
+                <h4>Balance:</h4>
+                <p>$ 216,66</p>
+              </div>
+            </div>
+            <div className="fundsCardsRow">
+              <div className="fundsCard totalTripCard">
+                <h4>Total Trip Cost:</h4>
+                <p>$ 1376,66</p>
+              </div>
+            </div>
             <button className="button" id="addFundsButton">
               Add Funds
             </button>
