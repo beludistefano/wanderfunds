@@ -1,11 +1,3 @@
-#topEditContainer {
-  display: flex;
-  justify-content: space-between;
-  padding-left: 3%;
-  padding-right: 3%;
-  padding-top: 10px;
-}
-
 .ownerContainer {
   display: inline-block;
   padding: 5px 15px;

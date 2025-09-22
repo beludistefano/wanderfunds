@@ -1,0 +1,70 @@
+#expensesSavingsCont {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 100px;
+}
+
+#expensesSavingsCont h3 {
+  margin: 0;
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+#expensesContainer {
+  width: 60%;
+}
+
+#expectedExpensesTitleSection {
+  display: flex;
+  justify-content: space-between;
+}
+
+#expectedExpensesTitle {
+  display: inline-block;
+}
+
+#addExpenseButton {
+  background-color: #8ebed8;
+  color: white;
+  font-weight: 800;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#expensesTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+#expensesTable th {
+  background-color: #d9d9d9;
+  color: #737373;
+  border: none;
+  padding: 6px;
+}
+
+#expensesTable td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px;
+}
+
+#savingsContainer {
+  width: 50%;
+}
+
+#addFundsButton {
+  background-color: #8ebed8;
+  color: white;
+  cursor: pointer;
+  border: none;
+}
+
+#addFundsButton:hover {
+  border: none;
+}
