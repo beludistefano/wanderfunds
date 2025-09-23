@@ -1,6 +1,28 @@
+import { useState, useEffect } from "react";
 import "../../css/tripoverview.css";
 
-export default function TripOverview() {
+export default function TripOverview({ trip }) {
+  const [tripID, setTripID] = useState(trip.tripID);
+  const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
+  const [savingsFund, setSavingsFund] = useState();
+
+  async function getSavingsFund() {
+    try {
+      const savingsFundData = await fetch(
+        `http://localhost:3000/api/trip/savings?tripId=${tripID}&userId=${userID}`
+      );
+      const savingsFund = await savingsFundData.json();
+
+      setSavingsFund(savingsFund[0].amount);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    getSavingsFund();
+  }, []);
+
   return (
     <>
       <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
@@ -60,7 +82,7 @@ export default function TripOverview() {
               </div>
               <div className="fundsCard">
                 <h4>Saved Funds:</h4>
-                <p>$ 250</p>
+                <p>{savingsFund ? "$ " + savingsFund : "Loading..."}</p>
               </div>
               <div className="fundsCard balanceCard">
                 <h4>Balance:</h4>
