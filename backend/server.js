@@ -307,6 +307,30 @@ app.post("/api/expenses", async (req, res) => {
   }
 });
 
+app.put("/api/trip/savings", async (req, res) => {
+  const { savingsFundID, amount, newAmount } = req.body;
+
+  const updatedAmount = amount + newAmount;
+
+  const updateQuery = `UPDATE trips
+    SET
+      amount   = $1
+    WHERE savings_funds_id = $2
+    RETURNING *
+    `;
+
+  try {
+    const savingsUpdateResult = await pool.query(updateQuery, [
+      updatedAmount,
+      savingsFundID,
+    ]);
+
+    return res.status(200).json({ expenseUpdate: savingsUpdateResult });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
