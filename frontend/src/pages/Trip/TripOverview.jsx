@@ -7,6 +7,17 @@ export default function TripOverview({ trip }) {
   const [savingsFund, setSavingsFund] = useState();
   const [expenses, setExpenses] = useState([]);
 
+  const noExpensesPhrases = [
+    "Your wallet is safe... for now 💸",
+    "Zero adventures logged here yet ✨",
+    "Time to add your first adventure 🌍",
+  ];
+
+  function getRandomPhrase(phrases) {
+    const randomIndex = Math.floor(Math.random() * phrases.length);
+    return phrases[randomIndex];
+  }
+
   async function getSavingsFund() {
     try {
       const savingsFundData = await fetch(
@@ -41,6 +52,11 @@ export default function TripOverview({ trip }) {
     getExpenses();
   }, []);
 
+  useEffect(() => {
+    if (savingsFund != null && expenses.length > 0) {
+    }
+  }, [savingsFund, expenses]);
+
   return (
     <>
       <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
@@ -65,28 +81,38 @@ export default function TripOverview({ trip }) {
           </div>
           <div id="expensesTableContainer">
             {expenses.length == 0 ? (
-              "Nothing to see here ... "
+              getRandomPhrase(noExpensesPhrases)
             ) : (
               <table id="expensesTable">
                 <thead>
                   <tr>
+                    <th></th>
                     <th>Expense</th>
-                    <th>Amount</th>
-                    <th>Split</th>
-                    <th>Percentage</th>
+                    <th style={{ textAlign: "right" }}>Amount</th>
+                    <th style={{ textAlign: "right" }}>Split</th>
+                    <th style={{ textAlign: "right" }}>Total</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>Disney Tickets</td>
-                    <td>$ 500</td>
-                    <td>100%</td>
-                    <td>$ 500</td>
-                    <td>
-                      <span>✔</span>
-                    </td>
-                  </tr>
+                  {expenses.map((e) => {
+                    return (
+                      <tr>
+                        <td>✏️</td>
+                        <td>{e.name}</td>
+                        <td style={{ textAlign: "right" }}>$ {e.amount}</td>
+                        <td style={{ textAlign: "right" }}>100%</td>
+                        <td style={{ textAlign: "right" }}>
+                          {e.split === "own"
+                            ? "$ " + e.amount
+                            : "$ " + (e.amount / trip.members).toFixed(2)}
+                        </td>
+                        <td>
+                          <span>✔</span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}

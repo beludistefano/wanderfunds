@@ -230,7 +230,7 @@ app.get("/api/trip/expenses", async (req, res) => {
     const query = `
     SELECT *
     FROM expected_expenses
-    WHERE trip_id = $1 AND (owner_id = $2 OR custom_split != 100)`;
+    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared')`;
 
     const expensesResult = await pool.query(query, [tripId, userId]);
 

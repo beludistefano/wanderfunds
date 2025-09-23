@@ -18,6 +18,7 @@ export default function TripDashboard() {
     toDate: "2025-09-27",
     default_split: 0.5,
     auto_add: false,
+    members: 3,
     tripID: "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000",
   };
 
