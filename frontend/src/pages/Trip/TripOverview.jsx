@@ -5,6 +5,7 @@ export default function TripOverview({ trip }) {
   const [tripID, setTripID] = useState(trip.tripID);
   const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
   const [savingsFund, setSavingsFund] = useState();
+  const [expenses, setExpenses] = useState([]);
 
   async function getSavingsFund() {
     try {
@@ -19,8 +20,25 @@ export default function TripOverview({ trip }) {
     }
   }
 
+  async function getExpenses() {
+    try {
+      const expensesData = await fetch(
+        `http://localhost:3000/api/trip/expenses?tripId=${tripID}&userId=${userID}`
+      );
+
+      const expenses = await expensesData.json();
+
+      console.log(expenses);
+
+      setExpenses(expenses);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     getSavingsFund();
+    getExpenses();
   }, []);
 
   return (
@@ -46,28 +64,32 @@ export default function TripOverview({ trip }) {
             <div id="addExpenseButton">+</div>
           </div>
           <div id="expensesTableContainer">
-            <table id="expensesTable">
-              <thead>
-                <tr>
-                  <th>Expense</th>
-                  <th>Amount</th>
-                  <th>Split</th>
-                  <th>Percentage</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Disney Tickets</td>
-                  <td>$ 500</td>
-                  <td>100%</td>
-                  <td>$ 500</td>
-                  <td>
-                    <span>✔</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            {expenses.length == 0 ? (
+              "Nothing to see here ... "
+            ) : (
+              <table id="expensesTable">
+                <thead>
+                  <tr>
+                    <th>Expense</th>
+                    <th>Amount</th>
+                    <th>Split</th>
+                    <th>Percentage</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Disney Tickets</td>
+                    <td>$ 500</td>
+                    <td>100%</td>
+                    <td>$ 500</td>
+                    <td>
+                      <span>✔</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            )}
           </div>
         </div>
         <div id="savingsContainer">

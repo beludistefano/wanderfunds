@@ -197,7 +197,7 @@ app.get("/api/trip/savings", async (req, res) => {
   const { tripId, userId } = req.query;
 
   if (tripId == "" || userId == "") {
-    return res.status(400).send("Error: Trip and User IDs cannot be empty");
+    return res.status(400).json("Error: Trip and User IDs cannot be empty");
   }
 
   const savingsQuery = `
@@ -219,11 +219,11 @@ app.get("/api/trip/savings", async (req, res) => {
 /**
  * This GET request will fetch all expenses for a given trip
  */
-app.get("/api/trip/expenses/:tripID", async (req, res) => {
-  const { tripID } = req.params;
+app.get("/api/trip/expenses", async (req, res) => {
+  const { tripId, userId } = req.query;
 
-  if (!tripID || tripID == "") {
-    return res.status(400).json("Trip ID is required");
+  if (tripId == "" || userId == "") {
+    return res.status(400).json("Error: Trip and User IDs cannot be empty");
   }
 
   try {
@@ -232,11 +232,15 @@ app.get("/api/trip/expenses/:tripID", async (req, res) => {
     FROM expected_expenses
     WHERE trip_id = $1`;
 
-    const expensesResult = await pool.query(query, [tripID]);
+    const expensesResult = await pool.query(query, [tripId]);
+
+    if (expensesResult.rows.length === 0) {
+      return res.status(404).json("No expenses found for this trip.");
+    }
 
     return res.status(200).json(expensesResult.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json("Server error");
   }
 });
 
