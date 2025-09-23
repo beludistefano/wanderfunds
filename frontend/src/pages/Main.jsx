@@ -55,6 +55,7 @@ export default function Main() {
                       from_date: t.from_date,
                       to_date: t.to_date,
                       status: t.status,
+                      members: t.members,
                     }}
                   />
                 );

@@ -109,3 +109,17 @@
 .greenText {
   color: #3f883f;
 }
+
+#removeFunds {
+  display: block;
+  border: none;
+  background-color: white;
+  color: #ff7373;
+  text-align: center;
+  cursor: pointer;
+  margin: auto;
+}
+
+#removeFunds:hover {
+  border: none;
+}

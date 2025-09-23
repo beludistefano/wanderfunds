@@ -28,6 +28,7 @@ app.get("/api/trips", async (req, res) => {
             t.description,
             t.default_split,
             t.auto_add,
+            t.members,
             r.role
         FROM trips AS t
         JOIN user_role AS r

@@ -1,8 +1,10 @@
 import { Link } from "react-router-dom";
 import "../css/components/tripcard.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 
 export default function TripCard({ trip }) {
-  const { tripID, destination, from_date, to_date, status } = trip;
+  const { tripID, destination, from_date, to_date, status, members } = trip;
 
   const from_date_raw = new Date(from_date);
   const formattedFrom = from_date_raw.toLocaleDateString();
@@ -24,7 +26,8 @@ export default function TripCard({ trip }) {
           <div className="tripDataContainer">
             <p className="textMain">{destination}</p>
             <p className="textSecondary">
-              {formattedFrom} - {formattedTo}
+              {formattedFrom} - {formattedTo} | {members}{" "}
+              <FontAwesomeIcon icon={faUser} />
             </p>
           </div>
           <div className="tripStatusContainer">

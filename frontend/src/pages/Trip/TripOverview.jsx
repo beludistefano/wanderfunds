@@ -142,7 +142,7 @@ export default function TripOverview({ trip }) {
                 <tbody>
                   {expenses.map((e) => {
                     return (
-                      <tr>
+                      <tr id={e.expense_id}>
                         <td>✏️</td>
                         <td>{e.name}</td>
                         <td style={{ textAlign: "right" }}>$ {e.amount}</td>
@@ -206,6 +206,7 @@ export default function TripOverview({ trip }) {
             <button className="button" id="addFundsButton">
               Add Funds
             </button>
+            <button id="removeFunds">Remove Funds</button>
           </div>
         </div>
       </div>
