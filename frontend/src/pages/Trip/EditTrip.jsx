@@ -15,6 +15,7 @@ export default function EditTrip({ trip }) {
     trip.default_split
   );
   const [updateAutoAdd, setUpdateAutoAdd] = useState(trip.auto_add);
+  const [updateMembers, setUpdateMembers] = useState(trip.members);
 
   const [displayConfirm, setDisplayConfirm] = useState(false);
 
@@ -188,32 +189,49 @@ export default function EditTrip({ trip }) {
           </select>
         </div>
         <div className="formRow">
-          <label className="formLabel" for="defaultSplit">
-            Default Split
+          <label className="formLabel" for="members">
+            Members
           </label>
           <input
-            id="defaultSplit"
+            id="members"
+            name="members"
             className="formInput"
             type="number"
             min="0"
-            max="100"
-            value={updateDefaultSplit}
-            onChange={(e) => setUpdateDefaultSplit(e.target.value)}
-            disabled
+            value={updateMembers}
+            onChange={(e) => setUpdateMembers(e.target.value)}
           />
         </div>
-        <div className="formRow inline">
-          <label className="formLabel" for="autoAdd">
-            Auto-add expenses?
-          </label>
-          <input
-            type="checkbox"
-            id="autoAdd"
-            name="autoAdd"
-            checked={updateAutoAdd}
-            onChange={(e) => setUpdateAutoAdd(e.target.checked)}
-          />
-        </div>
+        {updateMembers > 1 ? (
+          <>
+            <div className="formRow">
+              <label className="formLabel" for="defaultSplit">
+                Default Split
+              </label>
+              <select
+                name="defaultSplit"
+                id="defaultSplit"
+                value={updateDefaultSplit}
+                onChange={(e) => setUpdateDefaultSplit(e.target.value)}
+              >
+                <option value="equal">Equal Shares</option>
+                <option value="own">Own Expenses</option>
+              </select>
+            </div>
+            <div className="formRow inline">
+              <label className="formLabel" for="autoAdd">
+                Auto-add expenses?
+              </label>
+              <input
+                type="checkbox"
+                id="autoAdd"
+                name="autoAdd"
+                checked={updateAutoAdd}
+                onChange={(e) => setUpdateAutoAdd(e.target.checked)}
+              />
+            </div>
+          </>
+        ) : null}
         <input
           id="buttonSave"
           className="button"
