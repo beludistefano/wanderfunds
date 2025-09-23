@@ -310,9 +310,9 @@ app.post("/api/expenses", async (req, res) => {
 app.put("/api/trip/savings", async (req, res) => {
   const { savingsFundID, amount, newAmount } = req.body;
 
-  const updatedAmount = amount + newAmount;
+  const updatedAmount = Number(amount) + Number(newAmount);
 
-  const updateQuery = `UPDATE trips
+  const updateQuery = `UPDATE savings_funds
     SET
       amount   = $1
     WHERE savings_funds_id = $2
