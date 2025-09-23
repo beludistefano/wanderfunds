@@ -26,8 +26,10 @@ export default function TripCard({ trip }) {
           <div className="tripDataContainer">
             <p className="textMain">{destination}</p>
             <p className="textSecondary">
-              {formattedFrom} - {formattedTo} | {members}{" "}
-              <FontAwesomeIcon icon={faUser} />
+              {formattedFrom} - {formattedTo}
+            </p>
+            <p className="textSecondary">
+              {members} <FontAwesomeIcon icon={faUser} />
             </p>
           </div>
           <div className="tripStatusContainer">
@@ -35,9 +37,6 @@ export default function TripCard({ trip }) {
               className={`statusContainer status${status.replaceAll(" ", "")}`}
             >
               <p>{status}</p>
-            </div>
-            <div className="tripPeople">
-              <p className="textSecondary">2 people</p>
             </div>
           </div>
         </div>
