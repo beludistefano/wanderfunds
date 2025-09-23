@@ -55,6 +55,7 @@ app.post("/api/trip", async (req, res) => {
     description,
     default_split,
     auto_add,
+    members,
   } = req.body;
 
   if (destination == "") {
@@ -66,8 +67,8 @@ app.post("/api/trip", async (req, res) => {
   }
 
   const tripQuery = `
-      INSERT INTO trips (ownerid, destination, from_date, to_date, description, default_split, auto_add)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO trips (ownerid, destination, from_date, to_date, description, default_split, auto_add, members)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING tripid
     `;
 
@@ -89,6 +90,7 @@ app.post("/api/trip", async (req, res) => {
     description,
     default_split,
     auto_add,
+    members,
   ];
 
   try {

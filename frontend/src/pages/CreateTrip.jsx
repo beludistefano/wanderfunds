@@ -22,10 +22,19 @@ export default function CreateTrip() {
     const toDate = document.getElementById("toDate").value;
     const members = document.getElementById("members").value.trim();
 
-    const status = document.getElementById("status").value;
-    const autoAdd = document.getElementById("autoAdd").checked;
-    const defaultSplit = document.getElementById("defaultSplit").value;
     const description = document.getElementById("description").value;
+    const status = document.getElementById("status").value;
+
+    var autoAdd;
+    var defaultSplit;
+
+    if (members > 1) {
+      autoAdd = document.getElementById("autoAdd").checked;
+      defaultSplit = document.getElementById("defaultSplit").value;
+    } else {
+      autoAdd = null;
+      defaultSplit = "own";
+    }
 
     if (destination == "" || fromDate == "" || toDate == "") {
       console.log("Destination cannot be empty");
@@ -58,8 +67,10 @@ export default function CreateTrip() {
     newTrip["default_split"] = defaultSplit;
     newTrip["description"] = description;
     newTrip["status"] = status;
-    newTrip["members"] = members;
+    newTrip["members"] = Number(members);
     newTrip["auto_add"] = autoAdd;
+
+    console.log(newTrip);
 
     try {
       const creationResponse = await fetch("http://localhost:3000/api/trip", {
@@ -157,26 +168,25 @@ export default function CreateTrip() {
                 onChange={(e) => setDefaultMember(e.target.value)}
               />
             </div>
-            <div className="formRow">
-              <label className="formLabel" for="defaultSplit">
-                Default Split
-              </label>
-              <input
-                id="defaultSplit"
-                className="formInput"
-                type="number"
-                min="0"
-                max="100"
-                value="50"
-                disabled
-              />
-            </div>
-            <div className="formRow inline">
-              <label className="formLabel" for="autoAdd">
-                Auto-add expenses?
-              </label>
-              <input type="checkbox" id="autoAdd" name="autoAdd" />
-            </div>
+            {defaultMember > 1 ? (
+              <>
+                <div className="formRow">
+                  <label className="formLabel" for="defaultSplit">
+                    Default Split
+                  </label>
+                  <select name="defaultSplit" id="defaultSplit">
+                    <option value="equal">Equal Shares</option>
+                    <option value="own">Own Expenses</option>
+                  </select>
+                </div>
+                <div className="formRow inline">
+                  <label className="formLabel" for="autoAdd">
+                    Auto-add expenses?
+                  </label>
+                  <input type="checkbox" id="autoAdd" name="autoAdd" />
+                </div>
+              </>
+            ) : null}
             <input
               className="button buttonOK"
               type="submit"
