@@ -255,6 +255,58 @@ app.get("/api/trip/expenses", async (req, res) => {
   }
 });
 
+/**
+ * This POST request will create an Expense for a trip
+ */
+app.post("/api/expenses", async (req, res) => {
+  var { tripID, ownerID, name, amount, expectedDate, expenseStatus, split } =
+    req.body;
+
+  if (expectedDate == "") {
+    expectedDate = null;
+  }
+
+  if (
+    name == "" ||
+    amount == 0 ||
+    tripID == "" ||
+    ownerID == "" ||
+    expenseStatus == "" ||
+    split == ""
+  ) {
+    return res
+      .status(400)
+      .send("Error: destination, amount, and split cannot be empty");
+  }
+
+  if (split != "shared" && split != "own") {
+    return res.status(400).send("Split must be own or shared");
+  }
+
+  const expenseQuery = `
+      INSERT INTO expected_expenses (trip_id, owner_id, name, amount, expected_date, expense_status, split)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+    `;
+
+  const expenseValues = [
+    tripID,
+    ownerID,
+    name,
+    Number(amount),
+    expectedDate,
+    expenseStatus,
+    split,
+  ];
+
+  try {
+    const expenseResult = await pool.query(expenseQuery, expenseValues);
+
+    return res.status(200).json({ expense: expenseResult });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
