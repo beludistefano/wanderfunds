@@ -13,7 +13,7 @@ export default function TripDashboard() {
   const dummyTrip = {
     destination: "Aruba",
     description: "bla bla",
-    status: "Planning",
+    status: "Confirmed",
     fromDate: "2025-09-25",
     toDate: "2025-09-27",
     default_split: 0.5,

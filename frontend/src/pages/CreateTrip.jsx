@@ -70,6 +70,8 @@ export default function CreateTrip() {
         body: JSON.stringify(newTrip),
       });
 
+      console.log(creationResponse);
+
       if (creationResponse.status == 200) {
         navigate("/");
       } else {

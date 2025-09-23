@@ -6,6 +6,9 @@ export default function TripOverview({ trip }) {
   const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
   const [savingsFund, setSavingsFund] = useState();
   const [expenses, setExpenses] = useState([]);
+  const [totalTripCost, setTotalTripCost] = useState(0);
+  const [pendingExpenses, setPendingExpenses] = useState(0);
+  const [tripBalance, setTripBalance] = useState(0);
 
   const noExpensesPhrases = [
     "Your wallet is safe... for now 💸",
@@ -54,6 +57,48 @@ export default function TripOverview({ trip }) {
 
   useEffect(() => {
     if (savingsFund != null && expenses.length > 0) {
+      if (trip.status == "Planning") {
+        var pendingExp = expenses
+          .reduce((sum, e) => {
+            if (e.split === "shared") {
+              return sum + (Number(e.amount) || 0) / trip.members;
+            } else {
+              return sum + (Number(e.amount) || 0);
+            }
+          }, 0)
+          .toFixed(2);
+
+        setPendingExpenses(pendingExp);
+
+        setTripBalance((savingsFund - pendingExp).toFixed(2));
+      } else {
+        var totalTripCost = expenses
+          .reduce((sum, e) => {
+            if (e.split === "shared") {
+              return sum + (Number(e.amount) || 0) / trip.members;
+            } else {
+              return sum + (Number(e.amount) || 0);
+            }
+          }, 0)
+          .toFixed(2);
+
+        setTotalTripCost(totalTripCost);
+
+        var pendingExpenses = expenses
+          .filter((e) => e.status === "Pending")
+          .reduce((sum, e) => {
+            if (e.split === "shared") {
+              return sum + (Number(e.amount) || 0) / trip.members;
+            } else {
+              return sum + (Number(e.amount) || 0);
+            }
+          }, 0)
+          .toFixed(2);
+
+        setPendingExpenses(pendingExpenses);
+
+        setTripBalance((savingsFund - pendingExpenses).toFixed(2));
+      }
     }
   }, [savingsFund, expenses]);
 
@@ -101,7 +146,9 @@ export default function TripOverview({ trip }) {
                         <td>✏️</td>
                         <td>{e.name}</td>
                         <td style={{ textAlign: "right" }}>$ {e.amount}</td>
-                        <td style={{ textAlign: "right" }}>100%</td>
+                        <td style={{ textAlign: "right" }}>
+                          {e.split === "own" ? "100%" : "Split equally"}
+                        </td>
                         <td style={{ textAlign: "right" }}>
                           {e.split === "own"
                             ? "$ " + e.amount
@@ -125,8 +172,17 @@ export default function TripOverview({ trip }) {
           <div id="fundsCardsContainer">
             <div className="fundsCardsRow">
               <div className="fundsCard">
-                <h4>Pending Expenses:</h4>
-                <p>$ 466,66</p>
+                {trip.status == "Planning" ? (
+                  <>
+                    <h4>Expected Expenses:</h4>
+                    <p>$ {pendingExpenses}</p>
+                  </>
+                ) : (
+                  <>
+                    <h4>Pending Expenses:</h4>
+                    <p>$ {pendingExpenses}</p>
+                  </>
+                )}
               </div>
               <div className="fundsCard">
                 <h4>Saved Funds:</h4>
@@ -134,15 +190,19 @@ export default function TripOverview({ trip }) {
               </div>
               <div className="fundsCard balanceCard">
                 <h4>Balance:</h4>
-                <p>$ 216,66</p>
+                <p className={tripBalance < 0 ? "redText" : "greenText"}>
+                  $ {tripBalance}
+                </p>
               </div>
             </div>
-            <div className="fundsCardsRow">
-              <div className="fundsCard totalTripCard">
-                <h4>Total Trip Cost:</h4>
-                <p>$ 1376,66</p>
+            {trip.status == "Planning" ? null : (
+              <div className="fundsCardsRow">
+                <div className="fundsCard totalTripCard">
+                  <h4>Total Trip Cost:</h4>
+                  <p>$ {totalTripCost}</p>
+                </div>
               </div>
-            </div>
+            )}
             <button className="button" id="addFundsButton">
               Add Funds
             </button>

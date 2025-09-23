@@ -75,6 +75,11 @@ app.post("/api/trip", async (req, res) => {
       VALUES ($1, $2, $3)
     `;
 
+  const savingsFundQuery = `
+      INSERT INTO savings_funds (trip_id, owner_id, amount)
+      VALUES ($1, $2, $3)
+    `;
+
   const tripValues = [
     DEMO_USER_ID,
     destination,
@@ -94,7 +99,13 @@ app.post("/api/trip", async (req, res) => {
 
     const roleResult = await pool.query(roleQuery, roleValues);
 
-    return res.status(200).json(roleResult);
+    const fundValues = [newTripID, DEMO_USER_ID, 0];
+
+    const fundResult = await pool.query(savingsFundQuery, fundValues);
+
+    return res
+      .status(200)
+      .json({ trip: tripResult, role: roleResult, fund: fundResult });
   } catch (err) {
     return res.status(500).json(err);
   }
