@@ -43,6 +43,10 @@ textarea {
   margin-bottom: 3%;
 }
 
+.expenseInput[type="number"] {
+  text-align: right;
+}
+
 .confirmButtons {
   display: inline-block;
   padding: 5px 15px !important;

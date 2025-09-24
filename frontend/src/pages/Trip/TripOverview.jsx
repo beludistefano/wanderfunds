@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import "../../css/tripoverview.css";
 import AddExpense from "../../components/AddExpense";
+import AddFunds from "../../components/AddFunds";
+import RemoveFunds from "../../components/RemoveFunds";
 
 export default function TripOverview({ trip }) {
   const [tripID, setTripID] = useState(trip.tripID);
@@ -12,6 +14,8 @@ export default function TripOverview({ trip }) {
   const [tripBalance, setTripBalance] = useState(0);
 
   const [isExpenseOpen, setIsExpenseOpen] = useState(false);
+  const [addFundsOpen, setAddFundsOpen] = useState(false);
+  const [removeFundsOpen, setRemoveFundsOpen] = useState(false);
 
   const noExpensesPhrases = [
     "Your wallet is safe... for now 💸",
@@ -213,10 +217,16 @@ export default function TripOverview({ trip }) {
                 </div>
               </div>
             )}
-            <button className="button" id="addFundsButton">
+            <button
+              onClick={() => setAddFundsOpen(true)}
+              className="button"
+              id="addFundsButton"
+            >
               Add Funds
             </button>
-            <button id="removeFunds">Remove Funds</button>
+            <button onClick={() => setRemoveFundsOpen(true)} id="removeFunds">
+              Remove Funds
+            </button>
           </div>
         </div>
       </div>
@@ -226,6 +236,16 @@ export default function TripOverview({ trip }) {
         onCancel={() => setIsExpenseOpen(false)}
         members={trip.members}
         tripSplit={trip.default_split}
+      />
+      <AddFunds
+        isOpen={addFundsOpen}
+        onConfirm={null}
+        onCancel={() => setAddFundsOpen(false)}
+      />
+      <RemoveFunds
+        isOpen={removeFundsOpen}
+        onConfirm={null}
+        onCancel={() => setRemoveFundsOpen(false)}
       />
     </>
   );

@@ -35,6 +35,7 @@ export default function AddExpense({
               id="expenseAmount"
               type="number"
               step="0.01"
+              min="0.01"
               className="expenseInput"
             />
           </div>
