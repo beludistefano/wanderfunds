@@ -16,9 +16,9 @@ export default function TripDashboard() {
     status: "Confirmed",
     fromDate: "2025-09-25",
     toDate: "2025-09-27",
-    default_split: "share",
+    default_split: "own",
     auto_add: false,
-    members: 1,
+    members: 3,
     tripID: "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000",
   };
 
@@ -30,8 +30,8 @@ export default function TripDashboard() {
         <div id="dashboardCenterSection">
           <TripHeader destination={"Aruba"} status={"Confirmed"} />
           <TripMenu tripID={tripID} />
-          {/* <TripOverview trip={dummyTrip} userID={""} /> */}
-          <EditTrip trip={dummyTrip} />
+          <TripOverview trip={dummyTrip} userID={""} />
+          {/* <EditTrip trip={dummyTrip} /> */}
         </div>
       </div>
     </div>

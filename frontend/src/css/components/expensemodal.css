@@ -1,0 +1,68 @@
+#modalConfirm {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 42, 83, 0.45);
+  backdrop-filter: blur(2px);
+}
+
+#modalConfirmCard {
+  background-color: white;
+  padding: 10px;
+  min-width: 40%;
+  min-height: 50%;
+  border-radius: 10px;
+}
+
+#modalConfirmOptions {
+  display: flex;
+  gap: 3%;
+  justify-content: center;
+}
+
+.expenseRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.expenseLabel {
+  text-align: left;
+}
+
+.expenseInput,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 3%;
+}
+
+.confirmButtons {
+  display: inline-block;
+  padding: 5px 15px !important;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
+  color: white;
+  min-width: 150px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 2%;
+}
+
+.confirmButtons:hover {
+  border: none;
+}
+
+.buttonConfirmCancel {
+  background-color: #ff7373;
+}
+
+.buttonConfirmOk {
+  background-color: #8ebed8;
+}

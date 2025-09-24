@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import "../../css/tripoverview.css";
+import AddExpense from "../../components/AddExpense";
 
 export default function TripOverview({ trip }) {
   const [tripID, setTripID] = useState(trip.tripID);
@@ -9,6 +10,8 @@ export default function TripOverview({ trip }) {
   const [totalTripCost, setTotalTripCost] = useState(0);
   const [pendingExpenses, setPendingExpenses] = useState(0);
   const [tripBalance, setTripBalance] = useState(0);
+
+  const [isExpenseOpen, setIsExpenseOpen] = useState(false);
 
   const noExpensesPhrases = [
     "Your wallet is safe... for now 💸",
@@ -122,7 +125,14 @@ export default function TripOverview({ trip }) {
         <div id="expensesContainer">
           <div id="expectedExpensesTitleSection">
             <h3 id="expectedExpensesTitle">Expected Expenses</h3>
-            <div id="addExpenseButton">+</div>
+            <div
+              id="addExpenseButton"
+              onClick={() => {
+                setIsExpenseOpen(true);
+              }}
+            >
+              +
+            </div>
           </div>
           <div id="expensesTableContainer">
             {expenses.length == 0 ? (
@@ -142,7 +152,7 @@ export default function TripOverview({ trip }) {
                 <tbody>
                   {expenses.map((e) => {
                     return (
-                      <tr id={e.expense_id}>
+                      <tr id={e.expense_id} key={e.expense_id}>
                         <td>✏️</td>
                         <td>{e.name}</td>
                         <td style={{ textAlign: "right" }}>$ {e.amount}</td>
@@ -210,6 +220,13 @@ export default function TripOverview({ trip }) {
           </div>
         </div>
       </div>
+      <AddExpense
+        isOpen={isExpenseOpen}
+        onAdd={null}
+        onCancel={() => setIsExpenseOpen(false)}
+        members={trip.members}
+        tripSplit={trip.default_split}
+      />
     </>
   );
 }
