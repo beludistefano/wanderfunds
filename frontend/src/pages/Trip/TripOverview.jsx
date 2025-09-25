@@ -3,6 +3,7 @@ import "../../css/tripoverview.css";
 import AddExpense from "../../components/AddExpense";
 import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
+import EditExpense from "../../components/EditExpense";
 
 export default function TripOverview({ trip }) {
   const [theTripID, setTheTripID] = useState(trip.tripid);
@@ -14,9 +15,12 @@ export default function TripOverview({ trip }) {
   const [pendingExpenses, setPendingExpenses] = useState(0);
   const [tripBalance, setTripBalance] = useState(0);
 
+  const [selectedExpense, setSelectedExpense] = useState(null);
+
   const [isExpenseOpen, setIsExpenseOpen] = useState(false);
   const [addFundsOpen, setAddFundsOpen] = useState(false);
   const [removeFundsOpen, setRemoveFundsOpen] = useState(false);
+  const [editExpenseOpen, setEditExpenseOpen] = useState(false);
 
   const noExpensesPhrases = [
     "Your wallet is safe... for now 💸",
@@ -98,7 +102,7 @@ export default function TripOverview({ trip }) {
         setTotalTripCost(totalTripCost);
 
         var pendingExpenses = expenses
-          .filter((e) => e.status === "Pending")
+          .filter((e) => e.expense_status === "pending")
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
@@ -163,7 +167,15 @@ export default function TripOverview({ trip }) {
                   {expenses.map((e) => {
                     return (
                       <tr id={e.expense_id} key={e.expense_id}>
-                        <td>✏️</td>
+                        <td
+                          className="editPencil"
+                          onClick={() => {
+                            setEditExpenseOpen(true);
+                            setSelectedExpense(e);
+                          }}
+                        >
+                          ✏️
+                        </td>
                         <td>{e.name}</td>
                         <td style={{ textAlign: "right" }}>$ {e.amount}</td>
                         <td style={{ textAlign: "right" }}>
@@ -175,7 +187,11 @@ export default function TripOverview({ trip }) {
                             : "$ " + (e.amount / trip.members).toFixed(2)}
                         </td>
                         <td>
-                          <span>✔</span>
+                          {e.expense_status == "confirmed" ? (
+                            <span>✔</span>
+                          ) : (
+                            <div className="expenseLabelConfirm">Confirm</div>
+                          )}
                         </td>
                       </tr>
                     );
@@ -261,6 +277,16 @@ export default function TripOverview({ trip }) {
           onCancel={() => setRemoveFundsOpen(false)}
           currentSavingsAmount={savingsFund}
           savingsFundID={savingsFundID}
+        />
+      )}
+      {editExpenseOpen && expenses.length > 0 && (
+        <EditExpense
+          isOpen={editExpenseOpen}
+          onUpdate={refreshPage}
+          onCancel={() => setEditExpenseOpen(false)}
+          members={trip.members}
+          tripSplit={trip.default_split}
+          expense={selectedExpense}
         />
       )}
     </>

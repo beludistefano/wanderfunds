@@ -343,6 +343,47 @@ app.post("/api/expenses", async (req, res) => {
   }
 });
 
+/**
+ * This PUT request will update an Expense for a trip
+ */
+app.put("/api/expenses", async (req, res) => {
+  var { expenseID, name, amount, expectedDate, split } = req.body;
+
+  if (expectedDate == "") {
+    expectedDate = null;
+  }
+
+  if (name == "" || amount == 0 || expenseID == "" || split == "") {
+    return res
+      .status(400)
+      .send("Error: name, amount, and split cannot be empty");
+  }
+
+  if (split != "shared" && split != "own") {
+    return res.status(400).send("Split must be own or shared");
+  }
+
+  const expenseQuery = `
+      UPDATE expected_expenses
+      SET
+        name   = $1,
+        amount = $2,
+        expected_date = $3,
+        split = $4
+      WHERE expense_id = $5
+      RETURNING *`;
+
+  const expenseValues = [name, Number(amount), expectedDate, split, expenseID];
+
+  try {
+    const expenseResult = await pool.query(expenseQuery, expenseValues);
+
+    return res.status(200).json({ expense: expenseResult });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+
 app.put("/api/trip/savings", async (req, res) => {
   const { savingsFundID, amount, newAmount } = req.body;
 

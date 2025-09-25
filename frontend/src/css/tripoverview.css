@@ -26,6 +26,18 @@
   display: inline-block;
 }
 
+.expenseLabelConfirm {
+  background-color: #f1b98f;
+  border-radius: 9999px;
+  text-align: center;
+  color: white;
+  font-weight: 600;
+}
+
+.editPencil {
+  cursor: pointer;
+}
+
 #addExpenseButton {
   background-color: #8ebed8;
   color: white;
