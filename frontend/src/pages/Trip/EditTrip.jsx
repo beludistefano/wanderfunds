@@ -39,10 +39,10 @@ export default function EditTrip({ trip }) {
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
 
-    if (formatFromDate < today) {
-      console.log("Trip cannot start before today");
-      return;
-    }
+    // if (formatFromDate < today) {
+    //   console.log("Trip cannot start before today");
+    //   return;
+    // }
 
     if (formatToDate < formatFromDate) {
       console.log("End date cannot be before start date");
