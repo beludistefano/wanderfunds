@@ -8,6 +8,7 @@ export default function TripOverview({ trip }) {
   const [tripID, setTripID] = useState(trip.tripID);
   const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
   const [savingsFund, setSavingsFund] = useState();
+  const [savingsFundID, setSavingsFundID] = useState();
   const [expenses, setExpenses] = useState([]);
   const [totalTripCost, setTotalTripCost] = useState(0);
   const [pendingExpenses, setPendingExpenses] = useState(0);
@@ -29,8 +30,8 @@ export default function TripOverview({ trip }) {
   }
 
   async function refreshPage() {
-    getSavingsFund();
-    getExpenses();
+    await getSavingsFund();
+    await getExpenses();
   }
 
   async function getSavingsFund() {
@@ -38,9 +39,10 @@ export default function TripOverview({ trip }) {
       const savingsFundData = await fetch(
         `http://localhost:3000/api/trip/savings?tripId=${tripID}&userId=${userID}`
       );
-      const savingsFund = await savingsFundData.json();
+      const savingsFundJson = await savingsFundData.json();
 
-      setSavingsFund(savingsFund[0].amount);
+      setSavingsFund(savingsFundJson[0].amount);
+      setSavingsFundID(savingsFundJson[0].savings_funds_id);
     } catch (e) {
       console.log(e);
     }
@@ -53,8 +55,6 @@ export default function TripOverview({ trip }) {
       );
 
       const expenses = await expensesData.json();
-
-      console.log(expenses);
 
       setExpenses(expenses);
     } catch (e) {
@@ -244,16 +244,24 @@ export default function TripOverview({ trip }) {
         tripID={tripID}
         userID={userID}
       />
-      <AddFunds
-        isOpen={addFundsOpen}
-        onConfirm={null}
-        onCancel={() => setAddFundsOpen(false)}
-      />
-      <RemoveFunds
-        isOpen={removeFundsOpen}
-        onConfirm={null}
-        onCancel={() => setRemoveFundsOpen(false)}
-      />
+      {addFundsOpen && savingsFund != null && savingsFundID != null && (
+        <AddFunds
+          isOpen={addFundsOpen}
+          onConfirm={refreshPage}
+          onCancel={() => setAddFundsOpen(false)}
+          currentSavingsAmount={savingsFund}
+          savingsFundID={savingsFundID}
+        />
+      )}
+      {addFundsOpen && savingsFund != null && savingsFundID != null && (
+        <RemoveFunds
+          isOpen={removeFundsOpen}
+          onConfirm={refreshPage}
+          onCancel={() => setRemoveFundsOpen(false)}
+          currentSavingsAmount={savingsFund}
+          savingsFundID={savingsFundID}
+        />
+      )}
     </>
   );
 }
