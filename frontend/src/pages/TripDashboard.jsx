@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import Confirm from "../components/Confirmation";
 import Header from "../components/header";
 import MainSideBar from "../components/MainSideBar";
@@ -6,33 +7,61 @@ import TripMenu from "../components/TripMenu";
 import "../css/tripdash.css";
 import EditTrip from "./Trip/EditTrip";
 import TripOverview from "./Trip/TripOverview";
+import { useEffect, useState } from "react";
 
 export default function TripDashboard() {
-  var tripID = "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000";
+  // var tripID = "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000";
+  // const dummyTrip = {
+  //   destination: "Aruba",
+  //   description: "bla bla",
+  //   status: "Confirmed",
+  //   fromDate: "2025-09-25",
+  //   toDate: "2025-09-27",
+  //   default_split: "own",
+  //   auto_add: false,
+  //   members: 3,
+  //   tripID: "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000",
+  // };
 
-  const dummyTrip = {
-    destination: "Aruba",
-    description: "bla bla",
-    status: "Confirmed",
-    fromDate: "2025-09-25",
-    toDate: "2025-09-27",
-    default_split: "own",
-    auto_add: false,
-    members: 3,
-    tripID: "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000",
-  };
+  const { tripid } = useParams();
+  const [trip, setTrip] = useState();
+  const [loading, setLoading] = useState(true);
+
+  async function getTrip() {
+    try {
+      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid);
+      const tripJson = await tripData.json();
+
+      setTrip(tripJson[0]);
+      setLoading(false);
+
+      console.log(tripJson[0]);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    getTrip();
+  }, []);
 
   return (
     <div>
-      <Header></Header>
-      <div id="mainContent">
-        <MainSideBar id="mainSideBar" />
-        <div id="dashboardCenterSection">
-          <TripHeader destination={"Aruba"} status={"Confirmed"} />
-          <TripMenu tripID={tripID} />
-          <TripOverview trip={dummyTrip} userID={""} />
-        </div>
-      </div>
+      {!loading ? (
+        <>
+          <Header></Header>
+          <div id="mainContent">
+            <MainSideBar id="mainSideBar" />
+            <div id="dashboardCenterSection">
+              <TripHeader destination={trip.destination} status={trip.status} />
+              <TripMenu tripID={tripid} />
+              <TripOverview trip={trip} userID={""} />
+            </div>
+          </div>{" "}
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
     </div>
   );
 }

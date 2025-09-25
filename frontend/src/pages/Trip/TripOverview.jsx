@@ -5,7 +5,7 @@ import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
 
 export default function TripOverview({ trip }) {
-  const [tripID, setTripID] = useState(trip.tripID);
+  const [theTripID, setTheTripID] = useState(trip.tripid);
   const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
   const [savingsFund, setSavingsFund] = useState();
   const [savingsFundID, setSavingsFundID] = useState();
@@ -37,10 +37,11 @@ export default function TripOverview({ trip }) {
   async function getSavingsFund() {
     try {
       const savingsFundData = await fetch(
-        `http://localhost:3000/api/trip/savings?tripId=${tripID}&userId=${userID}`
+        `http://localhost:3000/api/trip/savings?tripId=${theTripID}&userId=${userID}`
       );
       const savingsFundJson = await savingsFundData.json();
 
+      console.log(savingsFundJson);
       setSavingsFund(savingsFundJson[0].amount);
       setSavingsFundID(savingsFundJson[0].savings_funds_id);
     } catch (e) {
@@ -51,7 +52,7 @@ export default function TripOverview({ trip }) {
   async function getExpenses() {
     try {
       const expensesData = await fetch(
-        `http://localhost:3000/api/trip/expenses?tripId=${tripID}&userId=${userID}`
+        `http://localhost:3000/api/trip/expenses?tripId=${theTripID}&userId=${userID}`
       );
 
       const expenses = await expensesData.json();
@@ -241,7 +242,7 @@ export default function TripOverview({ trip }) {
         onCancel={() => setIsExpenseOpen(false)}
         members={trip.members}
         tripSplit={trip.default_split}
-        tripID={tripID}
+        tripID={theTripID}
         userID={userID}
       />
       {addFundsOpen && savingsFund != null && savingsFundID != null && (

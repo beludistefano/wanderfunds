@@ -7,32 +7,50 @@ import "../css/tripdash.css";
 import EditTrip from "./Trip/EditTrip";
 import TripOverview from "./Trip/TripOverview";
 
-export default function TripEdit() {
-  var tripID = "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-  const dummyTrip = {
-    destination: "Aruba",
-    description: "bla bla",
-    status: "Confirmed",
-    fromDate: "2025-09-25",
-    toDate: "2025-09-27",
-    default_split: "own",
-    auto_add: false,
-    members: 3,
-    tripID: "6a5f7a6b-b7f6-4d29-ab5e-d2dade687000",
-  };
+export default function TripEdit() {
+  const { tripid } = useParams();
+  const [trip, setTrip] = useState();
+  const [loading, setLoading] = useState(true);
+
+  async function getTrip() {
+    try {
+      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid);
+      const trip = await tripData.json();
+
+      console.log(trip);
+      console.log(tripid);
+
+      setTrip(trip[0]);
+      setLoading(false);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    getTrip();
+  }, []);
 
   return (
     <div>
-      <Header></Header>
-      <div id="mainContent">
-        <MainSideBar id="mainSideBar" />
-        <div id="dashboardCenterSection">
-          <TripHeader destination={"Aruba"} status={"Confirmed"} />
-          <TripMenu tripID={tripID} />
-          <EditTrip trip={dummyTrip} />
-        </div>
-      </div>
+      {!loading ? (
+        <>
+          <Header></Header>
+          <div id="mainContent">
+            <MainSideBar id="mainSideBar" />
+            <div id="dashboardCenterSection">
+              <TripHeader destination={trip.destination} status={trip.status} />
+              <TripMenu tripID={tripid} />
+              <EditTrip trip={trip} />
+            </div>
+          </div>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
     </div>
   );
 }

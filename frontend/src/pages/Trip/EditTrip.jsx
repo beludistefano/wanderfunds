@@ -3,12 +3,20 @@ import "../../css/edittrip.css";
 import { useState } from "react";
 import Confirm from "../../components/Confirmation";
 
+const formatDate = (dateString) => {
+  return dateString ? dateString.split("T")[0] : "";
+};
+
 export default function EditTrip({ trip }) {
   const navigate = useNavigate();
 
+  const [tripID, setTripID] = useState(trip.tripid);
+
   const [updateDestination, setUpdateDestination] = useState(trip.destination);
-  const [updateFromDate, setUpdateFromDate] = useState(trip.fromDate);
-  const [updateToDate, setUpdatetoDate] = useState(trip.toDate);
+  const [updateFromDate, setUpdateFromDate] = useState(
+    formatDate(trip.from_date)
+  );
+  const [updateToDate, setUpdatetoDate] = useState(formatDate(trip.to_date));
   const [updateStatus, setUpdateStatus] = useState(trip.status);
   const [updateDescription, setUpdateDescription] = useState(trip.description);
   const [updateDefaultSplit, setUpdateDefaultSplit] = useState(
@@ -39,11 +47,6 @@ export default function EditTrip({ trip }) {
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
 
-    // if (formatFromDate < today) {
-    //   console.log("Trip cannot start before today");
-    //   return;
-    // }
-
     if (formatToDate < formatFromDate) {
       console.log("End date cannot be before start date");
       return;
@@ -62,7 +65,7 @@ export default function EditTrip({ trip }) {
     updateTrip["description"] = description;
     updateTrip["status"] = status;
     updateTrip["auto_add"] = autoAdd;
-    updateTrip["tripID"] = trip.tripid;
+    updateTrip["tripID"] = tripID;
 
     console.log(updateTrip);
 
@@ -74,6 +77,8 @@ export default function EditTrip({ trip }) {
         },
         body: JSON.stringify(updateTrip),
       });
+
+      console.log(await updateResp.json());
 
       if (updateResp.status == 200) {
         navigate(`/trip/${trip.tripid}`);

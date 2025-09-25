@@ -44,6 +44,38 @@ app.get("/api/trips", async (req, res) => {
 });
 
 /**
+ * This GET request returns the trip that matches the ID
+ */
+app.get("/api/trip/:tripID", async (req, res) => {
+  const { tripID } = req.params;
+
+  try {
+    const query = ` SELECT
+            t.tripid,
+            t.ownerid,
+            t.destination,
+            t.from_date,
+            t.to_date,
+            t.status,
+            t.description,
+            t.default_split,
+            t.auto_add,
+            t.members,
+            r.role
+        FROM trips AS t
+        JOIN user_role AS r
+        ON r.tripid = t.tripid
+        WHERE t.tripid = $1`;
+
+    const tripResult = await pool.query(query, [tripID]);
+
+    return res.status(200).json(tripResult.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
  * This POST request will create a Trip and a User Role as Owner
  */
 app.post("/api/trip", async (req, res) => {
@@ -207,10 +239,10 @@ app.put("/api/trip", async (req, res) => {
 /**
  * This GET request will fetch the savings fund for the logged in user for a given trip
  */
-app.get("/api/trip/savings", async (req, res) => {
-  const { tripId, userId } = req.query;
+app.get("/api/savings", async (req, res) => {
+  const { tripid, userid } = req.query;
 
-  if (tripId == "" || userId == "") {
+  if (tripid === "" || userid === "") {
     return res.status(400).json("Error: Trip and User IDs cannot be empty");
   }
 
@@ -222,18 +254,18 @@ app.get("/api/trip/savings", async (req, res) => {
   `;
 
   try {
-    const savingsResult = await pool.query(savingsQuery, [tripId, userId]);
+    const savingsResult = await pool.query(savingsQuery, [tripid, userid]);
 
     return res.status(200).json(savingsResult.rows);
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ error: e.message });
   }
 });
 
 /**
  * This GET request will fetch all expenses for a given trip
  */
-app.get("/api/trip/expenses", async (req, res) => {
+app.get("/api/expenses", async (req, res) => {
   const { tripId, userId } = req.query;
 
   if (tripId == "" || userId == "") {
@@ -254,7 +286,8 @@ app.get("/api/trip/expenses", async (req, res) => {
 
     return res.status(200).json(expensesResult.rows);
   } catch (err) {
-    return res.status(500).json("Server error");
+    console.error("GET /api/trip/savings failed", err);
+    return res.status(500).json({ error: err.message });
   }
 });
 
