@@ -253,7 +253,7 @@ export default function TripOverview({ trip }) {
           savingsFundID={savingsFundID}
         />
       )}
-      {addFundsOpen && savingsFund != null && savingsFundID != null && (
+      {removeFundsOpen && savingsFund != null && savingsFundID != null && (
         <RemoveFunds
           isOpen={removeFundsOpen}
           onConfirm={refreshPage}
