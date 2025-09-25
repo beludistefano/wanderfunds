@@ -31,7 +31,6 @@ export default function TripDashboard() {
           <TripHeader destination={"Aruba"} status={"Confirmed"} />
           <TripMenu tripID={tripID} />
           <TripOverview trip={dummyTrip} userID={""} />
-          {/* <EditTrip trip={dummyTrip} /> */}
         </div>
       </div>
     </div>

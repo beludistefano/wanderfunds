@@ -76,7 +76,7 @@ export default function EditTrip({ trip }) {
       });
 
       if (updateResp.status == 200) {
-        navigate("/");
+        navigate(`/trip/${trip.tripid}`);
       } else {
         // HANDLE ERROR VISUALLY
         console.log("Error");
@@ -264,7 +264,7 @@ export default function EditTrip({ trip }) {
       >
         <button
           onClick={() => {
-            navigate("/");
+            navigate(`/trip/${trip.tripid}`);
           }}
           id="buttonCancel"
           className="button"

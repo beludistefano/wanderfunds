@@ -236,6 +236,8 @@ export default function TripOverview({ trip }) {
         onCancel={() => setIsExpenseOpen(false)}
         members={trip.members}
         tripSplit={trip.default_split}
+        tripID={tripID}
+        userID={userID}
       />
       <AddFunds
         isOpen={addFundsOpen}
