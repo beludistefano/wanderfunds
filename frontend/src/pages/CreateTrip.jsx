@@ -73,13 +73,16 @@ export default function CreateTrip() {
     console.log(newTrip);
 
     try {
-      const creationResponse = await fetch("http://localhost:3000/api/trip", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newTrip),
-      });
+      const creationResponse = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newTrip),
+        }
+      );
 
       console.log(creationResponse);
 

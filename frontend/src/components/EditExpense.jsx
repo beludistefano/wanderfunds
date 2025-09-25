@@ -81,13 +81,16 @@ export default function EditExpense({
     console.log(updateExpense);
 
     try {
-      const expenseUpdate = await fetch("http://localhost:3000/api/expenses", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateExpense),
-      });
+      const expenseUpdate = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/expenses",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateExpense),
+        }
+      );
 
       console.log(await expenseUpdate.json());
 

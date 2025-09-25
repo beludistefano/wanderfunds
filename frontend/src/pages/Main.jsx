@@ -14,7 +14,9 @@ export default function Main() {
   useEffect(() => {
     async function getTrips() {
       try {
-        const tripData = await fetch("http://localhost:3000/api/trips");
+        const tripData = await fetch(
+          "https://wanderfunds-backend.onrender.com/api/trips"
+        );
         const trips = await tripData.json();
 
         console.log(trips);

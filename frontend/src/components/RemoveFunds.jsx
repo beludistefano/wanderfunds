@@ -41,7 +41,7 @@ export default function RemoveFunds({
 
     try {
       const savingsFundUpdate = await fetch(
-        "http://localhost:3000/api/trip/savings",
+        "https://wanderfunds-backend.onrender.com/api/trip/savings",
         {
           method: "PUT",
           headers: {

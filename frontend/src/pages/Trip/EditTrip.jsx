@@ -70,13 +70,16 @@ export default function EditTrip({ trip }) {
     console.log(updateTrip);
 
     try {
-      const updateResp = await fetch("http://localhost:3000/api/trip", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updateTrip),
-      });
+      const updateResp = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateTrip),
+        }
+      );
 
       console.log(await updateResp.json());
 
@@ -99,7 +102,7 @@ export default function EditTrip({ trip }) {
 
     try {
       const deleteResp = await fetch(
-        "http://localhost:3000/api/trip/" + trip.tripid,
+        "https://wanderfunds-backend.onrender.com/api/trip/" + trip.tripid,
         {
           method: "DELETE",
         }

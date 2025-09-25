@@ -29,7 +29,9 @@ export default function TripDashboard() {
 
   async function getTrip() {
     try {
-      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid);
+      const tripData = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid
+      );
       const tripJson = await tripData.json();
 
       setTrip(tripJson[0]);
