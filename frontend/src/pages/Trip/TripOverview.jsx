@@ -28,6 +28,11 @@ export default function TripOverview({ trip }) {
     return phrases[randomIndex];
   }
 
+  async function refreshPage() {
+    getSavingsFund();
+    getExpenses();
+  }
+
   async function getSavingsFund() {
     try {
       const savingsFundData = await fetch(
@@ -232,7 +237,7 @@ export default function TripOverview({ trip }) {
       </div>
       <AddExpense
         isOpen={isExpenseOpen}
-        onAdd={null}
+        onAdd={refreshPage}
         onCancel={() => setIsExpenseOpen(false)}
         members={trip.members}
         tripSplit={trip.default_split}

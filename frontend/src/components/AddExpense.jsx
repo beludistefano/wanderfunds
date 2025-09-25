@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/components/expensemodal.css";
 
 export default function AddExpense({
@@ -16,6 +16,16 @@ export default function AddExpense({
   const [expenseDate, setExpenseDate] = useState();
   const [expenseAddStatus, setExpenseAddStatus] = useState(null);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setExpenseAddStatus(null);
+      setExpenseName("");
+      setExpenseAmount(0);
+      setExpenseDate();
+      setExpenseSplit(tripSplit);
+    }
+  }, [isOpen]);
+
   if (isOpen == false) {
     return null;
   }
@@ -28,6 +38,9 @@ export default function AddExpense({
     if (expenseAmount == 0) {
       console.log("Expense amount must be included");
       return;
+    } else if (expenseAmount < 0) {
+      console.log("Expense amount must be over 0");
+      return;
     }
 
     const newExpense = {};
@@ -37,8 +50,6 @@ export default function AddExpense({
     newExpense["amount"] = Number(expenseAmount);
     newExpense["expectedDate"] = expenseDate ? expenseDate : null;
     newExpense["expenseStatus"] = "pending";
-
-    console.log(expenseSplit);
 
     if (
       expenseSplit == "Shared Expense" ||
@@ -54,6 +65,8 @@ export default function AddExpense({
       newExpense["split"] = "own";
     }
 
+    console.log(newExpense);
+
     try {
       const expenseCreation = await fetch(
         "http://localhost:3000/api/expenses",
@@ -68,11 +81,16 @@ export default function AddExpense({
 
       if (expenseCreation.ok) {
         setExpenseAddStatus("success");
+        onAdd();
       } else {
         setExpenseAddStatus("fail");
       }
+
+      setTimeout(() => onCancel(), 800);
     } catch (e) {
       console.log("There was an error" + e);
+      setExpenseAddStatus("fail");
+      setTimeout(() => onCancel(), 800);
     }
   }
 
@@ -164,9 +182,13 @@ export default function AddExpense({
             </div>
           </>
         ) : expenseAddStatus === "success" ? (
-          <p>Yay!</p>
+          <>
+            <p className="greenText">Expense added succesfully!</p>
+          </>
         ) : (
-          <p>Oups!!</p>
+          <>
+            <p className="redText">There was an error adding your expense</p>
+          </>
         )}
       </div>
     </div>
