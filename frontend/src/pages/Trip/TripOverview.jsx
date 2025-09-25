@@ -37,7 +37,7 @@ export default function TripOverview({ trip }) {
   async function getSavingsFund() {
     try {
       const savingsFundData = await fetch(
-        `http://localhost:3000/api/trip/savings?tripId=${theTripID}&userId=${userID}`
+        `http://localhost:3000/api/savings?tripId=${theTripID}&userId=${userID}`
       );
       const savingsFundJson = await savingsFundData.json();
 
@@ -52,7 +52,7 @@ export default function TripOverview({ trip }) {
   async function getExpenses() {
     try {
       const expensesData = await fetch(
-        `http://localhost:3000/api/trip/expenses?tripId=${theTripID}&userId=${userID}`
+        `http://localhost:3000/api/expenses?tripId=${theTripID}&userId=${userID}`
       );
 
       const expenses = await expensesData.json();

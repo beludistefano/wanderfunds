@@ -240,9 +240,9 @@ app.put("/api/trip", async (req, res) => {
  * This GET request will fetch the savings fund for the logged in user for a given trip
  */
 app.get("/api/savings", async (req, res) => {
-  const { tripid, userid } = req.query;
+  const { tripId, userId } = req.query;
 
-  if (tripid === "" || userid === "") {
+  if (tripId === "" || userId === "") {
     return res.status(400).json("Error: Trip and User IDs cannot be empty");
   }
 
@@ -254,7 +254,7 @@ app.get("/api/savings", async (req, res) => {
   `;
 
   try {
-    const savingsResult = await pool.query(savingsQuery, [tripid, userid]);
+    const savingsResult = await pool.query(savingsQuery, [tripId, userId]);
 
     return res.status(200).json(savingsResult.rows);
   } catch (e) {
@@ -281,7 +281,7 @@ app.get("/api/expenses", async (req, res) => {
     const expensesResult = await pool.query(query, [tripId, userId]);
 
     if (expensesResult.rows.length === 0) {
-      return res.status(404).json("No expenses found for this trip.");
+      return res.status(200).json([]);
     }
 
     return res.status(200).json(expensesResult.rows);
