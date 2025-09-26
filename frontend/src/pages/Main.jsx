@@ -5,7 +5,7 @@ import "../css/main.css";
 
 import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
-import TripCard from "../components/tripCard";
+import TripCard from "../components/TripCard";
 
 export default function Main() {
   const [trips, setTrips] = useState([]);
