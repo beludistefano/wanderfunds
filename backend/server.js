@@ -387,6 +387,14 @@ app.put("/api/expenses", async (req, res) => {
 app.put("/api/trip/savings", async (req, res) => {
   const { savingsFundID, amount, newAmount } = req.body;
 
+  if (!savingsFundID || savingsFundID == "") {
+    return res.status(400).send("Error: Savings fund ID is required");
+  }
+
+  if (newAmount == 0) {
+    return res.status(400).send("Error: New amount cannot be 0");
+  }
+
   const updatedAmount = Number(amount) + Number(newAmount);
 
   const updateQuery = `UPDATE savings_funds
