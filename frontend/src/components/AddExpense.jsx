@@ -1,6 +1,19 @@
 import { useState, useEffect } from "react";
 import "../css/components/expensemodal.css";
 
+function validateExpense(name, amount) {
+  const expenseErrors = {};
+
+  if (name == "") {
+    expenseErrors.name = "Expense name must be included";
+  }
+  if (amount <= 0) {
+    expenseErrors.amount = "Expense amount must be included and over 0";
+  }
+
+  return expenseErrors;
+}
+
 export default function AddExpense({
   isOpen,
   onAdd,
@@ -15,6 +28,7 @@ export default function AddExpense({
   const [expenseSplit, setExpenseSplit] = useState(tripSplit);
   const [expenseDate, setExpenseDate] = useState();
   const [expenseAddStatus, setExpenseAddStatus] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     if (!isOpen) {
@@ -23,6 +37,7 @@ export default function AddExpense({
       setExpenseAmount(0);
       setExpenseDate();
       setExpenseSplit(tripSplit);
+      setValidationErrors({});
     }
   }, [isOpen]);
 
@@ -31,15 +46,12 @@ export default function AddExpense({
   }
 
   async function addExpense() {
-    if (expenseName == "") {
-      console.log("Expense name must be included");
-      return;
-    }
-    if (expenseAmount == 0) {
-      console.log("Expense amount must be included");
-      return;
-    } else if (expenseAmount < 0) {
-      console.log("Expense amount must be over 0");
+    setValidationErrors({});
+
+    const expenseValidation = validateExpense(expenseName, expenseAmount);
+    setValidationErrors(expenseValidation);
+
+    if (Object.keys(expenseValidation).length != 0) {
       return;
     }
 
@@ -108,11 +120,21 @@ export default function AddExpense({
                 <input
                   id="expenseName"
                   type="text"
-                  className="expenseInput"
+                  className={`expenseInput ${
+                    validationErrors.name ? "borderRed" : ""
+                  }`}
                   placeholder="Expense name"
                   value={expenseName}
                   onChange={(e) => setExpenseName(e.target.value)}
                 />
+                {validationErrors.name && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.name}
+                  </p>
+                )}
               </div>
               <div className="expenseRow">
                 <label for="expenseAmount" className="expenseLabel">
@@ -123,10 +145,20 @@ export default function AddExpense({
                   type="number"
                   step="0.01"
                   min="0.01"
-                  className="expenseInput"
+                  className={`expenseInput ${
+                    validationErrors.amount ? "borderRed" : ""
+                  }`}
                   value={expenseAmount}
                   onChange={(e) => setExpenseAmount(e.target.value)}
                 />
+                {validationErrors.amount && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.amount}
+                  </p>
+                )}
               </div>
               {members > 1 ? (
                 <div className="expenseRow">

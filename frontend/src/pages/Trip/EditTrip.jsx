@@ -7,6 +7,35 @@ const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
 };
 
+function validateEdit(destination, fromDate, toDate) {
+  const tripErrors = {};
+
+  if (destination == "") {
+    tripErrors.destination = "Destination cannot be empty";
+  }
+
+  if (fromDate == "") {
+    tripErrors.fromDate = "Start date is required";
+  }
+
+  if (toDate == "") {
+    tripErrors.toDate = "End date is required";
+  }
+
+  const formatFromDate = new Date(fromDate);
+  const formatToDate = new Date(toDate);
+
+  if (formatToDate < formatFromDate) {
+    tripErrors.startEndDates = "End date cannot be before start date";
+  }
+
+  if (formatToDate.getDate() == formatFromDate.getDate()) {
+    tripErrors.tripLength = "Trip must last at least one day";
+  }
+
+  return tripErrors;
+}
+
 export default function EditTrip({ trip }) {
   const navigate = useNavigate();
 
@@ -27,8 +56,12 @@ export default function EditTrip({ trip }) {
 
   const [displayConfirm, setDisplayConfirm] = useState(false);
 
+  const [validationErrors, setValidationErrors] = useState({});
+
   async function updateTrip(e) {
     e.preventDefault();
+
+    setValidationErrors({});
 
     const destination = updateDestination;
     const fromDate = updateFromDate;
@@ -38,22 +71,14 @@ export default function EditTrip({ trip }) {
     const defaultSplit = updateDefaultSplit;
     const description = updateDescription;
 
-    if (destination == "" || fromDate == "" || toDate == "") {
-      console.log("Destination cannot be empty");
-      return;
-    }
-
     const today = new Date();
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
 
-    if (formatToDate < formatFromDate) {
-      console.log("End date cannot be before start date");
-      return;
-    }
+    const formValidation = validateEdit(destination, fromDate, toDate);
+    setValidationErrors(formValidation);
 
-    if (formatToDate.getDate() == formatFromDate.getDate()) {
-      console.log("Trip must last at least one day");
+    if (Object.keys(formValidation).length != 0) {
       return;
     }
 
@@ -141,12 +166,17 @@ export default function EditTrip({ trip }) {
           </label>
           <input
             id="destination"
-            className="formInput"
+            className={`formInput ${
+              validationErrors.destination ? "borderRed" : ""
+            }`}
             name="destination"
             type="text"
             value={updateDestination}
             onChange={(e) => setUpdateDestination(e.target.value)}
           />
+          {validationErrors.destination && (
+            <p className="errorDisplayText">{validationErrors.destination}</p>
+          )}
         </div>
         <div className="formRow">
           <label className="formLabel">Dates</label>
@@ -154,7 +184,9 @@ export default function EditTrip({ trip }) {
             <input
               id="fromDate"
               name="fromDate"
-              className="formInputDate"
+              className={`formInputDate ${
+                validationErrors.fromDate ? "borderRed" : ""
+              }`}
               type="date"
               value={updateFromDate}
               onChange={(e) => setUpdateFromDate(e.target.value)}
@@ -162,12 +194,26 @@ export default function EditTrip({ trip }) {
             <input
               id="toDate"
               name="toDate"
-              className="formInputDate"
+              className={`formInputDate ${
+                validationErrors.toDate ? "borderRed" : ""
+              }`}
               type="date"
               value={updateToDate}
               onChange={(e) => setUpdatetoDate(e.target.value)}
             />
           </div>
+          {validationErrors.fromDate && (
+            <p className="errorDisplayText">{validationErrors.fromDate}</p>
+          )}
+          {validationErrors.toDate && (
+            <p className="errorDisplayText">{validationErrors.toDate}</p>
+          )}
+          {validationErrors.startEndDates && (
+            <p className="errorDisplayText">{validationErrors.startEndDates}</p>
+          )}
+          {validationErrors.tripLength && (
+            <p className="errorDisplayText">{validationErrors.tripLength}</p>
+          )}
         </div>
         <div className="formRow">
           <label className="formLabel" for="description">
@@ -208,6 +254,7 @@ export default function EditTrip({ trip }) {
             min="0"
             value={updateMembers}
             onChange={(e) => setUpdateMembers(e.target.value)}
+            disabled
           />
         </div>
         {updateMembers > 1 ? (

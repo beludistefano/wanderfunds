@@ -1,6 +1,16 @@
 import "../css/components/fundsmodal.css";
 import { useState, useEffect } from "react";
 
+function validateFunds(amount) {
+  const fundsErrors = {};
+
+  if (amount <= 0) {
+    fundsErrors.amount = "Amount must be over 0";
+  }
+
+  return fundsErrors;
+}
+
 export default function RemoveFunds({
   isOpen,
   onConfirm,
@@ -11,11 +21,13 @@ export default function RemoveFunds({
   const [currentAmount, setCurrentAmount] = useState(currentSavingsAmount);
   const [removedAmount, setRemovedAmount] = useState(0);
   const [updateFundsStatus, setUpdateFundsStatus] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     if (!isOpen) {
       setRemovedAmount(0);
       setCurrentAmount(currentAmount);
+      setValidationErrors({});
     }
   }, [isOpen]);
 
@@ -24,12 +36,13 @@ export default function RemoveFunds({
   }
 
   async function removeFunds() {
-    if (removedAmount == 0) {
-      console.log("Withdrawal funds must be over 0");
-    }
+    setValidationErrors({});
 
-    if (removedAmount < 0) {
-      console.log("To withdraw funds use the withdraw funds function");
+    const fundsValidation = validateFunds(removedAmount);
+    setValidationErrors(fundsValidation);
+
+    if (Object.keys(fundsValidation).length != 0) {
+      return;
     }
 
     const newSavingsFund = {};
@@ -82,10 +95,20 @@ export default function RemoveFunds({
                   type="number"
                   step="0.01"
                   min="0.01"
-                  className="fundsInput"
+                  className={`fundsInput ${
+                    validationErrors.amount ? "borderRed" : ""
+                  }`}
                   value={removedAmount}
                   onChange={(e) => setRemovedAmount(e.target.value)}
                 />
+                {validationErrors.amount && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.amount}
+                  </p>
+                )}
               </div>
             </div>
             <div id="modalConfirmOptions">

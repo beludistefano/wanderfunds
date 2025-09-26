@@ -22,6 +22,8 @@ export default function EditExpense({
   );
   const [expenseUpdateStatus, setExpenseUpdateStatus] = useState(null);
 
+  const [validationErrors, setValidationErrors] = useState({});
+
   useEffect(() => {
     if (expense.split == "own") {
       if (tripSplit == "equal") {

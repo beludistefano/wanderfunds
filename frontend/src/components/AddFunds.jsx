@@ -1,6 +1,16 @@
 import { useState, useEffect } from "react";
 import "../css/components/fundsmodal.css";
 
+function validateFunds(amount) {
+  const fundsErrors = {};
+
+  if (amount <= 0) {
+    fundsErrors.amount = "Added funds must be over 0";
+  }
+
+  return fundsErrors;
+}
+
 export default function AddFunds({
   isOpen,
   onConfirm,
@@ -11,11 +21,13 @@ export default function AddFunds({
   const [currentAmount, setCurrentAmount] = useState(currentSavingsAmount);
   const [addedAmount, setAddedAmount] = useState(0);
   const [updateFundsStatus, setUpdateFundsStatus] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   useEffect(() => {
     if (!isOpen) {
       setAddedAmount(0);
       setCurrentAmount(currentAmount);
+      setValidationErrors({});
     }
   }, [isOpen]);
 
@@ -24,15 +36,14 @@ export default function AddFunds({
   }
 
   async function addFunds() {
-    if (addedAmount == 0) {
-      console.log("Added funds must be over 0");
-    }
+    setValidationErrors({});
 
-    if (addedAmount < 0) {
-      console.log("To withdraw funds use the withdraw funds function");
-    }
+    const fundsValidation = validateFunds(addedAmount);
+    setValidationErrors(fundsValidation);
 
-    console.log(currentAmount);
+    if (Object.keys(fundsValidation).length != 0) {
+      return;
+    }
 
     const newSavingsFund = {};
     newSavingsFund["savingsFundID"] = savingsFundID;
@@ -84,10 +95,20 @@ export default function AddFunds({
                   type="number"
                   step="0.01"
                   min="0.01"
-                  className="fundsInput"
+                  className={`fundsInput ${
+                    validationErrors.amount ? "borderRed" : ""
+                  }`}
                   value={addedAmount}
                   onChange={(e) => setAddedAmount(e.target.value)}
                 />
+                {validationErrors.amount && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.amount}
+                  </p>
+                )}
               </div>
             </div>
             <div id="modalConfirmOptions">
