@@ -3,7 +3,7 @@
 
 ###Video URLs:
 
-Milestone 1: https://youtu.be/SOWFOrKAmXk  
+Milestone 1: https://youtu.be/dPvr6FD5h_A?si=Zded0MNPexLMZwNp  
 Milestone 2:  
 Milestone 3:  
 Milestone 4:
