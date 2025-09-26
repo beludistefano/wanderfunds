@@ -131,7 +131,7 @@ export default function CreateTrip() {
           <div className="ownerContainer">
             <p>OWNER</p>
           </div>
-          <form>
+          <form id="createTripForm">
             <div className="formRow">
               <label className="formLabel" for="destination">
                 Destination

@@ -4,6 +4,8 @@ import AddExpense from "../../components/AddExpense";
 import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
 import EditExpense from "../../components/EditExpense";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 export default function TripOverview({ trip }) {
   const [theTripID, setTheTripID] = useState(trip.tripid);
@@ -121,8 +123,9 @@ export default function TripOverview({ trip }) {
 
   return (
     <>
-      <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
+      <div id="containerTop" style={{ paddingRight: "2%", paddingLeft: "2%" }}>
         <div
+          id="ownerContainerContainer"
           style={{
             display: "flex",
             justifyContent: "flex-end",
@@ -133,7 +136,9 @@ export default function TripOverview({ trip }) {
             <p>OWNER</p>
           </div>
         </div>
-        <h2 style={{ textAlign: "left" }}>Overview</h2>
+        <h2 id="overviewTitle" style={{ textAlign: "left" }}>
+          Overview
+        </h2>
       </div>
       <div id="expensesSavingsCont">
         <div id="expensesContainer">
@@ -145,7 +150,7 @@ export default function TripOverview({ trip }) {
                 setIsExpenseOpen(true);
               }}
             >
-              +
+              <FontAwesomeIcon icon={faPlus} />
             </div>
           </div>
           <div id="expensesTableContainer">
@@ -188,7 +193,7 @@ export default function TripOverview({ trip }) {
                         </td>
                         <td>
                           {e.expense_status == "confirmed" ? (
-                            <span>✔</span>
+                            <div style={{ textAlign: "center" }}>✔</div>
                           ) : (
                             <div className="expenseLabelConfirm">Confirm</div>
                           )}

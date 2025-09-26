@@ -1,24 +1,29 @@
-#mainSideBar{
-    background-color: #8ebed8;
+#mainSideBar {
+  background-color: #8ebed8;
 }
 
-#mainSideBar ul{
-    list-style: none;
-    text-align: left;
-    color: white;
+#mainSideBar ul {
+  list-style: none;
+  text-align: left;
+  color: white;
 }
 
-.listLinks{
+.listLinks {
   text-transform: uppercase;
   margin-bottom: 10px;
 }
 
 .listLinks .links {
-    color: white;
-    transition: all 0.2s ease;
+  color: white;
+  transition: all 0.2s ease;
 }
 
+.listLinks .links:hover {
+  color: #8ba5ba;
+}
 
-.listLinks .links:hover{
-    color: #8BA5BA;
+@media (max-width: 768px) {
+  #mainSideBar {
+    display: none;
+  }
 }

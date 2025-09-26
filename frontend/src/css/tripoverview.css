@@ -135,3 +135,56 @@
 #removeFunds:hover {
   border: none;
 }
+
+#addExpenseButton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@media (max-width: 768px) {
+  #expensesSavingsCont {
+    flex-direction: column;
+  }
+
+  #expensesContainer,
+  #savingsContainer {
+    width: 95%;
+    margin: auto;
+  }
+
+  #savingsContainer {
+    margin-top: 10%;
+  }
+
+  .expenseLabelConfirm {
+    font-size: 0.8em;
+    padding: 3px;
+  }
+
+  #containerTop,
+  #containerEditTop {
+    position: relative;
+  }
+
+  #ownerContainerContainer {
+    position: absolute;
+    right: 3%;
+    top: 3%;
+  }
+
+  #overviewTitle,
+  #editTitle {
+    display: block;
+    text-align: left;
+    margin-left: 3%;
+  }
+
+  #editTitle {
+    margin: 0;
+  }
+
+  #containerEditTop {
+    padding-top: 3%;
+  }
+}

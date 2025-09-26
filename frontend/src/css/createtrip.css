@@ -91,3 +91,27 @@ textarea {
 .borderRed {
   border: 2px solid #ff7373 !important;
 }
+
+@media (max-width: 768px) {
+  #centerSection {
+    width: 100%;
+    position: relative;
+  }
+
+  #createTripForm,
+  #editForm {
+    width: 100% !important;
+    max-width: none !important;
+    flex: 1 1 auto;
+  }
+
+  h2 {
+    display: inline;
+  }
+
+  .ownerContainer {
+    position: absolute;
+    right: 3%;
+    top: 0;
+  }
+}

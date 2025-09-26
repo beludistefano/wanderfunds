@@ -146,8 +146,12 @@ export default function EditTrip({ trip }) {
   };
 
   return (
-    <div style={{ paddingRight: "2%", paddingLeft: "2%" }}>
+    <div
+      id="containerEditTop"
+      style={{ paddingRight: "2%", paddingLeft: "2%" }}
+    >
       <div
+        id="ownerContainerContainer"
         style={{
           display: "flex",
           justifyContent: "flex-end",
@@ -158,7 +162,9 @@ export default function EditTrip({ trip }) {
           <p>OWNER</p>
         </div>
       </div>
-      <h2 style={{ textAlign: "left" }}>EDIT TRIP</h2>
+      <h2 id="editTitle" style={{ textAlign: "left" }}>
+        EDIT TRIP
+      </h2>
       <form id="editForm">
         <div className="formRow">
           <label className="formLabel" for="destination">

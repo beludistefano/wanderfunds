@@ -73,3 +73,22 @@
 .statusPast {
   background-color: #9f004a;
 }
+
+@media (max-width: 768px) {
+  .mainCardContainer {
+    width: 90%;
+  }
+
+  .textMain {
+    font-size: 1.5em;
+  }
+
+  .textSecondary {
+    font-size: 0.9em;
+  }
+
+  .statusContainer {
+    font-size: 0.9em;
+    text-align: center;
+  }
+}

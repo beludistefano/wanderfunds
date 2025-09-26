@@ -19,3 +19,11 @@
 .tripMenuLinks:hover {
   color: #8ebed8;
 }
+
+@media (max-width: 768px) {
+  #tripMenuList {
+    padding: 0;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
