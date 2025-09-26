@@ -5,7 +5,6 @@ import "../css/createtrip.css";
 
 import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
-import TripCard from "../components/tripCard";
 
 // OWNER ID FOR NOW
 
