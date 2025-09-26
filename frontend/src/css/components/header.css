@@ -46,4 +46,17 @@
     font-size: 2em;
     color: #8ebed8;
   }
+
+  .dropdownMenu {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .dropdownMenu .links {
+    color: #8ebed8;
+    border-top: 1px solid #dedede;
+    border-bottom: 1px solid #dedede;
+    padding-top: 2%;
+    padding-bottom: 2%;
+  }
 }
