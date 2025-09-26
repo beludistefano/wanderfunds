@@ -82,3 +82,12 @@ textarea {
   display: flex;
   justify-content: space-between;
 }
+
+.errorDisplayText {
+  color: #ff7373;
+  font-weight: 500;
+}
+
+.borderRed {
+  border: 2px solid #ff7373 !important;
+}

@@ -8,13 +8,54 @@ import Header from "../components/header";
 
 // OWNER ID FOR NOW
 
+function validateTrip(destination, fromDate, toDate, members) {
+  const tripErrors = {};
+
+  if (destination == "") {
+    tripErrors.destination = "Destination cannot be empty";
+  }
+
+  if (fromDate == "") {
+    tripErrors.fromDate = "Start date is required";
+  }
+
+  if (toDate == "") {
+    tripErrors.toDate = "End date is required";
+  }
+
+  const today = new Date();
+  const formatFromDate = new Date(fromDate);
+  const formatToDate = new Date(toDate);
+
+  if (formatFromDate < today) {
+    tripErrors.generalDate = "Start date must be in the future";
+  }
+
+  if (formatToDate < formatFromDate) {
+    tripErrors.startEndDates = "End date cannot be before start date";
+  }
+
+  if (formatToDate.getDate() == formatFromDate.getDate()) {
+    tripErrors.tripLength = "Trip must last at least one day";
+  }
+
+  if (members <= 0) {
+    tripErrors.members = "Trip must have at least one member";
+  }
+
+  return tripErrors;
+}
+
 export default function CreateTrip() {
   const navigate = useNavigate();
 
   const [defaultMember, setDefaultMember] = useState(1);
+  const [validationErrors, setValidationErrors] = useState({});
 
   async function createTrip(e) {
     e.preventDefault();
+
+    setValidationErrors({});
 
     const destination = document.getElementById("destination").value.trim();
     const fromDate = document.getElementById("fromDate").value;
@@ -35,27 +76,10 @@ export default function CreateTrip() {
       defaultSplit = "own";
     }
 
-    if (destination == "" || fromDate == "" || toDate == "") {
-      console.log("Destination cannot be empty");
-      return;
-    }
+    const formValidation = validateTrip(destination, fromDate, toDate, members);
+    setValidationErrors(formValidation);
 
-    const today = new Date();
-    const formatFromDate = new Date(fromDate);
-    const formatToDate = new Date(toDate);
-
-    if (formatFromDate < today) {
-      console.log("Trip cannot start before today");
-      return;
-    }
-
-    if (formatToDate < formatFromDate) {
-      console.log("End date cannot be before start date");
-      return;
-    }
-
-    if (formatToDate.getDate() == formatFromDate.getDate()) {
-      console.log("Trip must last at least one day");
+    if (Object.keys(formValidation).length != 0) {
       return;
     }
 
@@ -114,11 +138,18 @@ export default function CreateTrip() {
               </label>
               <input
                 id="destination"
-                className="formInput"
+                className={`formInput ${
+                  validationErrors.destination ? "borderRed" : ""
+                }`}
                 name="destination"
                 type="text"
                 placeholder="Enter your destination..."
               />
+              {validationErrors.destination && (
+                <p className="errorDisplayText">
+                  {validationErrors.destination}
+                </p>
+              )}
             </div>
             <div className="formRow">
               <label className="formLabel">Dates</label>
@@ -126,16 +157,41 @@ export default function CreateTrip() {
                 <input
                   id="fromDate"
                   name="fromDate"
-                  className="formInputDate"
+                  className={`formInputDate ${
+                    validationErrors.fromDate ? "borderRed" : ""
+                  }`}
                   type="date"
                 />
                 <input
                   id="toDate"
                   name="toDate"
-                  className="formInputDate"
+                  className={`formInputDate ${
+                    validationErrors.toDate ? "borderRed" : ""
+                  }`}
                   type="date"
                 />
               </div>
+              {validationErrors.fromDate && (
+                <p className="errorDisplayText">{validationErrors.fromDate}</p>
+              )}
+              {validationErrors.toDate && (
+                <p className="errorDisplayText">{validationErrors.toDate}</p>
+              )}
+              {validationErrors.generalDate && (
+                <p className="errorDisplayText">
+                  {validationErrors.generalDate}
+                </p>
+              )}
+              {validationErrors.startEndDates && (
+                <p className="errorDisplayText">
+                  {validationErrors.startEndDates}
+                </p>
+              )}
+              {validationErrors.tripLength && (
+                <p className="errorDisplayText">
+                  {validationErrors.tripLength}
+                </p>
+              )}
             </div>
             <div className="formRow">
               <label className="formLabel" for="description">
@@ -163,12 +219,17 @@ export default function CreateTrip() {
               <input
                 id="members"
                 name="members"
-                className="formInput"
+                className={`formInput ${
+                  validationErrors.members ? "borderRed" : ""
+                }`}
                 type="number"
                 min="0"
                 value={defaultMember}
                 onChange={(e) => setDefaultMember(e.target.value)}
               />
+              {validationErrors.members && (
+                <p className="errorDisplayText">{validationErrors.members}</p>
+              )}
             </div>
             {defaultMember > 1 ? (
               <>
