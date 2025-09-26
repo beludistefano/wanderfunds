@@ -29,7 +29,7 @@ export default function EditExpense({
   const [expenseID, setExpenseID] = useState(expense.expense_id);
   const [expenseName, setExpenseName] = useState(expense.name);
   const [expenseAmount, setExpenseAmount] = useState(expense.amount);
-  const [expenseSplit, setExpenseSplit] = useState(null);
+  const [expenseSplit, setExpenseSplit] = useState(expense.split);
   const [expenseDate, setExpenseDate] = useState(
     formatDate(expense.expected_date)
   );
@@ -80,7 +80,8 @@ export default function EditExpense({
     if (
       expenseSplit == "Shared Expense" ||
       expenseSplit == "Trip Default - Shared" ||
-      expenseSplit == "shared"
+      expenseSplit == "shared" ||
+      expenseSplit == "equal"
     ) {
       updateExpense["split"] = "shared";
     } else if (
