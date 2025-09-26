@@ -192,7 +192,7 @@ app.put("/api/trip", async (req, res) => {
     auto_add,
   } = req.body;
 
-  if (destination == "" || tripID == "") {
+  if (!tripID || !destination || destination == "" || tripID == "") {
     return res
       .status(400)
       .send("Error: destination and trip ID cannot be empty");

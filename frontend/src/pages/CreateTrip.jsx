@@ -83,6 +83,9 @@ export default function CreateTrip() {
       return;
     }
 
+    const formatFromDate = new Date(fromDate);
+    const formatToDate = new Date(toDate);
+
     const newTrip = {};
     newTrip["destination"] = destination;
     newTrip["from_date"] = formatFromDate;
