@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "../css/components/tripcard.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
+import bgPlaceholder from "../assets/backgroundplaceholder.png";
 
 export default function TripCard({ trip }) {
   const { tripID, destination, from_date, to_date, status, members } = trip;
@@ -19,7 +20,7 @@ export default function TripCard({ trip }) {
           <div className="tripPictureContainer">
             <img
               className="tripBackgroundImage"
-              src="./src/assets/backgroundplaceholder.png"
+              src={bgPlaceholder}
               alt="tripPicture"
             />
           </div>
