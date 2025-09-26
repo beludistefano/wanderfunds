@@ -5,6 +5,7 @@
   padding-right: 2%;
   padding-left: 2%;
   margin-bottom: 100px;
+  min-height: 1vh;
 }
 
 #expensesSavingsCont h3 {

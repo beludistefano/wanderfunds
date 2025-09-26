@@ -38,6 +38,7 @@ export default function AddExpense({
       setExpenseDate();
       setExpenseSplit(tripSplit);
       setValidationErrors({});
+      console.log(tripSplit);
     }
   }, [isOpen]);
 
@@ -66,6 +67,7 @@ export default function AddExpense({
     if (
       expenseSplit == "Shared Expense" ||
       expenseSplit == "Trip Default - Shared" ||
+      expenseSplit == "equal" ||
       expenseSplit == "shared"
     ) {
       newExpense["split"] = "shared";
