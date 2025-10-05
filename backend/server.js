@@ -384,6 +384,9 @@ app.put("/api/expenses", async (req, res) => {
   }
 });
 
+/**
+ * This PUT request will update a savings fund amount
+ */
 app.put("/api/trip/savings", async (req, res) => {
   const { savingsFundID, amount, newAmount } = req.body;
 
@@ -413,6 +416,48 @@ app.put("/api/trip/savings", async (req, res) => {
     return res.status(200).json({ expenseUpdate: savingsUpdateResult });
   } catch (err) {
     return res.status(500).json(err);
+  }
+});
+
+/**
+ * This GET request will fetch all user roles for a given trip
+ */
+app.get("/api/userroles", async (req, res) => {
+  const { tripId } = req.query;
+
+  if (tripId == "") {
+    return res.status(400).json("Error: Trip ID cannot be empty");
+  }
+
+  try {
+    const query = `
+    SELECT
+      trip.destination,
+      trip.from_date,
+      trip.to_date,
+      trip.status,
+      trip.default_split,
+      trip.members,
+      r.role,
+      u.name,
+      u.email
+    FROM user_role AS r
+    JOIN trips AS t
+    ON r.tripid = t.tripid
+    JOIN users u
+    ON u.id = r.user_id
+    WHERE r.tripid = $1`;
+
+    const userRolesData = await pool.query(query, [tripId]);
+
+    if (userRolesData.rows.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(userRolesData.rows);
+  } catch (err) {
+    console.error("GET /api/trip/savings failed", err);
+    return res.status(500).json({ error: err.message });
   }
 });
 
