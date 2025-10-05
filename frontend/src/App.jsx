@@ -6,6 +6,7 @@ import Main from "./pages/Main";
 import TripDashboard from "./pages/TripDashboard";
 import CreateTrip from "./pages/CreateTrip";
 import TripEdit from "./pages/TripEdit";
+import Members from "./pages/Members";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/newtrip" element={<CreateTrip />} />
           <Route path="/trip/:tripid" element={<TripDashboard />} />
           <Route path="/trip/edit/:tripid" element={<TripEdit />} />
+          <Route path="/trip/members/:tripid" element={<Members />} />
         </Routes>
       </BrowserRouter>
     </>
