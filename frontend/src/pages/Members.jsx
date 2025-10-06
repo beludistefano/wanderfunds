@@ -14,14 +14,15 @@ export default function Members() {
 
   async function getTripMembers() {
     try {
-      const tripMembersData = await fetch();
-      // "https://wanderfunds-backend.onrender.com/api/trip/" + tripid
+      const tripMembersData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/userroles?tripId=${tripid}`
+      );
       const tripMembersJson = await tripMembersData.json();
 
-      setTrip(tripMembersJson[0]);
-      setLoading(false);
+      console.log(tripMembersJson);
 
-      console.log(tripMembersJson[0]);
+      setTripMembers(tripMembersJson);
+      setLoading(false);
     } catch (e) {
       console.log(e);
     }
@@ -39,9 +40,12 @@ export default function Members() {
           <div id="mainContent">
             <MainSideBar id="mainSideBar" />
             <div id="dashboardCenterSection">
-              <TripHeader destination={trip.destination} status={trip.status} />
+              <TripHeader
+                destination={tripMembers[0].destination}
+                status={tripMembers[0].status}
+              />
               <TripMenu tripID={tripid} />
-              <MembersTrip trip={trip} />
+              <MembersTrip trip={tripMembers} />
             </div>
           </div>{" "}
         </>
