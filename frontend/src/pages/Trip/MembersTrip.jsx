@@ -1,6 +1,7 @@
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "../../css/members.css";
 
 export default function MembersTrip({ tripMembers }) {
   const [tripMembersData, setTripMembersData] = useState(tripMembers);
@@ -31,12 +32,10 @@ export default function MembersTrip({ tripMembers }) {
         <div id="tripData">
           {tripMembersData.map((member) => {
             return (
-              <div className="memberRow">
-                <div className="memberName">
-                  <FontAwesomeIcon icon={faUser} />
-                  {member.name}
-                </div>
-                <div className="memberName">({member.role})</div>
+              <div className="memberDiv" key={member.userroleid}>
+                <FontAwesomeIcon className="fa-icon" icon={faUser} />
+                <div className="memberName">{member.name}</div>
+                <div className="memberName">{member.role}</div>
               </div>
             );
           })}
@@ -52,7 +51,7 @@ export default function MembersTrip({ tripMembers }) {
             onClick={() => {
               navigate(`/trip/${trip.tripid}`);
             }}
-            id="buttonDelete"
+            id="buttonLeave"
             className="button"
           >
             DELETE TRIP
