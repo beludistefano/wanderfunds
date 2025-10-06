@@ -432,12 +432,12 @@ app.get("/api/userroles", async (req, res) => {
   try {
     const query = `
     SELECT
-      trip.destination,
-      trip.from_date,
-      trip.to_date,
-      trip.status,
-      trip.default_split,
-      trip.members,
+      t.destination,
+      t.from_date,
+      t.to_date,
+      t.status,
+      t.default_split,
+      t.members,
       r.role,
       u.name,
       u.email
