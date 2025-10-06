@@ -45,7 +45,7 @@ export default function Members() {
                 status={tripMembers[0].status}
               />
               <TripMenu tripID={tripid} />
-              <MembersTrip trip={tripMembers} />
+              <MembersTrip tripMembers={tripMembers} />
             </div>
           </div>{" "}
         </>

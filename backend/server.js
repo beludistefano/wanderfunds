@@ -439,6 +439,7 @@ app.get("/api/userroles", async (req, res) => {
       t.default_split,
       t.members,
       r.role,
+      r.userroleid,
       u.name,
       u.email
     FROM user_role AS r

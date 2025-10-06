@@ -1,0 +1,4 @@
+#memberButtonsContainer {
+  display: flex;
+  flex-direction: column;
+}
