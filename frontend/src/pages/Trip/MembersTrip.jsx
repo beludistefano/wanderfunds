@@ -1,4 +1,4 @@
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser, faX } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/members.css";
@@ -35,7 +35,10 @@ export default function MembersTrip({ tripMembers }) {
               <div className="memberDiv" key={member.userroleid}>
                 <FontAwesomeIcon className="fa-icon" icon={faUser} />
                 <div className="memberName">{member.name}</div>
-                <div className="memberName">{member.role}</div>
+                <div className="memberRole">{"(" + member.role + ")"}</div>
+                <div className="removeRow">
+                  <FontAwesomeIcon icon={faX} /> Remove
+                </div>
               </div>
             );
           })}
@@ -46,6 +49,15 @@ export default function MembersTrip({ tripMembers }) {
           </button>
           <button id="buttonSave" className="button">
             ADD PARTICIPANT
+          </button>
+          <button
+            onClick={() => {
+              navigate(`/trip/${trip.tripid}`);
+            }}
+            id="buttonLeave"
+            className="button"
+          >
+            LEAVE TRIP
           </button>
           <button
             onClick={() => {

@@ -10,20 +10,54 @@
   background-color: #ff7373;
 }
 
+#buttonLeave:hover {
+  border: none;
+}
+
 .memberDiv {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto auto;
   align-items: center;
   column-gap: 10px;
+  width: 30%;
 }
 
 .memberDiv .fa-icon {
   grid-row: span 2;
-  font-size: 32px;
-  align-self: center;
+  padding-top: 5px;
+  font-size: 20px;
+  align-self: flex-start;
 }
 
 .memberName {
   margin: 0;
+  text-align: left;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.memberRole {
+  text-align: left;
+  display: inline-block;
+}
+
+#tripData {
+  padding: 5%;
+}
+
+.removeRow {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  align-self: center;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  color: #ef4444;
+  font-size: 0.8rem;
+  cursor: pointer;
+  user-select: none;
 }
