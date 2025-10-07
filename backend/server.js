@@ -520,6 +520,8 @@ app.get("/api/addmember", async (req, res) => {
 
     console.log(tripInvitationResult);
 
+    return res.send(200).json(tripInvitationResult);
+
     // Send an email with a token to accept the invitation
 
     // SAMPLE CODE FROM MAILERSEND DOCUMENTATION
