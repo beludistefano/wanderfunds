@@ -484,7 +484,7 @@ app.post("/api/addmember", async (req, res) => {
     return res.status(400).send("Error: Member type can't be empty");
   }
 
-  if (memberType != "guest" || memberType != "participant") {
+  if (memberType != "guest" && memberType != "participant") {
     return res
       .status(400)
       .send("Error: Member type must be member or participant");
