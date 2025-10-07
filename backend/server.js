@@ -522,6 +522,7 @@ app.get("/api/addmember", async (req, res) => {
 
     // Send an email with a token to accept the invitation
 
+    // SAMPLE CODE FROM MAILERSEND DOCUMENTATION
     // const mailerSend = new MailerSend({
     //   apiKey: process.env.API_KEY,
     // });
