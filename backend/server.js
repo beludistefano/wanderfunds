@@ -480,13 +480,14 @@ app.post("/api/addmember", async (req, res) => {
     return res.status(400).send("Error: Destination email is required");
   }
 
-  if (
-    !memberType ||
-    memberType == "" ||
-    memberType != "guest" ||
-    memberType != "participant"
-  ) {
+  if (!memberType || memberType == "") {
     return res.status(400).send("Error: Member type can't be empty");
+  }
+
+  if (memberType != "guest" || memberType != "participant") {
+    return res
+      .status(400)
+      .send("Error: Member type must be member or participant");
   }
 
   // Get logged in user's name to add to the email
