@@ -465,7 +465,7 @@ app.get("/api/userroles", async (req, res) => {
 /**
  * Invite members to a trip
  */
-app.get("/api/addmember", async (req, res) => {
+app.post("/api/addmember", async (req, res) => {
   const { tripID, userID, destinationEmail, memberType } = req.body;
 
   if (!tripID || tripID == "") {
