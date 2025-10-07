@@ -462,6 +462,92 @@ app.get("/api/userroles", async (req, res) => {
   }
 });
 
+/**
+ * Invite members to a trip
+ */
+app.get("/api/addmember", async (req, res) => {
+  const { tripID, userID, destinationEmail, memberType } = req.body;
+
+  if (!tripID || tripID == "") {
+    return res.status(400).send("Error: Trip ID is required");
+  }
+
+  if (!userID || userID == "") {
+    return res.status(400).send("Error: User ID is required");
+  }
+
+  if (!destinationEmail || destinationEmail == "") {
+    return res.status(400).send("Error: Destination email is required");
+  }
+
+  if (
+    !memberType ||
+    memberType == "" ||
+    memberType != "guest" ||
+    memberType != "participant"
+  ) {
+    return res.status(400).send("Error: Member type can't be empty");
+  }
+
+  // Get logged in user's name to add to the email
+  const loggedinUserQuery = `
+    SELECT *
+    FROM users
+    WHERE id = $1`;
+
+  try {
+    const userData = await pool.query(loggedinUserQuery, [userID]);
+
+    if (userData.rows.length === 0) {
+      return res.status(400).send("Error with logged in user");
+    }
+
+    // Create an invitation record on the db with the sent invitation
+
+    const tripInvitation = `
+      INSERT INTO trip_invitations (trip_id, sender_id, recipient_email, status, member_type)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING id
+    `;
+
+    const tripInvitationResult = await pool.query(tripInvitation, [
+      tripID,
+      userID,
+      destinationEmail,
+      "pending",
+      memberType,
+    ]);
+
+    console.log(tripInvitationResult);
+
+    // Send an email with a token to accept the invitation
+
+    // const mailerSend = new MailerSend({
+    //   apiKey: process.env.API_KEY,
+    // });
+
+    // const sentFrom = new Sender("you@yourdomain.com", "Your name");
+
+    // const recipients = [new Recipient("your@client.com", "Your Client")];
+
+    // const emailParams = new EmailParams()
+    //   .setFrom(sentFrom)
+    //   .setTo(recipients)
+    //   .setReplyTo(sentFrom)
+    //   .setSubject("This is a Subject")
+    //   .setHtml("<strong>This is the HTML content</strong>")
+    //   .setText("This is the text content");
+
+    // await mailerSend.email.send(emailParams);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * Accept invitation to a trip
+ */
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
