@@ -558,6 +558,33 @@ app.get("/api/acceptinvitation", async (req, res) => {
  */
 app.get("/api/rejectinvitation", async (req, res) => {
   const { invitation_token } = req.query;
+
+  if (!invitation_token || invitation_token == "") {
+    return res.status(400).send("Error: Invitation token cannot be empty");
+  }
+
+  const invitationQuery = `
+    UPDATE trip_invitations
+    SET
+      status   = 'declined'
+    WHERE id   = $1
+    RETURNING *;
+    `;
+
+  try {
+    const tripInvitationResult = await pool.query(invitationQuery, [
+      invitation_token,
+    ]);
+
+    console.log(tripInvitationResult);
+    if (tripInvitationResult.rows.length === 0) {
+      return res.status(500).send("Error rejecting invitation");
+    }
+
+    return res.status(200).json({ result: "Trip rejected" });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 });
 
 /**
