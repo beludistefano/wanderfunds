@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const pool = require("./db.js");
+const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 
 const app = express();
 const port = process.env.PORT;
@@ -503,6 +504,8 @@ app.post("/api/addmember", async (req, res) => {
       return res.status(400).send("Error with logged in user");
     }
 
+    const user = userData.rows[0];
+
     // Create an invitation record on the db with the sent invitation
 
     const tripInvitation = `
@@ -519,30 +522,23 @@ app.post("/api/addmember", async (req, res) => {
       memberType,
     ]);
 
-    console.log(tripInvitationResult);
+    if (tripInvitationResult.rows.length === 0) {
+      return res.status(500).send("Error sending invitation");
+    }
 
-    return res.send(200).json(tripInvitationResult);
+    const invitationID = tripInvitationResult.rows[0].id;
 
-    // Send an email with a token to accept the invitation
+    const invitationEmail = await sendInvitationEmail(
+      invitationID,
+      user.name,
+      destinationEmail
+    );
 
-    // SAMPLE CODE FROM MAILERSEND DOCUMENTATION
-    // const mailerSend = new MailerSend({
-    //   apiKey: process.env.API_KEY,
-    // });
+    if (!invitationEmail.ok) {
+      return res.status(500).json({ error: invitationEmail.error });
+    }
 
-    // const sentFrom = new Sender("you@yourdomain.com", "Your name");
-
-    // const recipients = [new Recipient("your@client.com", "Your Client")];
-
-    // const emailParams = new EmailParams()
-    //   .setFrom(sentFrom)
-    //   .setTo(recipients)
-    //   .setReplyTo(sentFrom)
-    //   .setSubject("This is a Subject")
-    //   .setHtml("<strong>This is the HTML content</strong>")
-    //   .setText("This is the text content");
-
-    // await mailerSend.email.send(emailParams);
+    return res.status(200).json(invitationEmail);
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
@@ -551,6 +547,73 @@ app.post("/api/addmember", async (req, res) => {
 /**
  * Accept invitation to a trip
  */
+app.get("/api/acceptinvitation", async (req, res) => {
+  const { invitation_token } = req.query;
+
+  //
+});
+
+/**
+ * Reject invitation to a trip
+ */
+app.get("/api/rejectinvitation", async (req, res) => {
+  const { invitation_token } = req.query;
+});
+
+/**
+ * This API call handles sending email invitations to members via MailerSend
+ * @param {*} invitationID invitation ID to accept/reject
+ * @param {*} username sender name
+ * @param {*} email destination email
+ * @returns
+ */
+async function sendInvitationEmail(invitationID, username, email) {
+  const mailerSend = new MailerSend({
+    apiKey: process.env.MAILERSEND_API_KEY,
+  });
+
+  const sentFrom = new Sender(
+    "no-reply@test-y7zpl98q6qo45vx6.mlsender.net",
+    username + " via Wanderfunds"
+  );
+
+  const recipients = [new Recipient(email, "Member")];
+
+  const emailParams = new EmailParams()
+    .setFrom(sentFrom)
+    .setTo(recipients)
+    .setReplyTo(sentFrom)
+    .setSubject(`${username} invited you to join a trip!`).setHtml(`
+    <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+      <h2 style="color:#2c3e50;">${username} is inviting you to join a trip ✈️</h2>
+      <p>Click the button below to accept the invitation:</p>
+      <a href="http://localhost:3000/api/acceptinvitation?invitation_token=${invitationID}"
+         style="display:inline-block; padding:12px 20px; margin-top:10px;
+                background-color:#8ebed8; color:#fff; text-decoration:none;
+                border-radius:6px; font-weight:bold;">
+        Accept Invitation
+      </a>
+      <a href="http://localhost:3000/api/rejectinvitation?invitation_token=${invitationID}"
+         style="display:inline-block; padding:12px 20px; margin-top:10px;
+                background-color:#ff7373; color:#fff; text-decoration:none;
+                border-radius:6px; font-weight:bold;">
+        Reject Invitation
+      </a>
+    </div>
+  `);
+
+  try {
+    const resp = await mailerSend.email.send(emailParams);
+    return {
+      ok: true,
+      id: invitationID,
+      mailerSendId: resp?.body?.message_id ?? null,
+    };
+  } catch (err) {
+    console.error("Error sending email:", err);
+    return { ok: false, error: err.message };
+  }
+}
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
