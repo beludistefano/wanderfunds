@@ -550,7 +550,54 @@ app.post("/api/addmember", async (req, res) => {
 app.get("/api/acceptinvitation", async (req, res) => {
   const { invitation_token } = req.query;
 
-  //
+  if (!invitation_token || invitation_token == "") {
+    return res.status(400).send("Error: Invitation token cannot be empty");
+  }
+
+  const invitationFetchQuery = `
+    SELECT *
+    FROM trip_invitations
+    WHERE id   = $1`;
+
+  try {
+    const invitationData = await pool.query(invitationFetchQuery, [
+      invitation_token,
+    ]);
+
+    if (invitationData.rows.length === 0) {
+      return res.status(400).send("Error with invitation");
+    }
+
+    const invitation = invitationData.rows[0];
+    console.log(invitation);
+
+    if (invitation.status === "declined") {
+      return res.status(500).json({ result: "Cannot accept a declined trip" });
+    }
+
+    const acceptQuery = `
+    UPDATE trip_invitations
+    SET
+      status   = 'accepted'
+    WHERE id   = $1
+    RETURNING *;
+    `;
+
+    const acceptInvitationResult = await pool.query(acceptQuery, [
+      invitation_token,
+    ]);
+
+    if (acceptInvitationResult.rows.length === 0) {
+      return res.status(500).json({ result: "Error accepting trip" });
+    }
+
+    return res.status(200).json({
+      tripID: invitation.trip_id,
+      memberType: invitation.member_type,
+    });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
 });
 
 /**
@@ -614,13 +661,13 @@ async function sendInvitationEmail(invitationID, username, email) {
     <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
       <h2 style="color:#2c3e50;">${username} is inviting you to join a trip ✈️</h2>
       <p>Click the button below to accept the invitation:</p>
-      <a href="http://localhost:3000/api/acceptinvitation?invitation_token=${invitationID}"
+      <a href="https://wanderfunds-backend.onrender.com/api/acceptinvitation?invitation_token=${invitationID}"
          style="display:inline-block; padding:12px 20px; margin-top:10px;
                 background-color:#8ebed8; color:#fff; text-decoration:none;
                 border-radius:6px; font-weight:bold;">
         Accept Invitation
       </a>
-      <a href="http://localhost:3000/api/rejectinvitation?invitation_token=${invitationID}"
+      <a href="https://wanderfunds-backend.onrender.com/api/rejectinvitation?invitation_token=${invitationID}"
          style="display:inline-block; padding:12px 20px; margin-top:10px;
                 background-color:#ff7373; color:#fff; text-decoration:none;
                 border-radius:6px; font-weight:bold;">
