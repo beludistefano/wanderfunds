@@ -661,13 +661,13 @@ async function sendInvitationEmail(invitationID, username, email) {
     <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
       <h2 style="color:#2c3e50;">${username} is inviting you to join a trip ✈️</h2>
       <p>Click the button below to accept the invitation:</p>
-      <a href="https://wanderfunds-backend.onrender.com/api/acceptinvitation?invitation_token=${invitationID}"
+      <a href="https://wanderfunds-frontend.onrender.com/trip/accept/${invitationID}"
          style="display:inline-block; padding:12px 20px; margin-top:10px;
                 background-color:#8ebed8; color:#fff; text-decoration:none;
                 border-radius:6px; font-weight:bold;">
         Accept Invitation
       </a>
-      <a href="https://wanderfunds-backend.onrender.com/api/rejectinvitation?invitation_token=${invitationID}"
+      <a href="https://wanderfunds-frontend.onrender.com/trip/reject/${invitationID}"
          style="display:inline-block; padding:12px 20px; margin-top:10px;
                 background-color:#ff7373; color:#fff; text-decoration:none;
                 border-radius:6px; font-weight:bold;">

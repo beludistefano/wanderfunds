@@ -18,6 +18,7 @@ function App() {
           <Route path="/trip/:tripid" element={<TripDashboard />} />
           <Route path="/trip/edit/:tripid" element={<TripEdit />} />
           <Route path="/trip/members/:tripid" element={<Members />} />
+          <Route path="/trip/reject/:invitationid" element={<RejectInvitation />} />
         </Routes>
       </BrowserRouter>
     </>
