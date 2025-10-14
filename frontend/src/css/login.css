@@ -1,0 +1,86 @@
+.loginForm {
+  margin: auto;
+  margin-top: 10%;
+  width: 30%;
+}
+
+#registrationForm {
+  margin-top: 20px;
+}
+
+#registerMainContent h2 {
+  color: #8ebed8;
+}
+
+.formGroup {
+  margin-bottom: 20px;
+}
+
+.loginForm label {
+  display: block;
+  text-align: left;
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.loginForm input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc !important;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-top: 6px;
+}
+
+.forgotPassword a {
+  font-size: 12px;
+  color: #999;
+  text-decoration: underline;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 20px;
+  background-color: #8ebed8;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.loginButton:hover {
+  background-color: rgb(114, 151, 175);
+}
+
+.loginFormGroup .errorDisplayText,
+.registerFormGroup .errorDisplayText {
+  margin: 0;
+}
+
+#loginResult,
+#registrationResult {
+  margin-top: 15px;
+}
+
+#mainContentIndex {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  padding-top: 10%;
+}
+
+#mainContentIndex .loginButton {
+  width: 30%;
+  margin: auto;
+  margin-bottom: 20px;
+}
