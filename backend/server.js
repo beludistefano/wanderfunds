@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // Demo user with mariabelendistefano@gmail.com email
-const DEMO_USER_ID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
+const DEMO_USER_ID = "e2f52ed5-19a9-45fa-aec2-5c9ac0b9a618";
 
 /**
  * This GET request returns all trips where the user has a role in
