@@ -2,6 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../css/edittrip.css";
 import { useState } from "react";
 import Confirm from "../../components/Confirmation";
+import { supabase } from "../../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
@@ -100,6 +104,7 @@ export default function EditTrip({ trip }) {
         {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(updateTrip),

@@ -6,6 +6,10 @@ import TripMenu from "../components/TripMenu";
 import "../css/tripdash.css";
 import MembersTrip from "./Trip/MembersTrip";
 import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 export default function Members() {
   const { tripid } = useParams();
@@ -15,7 +19,10 @@ export default function Members() {
   async function getTripMembers() {
     try {
       const tripMembersData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/userroles?tripId=${tripid}`
+        `https://wanderfunds-backend.onrender.com/api/userroles?tripId=${tripid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const tripMembersJson = await tripMembersData.json();
 

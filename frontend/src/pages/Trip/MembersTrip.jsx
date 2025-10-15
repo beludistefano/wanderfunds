@@ -2,6 +2,10 @@ import { faUser, faX } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/members.css";
+import { supabase } from "../../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 export default function MembersTrip({ tripMembers }) {
   const [tripMembersData, setTripMembersData] = useState(tripMembers);

@@ -6,6 +6,10 @@ import RemoveFunds from "../../components/RemoveFunds";
 import EditExpense from "../../components/EditExpense";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { supabase } from "../../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 export default function TripOverview({ trip }) {
   const [theTripID, setTheTripID] = useState(trip.tripid);
@@ -43,7 +47,10 @@ export default function TripOverview({ trip }) {
   async function getSavingsFund() {
     try {
       const savingsFundData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}&userId=${userID}`
+        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}&userId=${userID}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const savingsFundJson = await savingsFundData.json();
 
@@ -58,7 +65,10 @@ export default function TripOverview({ trip }) {
   async function getExpenses() {
     try {
       const expensesData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}&userId=${userID}`
+        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}&userId=${userID}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
 
       const expenses = await expensesData.json();

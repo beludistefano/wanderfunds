@@ -8,6 +8,10 @@ import "../css/tripdash.css";
 import EditTrip from "./Trip/EditTrip";
 import TripOverview from "./Trip/TripOverview";
 import { useEffect, useState } from "react";
+import { supabase } from "../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 export default function TripDashboard() {
   const { tripid } = useParams();
@@ -17,7 +21,10 @@ export default function TripDashboard() {
   async function getTrip() {
     try {
       const tripData = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid
+        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const tripJson = await tripData.json();
 

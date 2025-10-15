@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import "../css/components/fundsmodal.css";
+import { supabase } from "../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 function validateFunds(amount) {
   const fundsErrors = {};
@@ -58,6 +62,7 @@ export default function AddFunds({
         {
           method: "PUT",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newSavingsFund),

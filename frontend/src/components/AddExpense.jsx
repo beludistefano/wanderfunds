@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
 import "../css/components/expensemodal.css";
+import { supabase } from "../supabaseClient";
+
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 function validateExpense(name, amount) {
   const expenseErrors = {};
@@ -87,6 +91,7 @@ export default function AddExpense({
         {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newExpense),

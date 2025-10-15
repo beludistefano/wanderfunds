@@ -1,12 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { supabase } from "../supabaseClient";
 
 import "../css/createtrip.css";
 
 import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
 
-// OWNER ID FOR NOW
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
 
 function validateTrip(destination, fromDate, toDate, members) {
   const tripErrors = {};
@@ -104,6 +106,7 @@ export default function CreateTrip() {
         {
           method: "POST",
           headers: {
+            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify(newTrip),
