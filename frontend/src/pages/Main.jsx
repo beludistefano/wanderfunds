@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { supabase } from "../supabaseClient";
 
 import "../css/main.css";
 
@@ -7,15 +8,22 @@ import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
 import TripCard from "../components/TripCard";
 
+const { data } = await supabase.auth.getSession();
+const token = data.session?.access_token;
+
 export default function Main() {
   const [trips, setTrips] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log(data);
     async function getTrips() {
       try {
         const tripData = await fetch(
-          "https://wanderfunds-backend.onrender.com/api/trips"
+          "https://wanderfunds-backend.onrender.com/api/trips",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         const trips = await tripData.json();
 

@@ -16,8 +16,7 @@ const DEMO_USER_ID = "e2f52ed5-19a9-45fa-aec2-5c9ac0b9a618";
 /**
  * This GET request returns all trips where the user has a role in
  */
-app.get("/api/trips", async (req, res) => {
-  /* BELEN NOTES: W5 - ADD USER ID TO THE API !!!! */
+app.get("/api/trips", requireAuth, async (req, res) => {
   try {
     const query = ` SELECT
             t.tripid,
@@ -36,7 +35,7 @@ app.get("/api/trips", async (req, res) => {
         ON r.tripid = t.tripid
         WHERE r.user_id = $1`;
 
-    const tripsResult = await pool.query(query, [DEMO_USER_ID]);
+    const tripsResult = await pool.query(query, [req.user.id]);
 
     return res.status(200).json(tripsResult.rows);
   } catch (err) {
