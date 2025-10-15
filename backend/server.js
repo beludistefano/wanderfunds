@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const pool = require("./db.js");
 const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
+const { requireAuth } = require("./authMiddleware");
 
 const app = express();
 const port = process.env.PORT;
