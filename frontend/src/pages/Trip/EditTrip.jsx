@@ -135,6 +135,7 @@ export default function EditTrip({ trip }) {
         "https://wanderfunds-backend.onrender.com/api/trip/" + trip.tripid,
         {
           method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
