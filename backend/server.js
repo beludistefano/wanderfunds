@@ -8,7 +8,18 @@ const { requireAuth } = require("./authMiddleware");
 const app = express();
 const port = process.env.PORT;
 
-app.use(cors());
+const allowedOrigins = ["http://localhost:5173"];
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  })
+);
+
 app.use(express.json());
 
 // Demo user with mariabelendistefano@gmail.com email
