@@ -47,7 +47,7 @@ app.get("/api/trips", requireAuth, async (req, res) => {
 /**
  * This GET request returns the trip that matches the ID
  */
-app.get("/api/trip/:tripID", async (req, res) => {
+app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
   const { tripID } = req.params;
 
   try {

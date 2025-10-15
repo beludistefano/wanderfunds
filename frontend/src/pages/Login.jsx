@@ -60,7 +60,21 @@ export default function Login() {
       return;
     }
 
-    navigate("/");
+    if (data?.session) {
+      console.log("entered the if data ok");
+      const redirectTo = location.state?.from?.pathname || "/";
+      navigate(redirectTo, { replace: true });
+      return;
+    }
+
+    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "SIGNED_IN" && session) {
+        console.log("entered the second if");
+        sub.subscription.unsubscribe();
+        const redirectTo = location.state?.from?.pathname || "/";
+        navigate(redirectTo, { replace: true });
+      }
+    });
   }
 
   return (
