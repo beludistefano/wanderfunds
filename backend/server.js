@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 // Demo user with mariabelendistefano@gmail.com email
-const DEMO_USER_ID = "e2f52ed5-19a9-45fa-aec2-5c9ac0b9a618";
+// const DEMO_USER_ID = "e2f52ed5-19a9-45fa-aec2-5c9ac0b9a618";
 
 /**
  * This GET request returns all trips where the user has a role in
@@ -79,8 +79,7 @@ app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
 /**
  * This POST request will create a Trip and a User Role as Owner
  */
-app.post("/api/trip", async (req, res) => {
-  /* BELEN NOTES: W5 - ADD USER ID TO THE API !!!! */
+app.post("/api/trip", requireAuth, async (req, res) => {
   const {
     destination,
     from_date,
@@ -116,7 +115,7 @@ app.post("/api/trip", async (req, res) => {
     `;
 
   const tripValues = [
-    DEMO_USER_ID,
+    req.user.id,
     destination,
     from_date,
     to_date,
@@ -131,11 +130,11 @@ app.post("/api/trip", async (req, res) => {
 
     const newTripID = tripResult.rows[0]?.tripid;
 
-    const roleValues = [newTripID, DEMO_USER_ID, "Owner"];
+    const roleValues = [newTripID, req.user.id, "Owner"];
 
     const roleResult = await pool.query(roleQuery, roleValues);
 
-    const fundValues = [newTripID, DEMO_USER_ID, 0];
+    const fundValues = [newTripID, req.user.id, 0];
 
     const fundResult = await pool.query(savingsFundQuery, fundValues);
 
@@ -150,14 +149,14 @@ app.post("/api/trip", async (req, res) => {
 /**
  * This DELETE request will handle incoming requests without a trip ID
  */
-app.delete("/api/trip", (req, res) =>
+app.delete("/api/trip", requireAuth, (req, res) =>
   res.status(400).json({ error: "Trip ID is required" })
 );
 
 /**
  * This DELETE request will delete a trip by its ID
  */
-app.delete("/api/trip/:tripID", async (req, res) => {
+app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
   const { tripID } = req.params;
 
   if (!tripID || tripID == "") {
@@ -181,7 +180,7 @@ app.delete("/api/trip/:tripID", async (req, res) => {
 /**
  * This PUT request will update a trip
  */
-app.put("/api/trip", async (req, res) => {
+app.put("/api/trip", requireAuth, async (req, res) => {
   const {
     tripID,
     destination,
@@ -240,11 +239,11 @@ app.put("/api/trip", async (req, res) => {
 /**
  * This GET request will fetch the savings fund for the logged in user for a given trip
  */
-app.get("/api/savings", async (req, res) => {
-  const { tripId, userId } = req.query;
+app.get("/api/savings", requireAuth, async (req, res) => {
+  const { tripId } = req.query;
 
-  if (tripId === "" || userId === "") {
-    return res.status(400).json("Error: Trip and User IDs cannot be empty");
+  if (tripId === "") {
+    return res.status(400).json("Error: Trip ID cannot be empty");
   }
 
   const savingsQuery = `
@@ -255,7 +254,7 @@ app.get("/api/savings", async (req, res) => {
   `;
 
   try {
-    const savingsResult = await pool.query(savingsQuery, [tripId, userId]);
+    const savingsResult = await pool.query(savingsQuery, [tripId, req.user.id]);
 
     return res.status(200).json(savingsResult.rows);
   } catch (e) {
@@ -266,11 +265,11 @@ app.get("/api/savings", async (req, res) => {
 /**
  * This GET request will fetch all expenses for a given trip
  */
-app.get("/api/expenses", async (req, res) => {
-  const { tripId, userId } = req.query;
+app.get("/api/expenses", requireAuth, async (req, res) => {
+  const { tripId } = req.query;
 
-  if (tripId == "" || userId == "") {
-    return res.status(400).json("Error: Trip and User IDs cannot be empty");
+  if (tripId == "") {
+    return res.status(400).json("Error: Trip ID cannot be empty");
   }
 
   try {
@@ -279,7 +278,7 @@ app.get("/api/expenses", async (req, res) => {
     FROM expected_expenses
     WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared')`;
 
-    const expensesResult = await pool.query(query, [tripId, userId]);
+    const expensesResult = await pool.query(query, [tripId, req.user.id]);
 
     if (expensesResult.rows.length === 0) {
       return res.status(200).json([]);
@@ -295,9 +294,8 @@ app.get("/api/expenses", async (req, res) => {
 /**
  * This POST request will create an Expense for a trip
  */
-app.post("/api/expenses", async (req, res) => {
-  var { tripID, ownerID, name, amount, expectedDate, expenseStatus, split } =
-    req.body;
+app.post("/api/expenses", requireAuth, async (req, res) => {
+  var { tripID, name, amount, expectedDate, expenseStatus, split } = req.body;
 
   if (expectedDate == "") {
     expectedDate = null;
@@ -307,7 +305,6 @@ app.post("/api/expenses", async (req, res) => {
     name == "" ||
     amount == 0 ||
     tripID == "" ||
-    ownerID == "" ||
     expenseStatus == "" ||
     split == ""
   ) {
@@ -327,7 +324,7 @@ app.post("/api/expenses", async (req, res) => {
 
   const expenseValues = [
     tripID,
-    ownerID,
+    req.user.id,
     name,
     Number(amount),
     expectedDate,
@@ -347,7 +344,7 @@ app.post("/api/expenses", async (req, res) => {
 /**
  * This PUT request will update an Expense for a trip
  */
-app.put("/api/expenses", async (req, res) => {
+app.put("/api/expenses", requireAuth, async (req, res) => {
   var { expenseID, name, amount, expectedDate, split } = req.body;
 
   if (expectedDate == "") {
@@ -388,7 +385,7 @@ app.put("/api/expenses", async (req, res) => {
 /**
  * This PUT request will update a savings fund amount
  */
-app.put("/api/trip/savings", async (req, res) => {
+app.put("/api/trip/savings", requireAuth, async (req, res) => {
   const { savingsFundID, amount, newAmount } = req.body;
 
   if (!savingsFundID || savingsFundID == "") {
@@ -423,7 +420,7 @@ app.put("/api/trip/savings", async (req, res) => {
 /**
  * This GET request will fetch all user roles for a given trip
  */
-app.get("/api/userroles", async (req, res) => {
+app.get("/api/userroles", requireAuth, async (req, res) => {
   const { tripId } = req.query;
 
   if (tripId == "") {
@@ -441,13 +438,15 @@ app.get("/api/userroles", async (req, res) => {
       t.members,
       r.role,
       r.userroleid,
-      u.name,
-      u.email
-    FROM user_role AS r
-    JOIN trips AS t
-    ON r.tripid = t.tripid
-    JOIN users u
-    ON u.id = r.user_id
+      p.name,
+      au.email
+    FROM public.user_role AS r
+    JOIN public.trips AS t
+    ON r.tripid  = t.tripid
+    JOIN auth.users AS au
+    ON au.id = r.user_id
+    JOIN public.profiles AS p
+    ON p.user_id     = au.id
     WHERE r.tripid = $1`;
 
     const userRolesData = await pool.query(query, [tripId]);
@@ -466,15 +465,11 @@ app.get("/api/userroles", async (req, res) => {
 /**
  * Invite members to a trip
  */
-app.post("/api/addmember", async (req, res) => {
-  const { tripID, userID, destinationEmail, memberType } = req.body;
+app.post("/api/addmember", requireAuth, async (req, res) => {
+  const { tripID, destinationEmail, memberType } = req.body;
 
   if (!tripID || tripID == "") {
     return res.status(400).send("Error: Trip ID is required");
-  }
-
-  if (!userID || userID == "") {
-    return res.status(400).send("Error: User ID is required");
   }
 
   if (!destinationEmail || destinationEmail == "") {
@@ -494,11 +489,11 @@ app.post("/api/addmember", async (req, res) => {
   // Get logged in user's name to add to the email
   const loggedinUserQuery = `
     SELECT *
-    FROM users
-    WHERE id = $1`;
+    FROM profiles
+    WHERE user_id = $1`;
 
   try {
-    const userData = await pool.query(loggedinUserQuery, [userID]);
+    const userData = await pool.query(loggedinUserQuery, [req.user.id]);
 
     if (userData.rows.length === 0) {
       return res.status(400).send("Error with logged in user");
@@ -516,7 +511,7 @@ app.post("/api/addmember", async (req, res) => {
 
     const tripInvitationResult = await pool.query(tripInvitation, [
       tripID,
-      userID,
+      req.user.id,
       destinationEmail,
       "pending",
       memberType,
@@ -547,7 +542,7 @@ app.post("/api/addmember", async (req, res) => {
 /**
  * Accept invitation to a trip
  */
-app.get("/api/acceptinvitation", async (req, res) => {
+app.get("/api/acceptinvitation", requireAuth, async (req, res) => {
   const { invitation_token } = req.query;
 
   if (!invitation_token || invitation_token == "") {
@@ -635,7 +630,7 @@ app.get("/api/rejectinvitation", async (req, res) => {
 });
 
 /**
- * This API call handles sending email invitations to members via MailerSend
+ * This function handles sending email invitations to members via MailerSend
  * @param {*} invitationID invitation ID to accept/reject
  * @param {*} username sender name
  * @param {*} email destination email
