@@ -1,0 +1,35 @@
+#profileCenterContent {
+  text-align: left;
+  padding-left: 5%;
+  padding-right: 5%;
+  width: 50%;
+}
+
+#profileCenterContent p {
+  margin: 0;
+}
+
+.labelTitle {
+  margin-bottom: 15px;
+}
+
+.profileAnswer {
+  font-weight: 600;
+  margin-bottom: 20px !important;
+}
+
+.labelInLine {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profileButtonContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 25px;
+  width: 70%;
+}
+
+.buttonProfile {
+  text-align: center;
+}

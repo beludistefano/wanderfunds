@@ -562,11 +562,11 @@ app.get("/api/profile", requireAuth, async (req, res) => {
   try {
     const profileData = await pool.query(profileQuery, [req.user.id]);
 
-    if (!profileData.ok) {
+    if (profileData.rows.length === 0) {
       return res.status(500).json({ error: profileData.error });
     }
 
-    return res.status(200).json(profileData);
+    return res.status(200).json(profileData.rows[0]);
   } catch (e) {
     return res.status(500).json({ error: e.message });
   }
