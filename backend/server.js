@@ -551,6 +551,28 @@ app.post("/api/addmember", requireAuth, async (req, res) => {
 });
 
 /**
+ * This endpoint will retrieve the logged in user's profile
+ */
+app.get("/api/profile", requireAuth, async (req, res) => {
+  const profileQuery = `
+    SELECT *
+    FROM profiles
+    WHERE user_id = $1
+  `;
+  try {
+    const profileData = await pool.query(profileQuery, [req.user.id]);
+
+    if (!profileData.ok) {
+      return res.status(500).json({ error: profileData.error });
+    }
+
+    return res.status(200).json(profileData);
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
  * Accept invitation to a trip
  */
 app.get("/api/acceptinvitation", requireAuth, async (req, res) => {
