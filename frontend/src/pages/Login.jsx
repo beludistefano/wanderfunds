@@ -1,6 +1,7 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
+import { useAuth } from "../auth/AuthProvider";
 
 import "../css/login.css";
 import Header from "../components/header";
@@ -23,58 +24,49 @@ export default function Login() {
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-  const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { session, loading, initialized } = useAuth();
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
-        navigate("/");
-      }
-    });
-  }, [navigate]);
+    if (initialized && session) {
+      const redirectTo =
+        location.state?.from?.pathname &&
+        location.state.from.pathname !== "/login"
+          ? location.state.from.pathname
+          : "/dashboard";
+      navigate(redirectTo, { replace: true });
+    }
+  }, [initialized, session, navigate, location.state]);
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setErrorMsg("");
+    setSubmitting(true);
 
     setValidationErrors({});
-
-    const loginValidation = validateLogin(userEmail, password);
-    setValidationErrors(loginValidation);
-
-    if (Object.keys(loginValidation).length != 0) {
+    const errs = validateLogin(userEmail, password);
+    setValidationErrors(errs);
+    if (Object.keys(errs).length) {
+      setSubmitting(false);
       return;
     }
 
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
       email: userEmail,
       password,
     });
 
-    setLoading(false);
-
     if (error) {
       setErrorMsg(error.message);
+      setSubmitting(false);
       return;
     }
 
-    if (data?.session) {
-      console.log("entered the if data ok");
-      const redirectTo = location.state?.from?.pathname || "/";
-      navigate(redirectTo, { replace: true });
-      return;
-    }
-
-    const { data: sub } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === "SIGNED_IN" && session) {
-        console.log("entered the second if");
-        sub.subscription.unsubscribe();
-        const redirectTo = location.state?.from?.pathname || "/";
-        navigate(redirectTo, { replace: true });
-      }
-    });
+    setSubmitting(false);
   }
 
   return (

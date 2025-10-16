@@ -2,11 +2,11 @@ import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../auth/AuthProvider";
 
 export default function ProtectedRoute({ children }) {
-  const { user, loading } = useAuth();
+  const { user, loading, initialized } = useAuth();
   const location = useLocation();
 
-  if (loading) {
-    return "Loading...";
+  if (!initialized || loading) {
+    return <div>Loading…</div>;
   }
 
   if (!user) {

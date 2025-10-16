@@ -1,14 +1,12 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { supabase } from "../supabaseClient";
+import { useAuth } from "../auth/AuthProvider";
 
 import "../css/createtrip.css";
 
 import MainSideBar from "../components/MainSideBar";
 import Header from "../components/header";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
 
 function validateTrip(destination, fromDate, toDate, members) {
   const tripErrors = {};
@@ -53,6 +51,8 @@ export default function CreateTrip() {
 
   const [defaultMember, setDefaultMember] = useState(1);
   const [validationErrors, setValidationErrors] = useState({});
+
+  const { session, initialized } = useAuth();
 
   async function createTrip(e) {
     e.preventDefault();
@@ -101,6 +101,13 @@ export default function CreateTrip() {
     console.log(newTrip);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        console.log("No access token yet.");
+        return;
+      }
+
       const creationResponse = await fetch(
         "https://wanderfunds-backend.onrender.com/api/trip",
         {
@@ -118,11 +125,9 @@ export default function CreateTrip() {
       if (creationResponse.status == 200) {
         navigate("/");
       } else {
-        // HANDLE ERROR VISUALLY
         console.log("Error");
       }
     } catch (e) {
-      // HANDLE ERROR VISUALLY
       console.log(e);
     }
   }
@@ -139,7 +144,7 @@ export default function CreateTrip() {
           </div>
           <form id="createTripForm">
             <div className="formRow">
-              <label className="formLabel" for="destination">
+              <label className="formLabel" htmlFor="destination">
                 Destination
               </label>
               <input
@@ -200,7 +205,7 @@ export default function CreateTrip() {
               )}
             </div>
             <div className="formRow">
-              <label className="formLabel" for="description">
+              <label className="formLabel" htmlFor="description">
                 Description
               </label>
               <textarea
@@ -210,7 +215,7 @@ export default function CreateTrip() {
               ></textarea>
             </div>
             <div className="formRow">
-              <label className="formLabel" for="status">
+              <label className="formLabel" htmlFor="status">
                 Status
               </label>
               <select name="status" id="status">
@@ -219,7 +224,7 @@ export default function CreateTrip() {
               </select>
             </div>
             <div className="formRow">
-              <label className="formLabel" for="members">
+              <label className="formLabel" htmlFor="members">
                 Members
               </label>
               <input
@@ -240,7 +245,7 @@ export default function CreateTrip() {
             {defaultMember > 1 ? (
               <>
                 <div className="formRow">
-                  <label className="formLabel" for="defaultSplit">
+                  <label className="formLabel" htmlFor="defaultSplit">
                     Default Split
                   </label>
                   <select name="defaultSplit" id="defaultSplit">
@@ -249,7 +254,7 @@ export default function CreateTrip() {
                   </select>
                 </div>
                 <div className="formRow inline">
-                  <label className="formLabel" for="autoAdd">
+                  <label className="formLabel" htmlFor="autoAdd">
                     Auto-add expenses?
                   </label>
                   <input type="checkbox" id="autoAdd" name="autoAdd" />

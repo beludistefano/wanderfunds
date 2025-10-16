@@ -1,9 +1,7 @@
 import "../css/components/fundsmodal.css";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../auth/AuthProvider";
 
 function validateFunds(amount) {
   const fundsErrors = {};
@@ -57,6 +55,11 @@ export default function RemoveFunds({
     console.log(newSavingsFund);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
       const savingsFundUpdate = await fetch(
         "https://wanderfunds-backend.onrender.com/api/trip/savings",
         {

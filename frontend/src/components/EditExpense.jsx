@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/components/expensemodal.css";
 import { supabase } from "../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../auth/AuthProvider";
 
 const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
@@ -99,6 +97,12 @@ export default function EditExpense({
     console.log(updateExpense);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
       const expenseUpdate = await fetch(
         "https://wanderfunds-backend.onrender.com/api/expenses",
         {

@@ -7,17 +7,24 @@ import "../css/tripdash.css";
 import MembersTrip from "./Trip/MembersTrip";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../auth/AuthProvider";
 
 export default function Members() {
   const { tripid } = useParams();
   const [tripMembers, setTripMembers] = useState();
   const [loading, setLoading] = useState(true);
+  const { session, initialized } = useAuth();
 
   async function getTripMembers() {
     try {
+      const { data } = await supabase.auth.getSession();
+
+      const token = data.session?.access_token;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       const tripMembersData = await fetch(
         `https://wanderfunds-backend.onrender.com/api/userroles?tripId=${tripid}`,
         {
@@ -32,12 +39,13 @@ export default function Members() {
       setLoading(false);
     } catch (e) {
       console.log(e);
+      setLoading(false);
     }
   }
 
   useEffect(() => {
     getTripMembers();
-  }, []);
+  }, [initialized, session, tripid]);
 
   return (
     <div>

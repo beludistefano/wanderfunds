@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import "../css/components/expensemodal.css";
 import { supabase } from "../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../auth/AuthProvider";
 
 function validateExpense(name, amount) {
   const expenseErrors = {};
@@ -86,6 +84,12 @@ export default function AddExpense({
     console.log(newExpense);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
       const expenseCreation = await fetch(
         "https://wanderfunds-backend.onrender.com/api/expenses",
         {

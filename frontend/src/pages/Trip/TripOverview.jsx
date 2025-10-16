@@ -7,13 +7,11 @@ import EditExpense from "../../components/EditExpense";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { supabase } from "../../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../../auth/AuthProvider";
 
 export default function TripOverview({ trip }) {
+  const { session, initialized } = useAuth();
   const [theTripID, setTheTripID] = useState(trip.tripid);
-  const userID = "c8379535-2cd7-4248-8c45-1c09ebac140f";
   const [savingsFund, setSavingsFund] = useState();
   const [savingsFundID, setSavingsFundID] = useState();
   const [expenses, setExpenses] = useState([]);
@@ -46,8 +44,13 @@ export default function TripOverview({ trip }) {
 
   async function getSavingsFund() {
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
       const savingsFundData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}&userId=${userID}`,
+        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -64,8 +67,14 @@ export default function TripOverview({ trip }) {
 
   async function getExpenses() {
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
       const expensesData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}&userId=${userID}`,
+        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -80,9 +89,14 @@ export default function TripOverview({ trip }) {
   }
 
   useEffect(() => {
-    getSavingsFund();
-    getExpenses();
-  }, []);
+    if (!initialized || !session || !trip) {
+      return;
+    }
+    (async () => {
+      await getSavingsFund();
+      await getExpenses();
+    })();
+  }, [initialized, session, trip?.tripid]);
 
   useEffect(() => {
     if (savingsFund != null && expenses.length > 0) {
@@ -274,7 +288,6 @@ export default function TripOverview({ trip }) {
         members={trip.members}
         tripSplit={trip.default_split}
         tripID={theTripID}
-        userID={userID}
       />
       {addFundsOpen && savingsFund != null && savingsFundID != null && (
         <AddFunds

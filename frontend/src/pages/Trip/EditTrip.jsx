@@ -3,9 +3,7 @@ import "../../css/edittrip.css";
 import { useState } from "react";
 import Confirm from "../../components/Confirmation";
 import { supabase } from "../../supabaseClient";
-
-const { data } = await supabase.auth.getSession();
-const token = data.session?.access_token;
+import { useAuth } from "../../auth/AuthProvider";
 
 const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
@@ -99,6 +97,12 @@ export default function EditTrip({ trip }) {
     console.log(updateTrip);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
       const updateResp = await fetch(
         "https://wanderfunds-backend.onrender.com/api/trip",
         {
@@ -131,6 +135,12 @@ export default function EditTrip({ trip }) {
     setDisplayConfirm(false);
 
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
       const deleteResp = await fetch(
         "https://wanderfunds-backend.onrender.com/api/trip/" + trip.tripid,
         {
