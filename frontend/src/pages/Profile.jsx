@@ -24,9 +24,12 @@ export default function Profile() {
         return;
       }
 
-      const profileData = await fetch(`http://localhost:3000/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const profileData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/profile`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       const profileJson = await profileData.json();
 
       console.log(profileJson);
@@ -75,6 +78,10 @@ export default function Profile() {
                     to={"/profile/edit"}
                     id="buttonSave"
                     className="button buttonProfile"
+                    state={{
+                      name: profile.name,
+                      emailNotif: profile.email_notifications,
+                    }}
                   >
                     EDIT PROFILE
                   </Link>

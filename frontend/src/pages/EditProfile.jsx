@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/header";
 import MainSideBar from "../components/MainSideBar";
 import TripHeader from "../components/TripHeader";
@@ -9,82 +9,146 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
 
+function validateEdit(name) {
+  const profileErrors = {};
+
+  if (name == "") {
+    profileErrors.name = "Name cannot be empty";
+  }
+
+  return profileErrors;
+}
+
 export default function EditProfile() {
+  const { state } = useLocation();
+
   const [loading, setLoading] = useState(true);
   const { session, initialized } = useAuth();
-  const [profile, setProfile] = useState(null);
+  const [profileName, setProfileName] = useState(state?.name ?? "");
+  const [profileNotif, setProfileNotif] = useState(!!state?.emailNotif);
+  const [updateError, setUpdateError] = useState(false);
+  const [updateResult, setUpdateResult] = useState(null);
 
-  async function getProfile() {
+  const [validationErrors, setValidationErrors] = useState({});
+
+  const navigate = useNavigate();
+
+  async function saveProfile(e) {
+    e.preventDefault();
+
+    setValidationErrors({});
+
+    const formValidation = validateEdit(profileName);
+    setValidationErrors(formValidation);
+
+    if (Object.keys(formValidation).length != 0) {
+      return;
+    }
+
+    const updateProfile = {};
+    updateProfile["name"] = profileName;
+    updateProfile["email_notifications"] = profileNotif;
+
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
-
       if (!token) {
-        setLoading(false);
         return;
       }
 
-      const profileData = await fetch(`http://localhost:3000/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const profileJson = await profileData.json();
+      const updateResp = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/profile",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateProfile),
+        }
+      );
 
-      console.log(profileJson);
+      console.log(updateResp);
 
-      setProfile(profileJson);
-      setLoading(false);
+      if (updateResp.status == 200) {
+        setUpdateError(false);
+        setUpdateResult("Profile updated succesfully!");
+        setTimeout(() => goBack(), 1000);
+      } else {
+        setUpdateError(true);
+        setUpdateResult("There was an error updating your profile");
+        console.log("Error");
+      }
     } catch (e) {
       console.log(e);
-      setLoading(false);
+      setUpdateError(true);
+      setUpdateResult("There was an error updating your profile");
     }
   }
 
-  useEffect(() => {
-    getProfile();
-    console.log("Profile mounted");
-    return () => console.log("Profile unmounted");
-  }, []);
+  function goBack() {
+    navigate("/profile");
+  }
 
   return (
     <div>
-      {!loading ? (
-        <>
-          <Header></Header>
-          <div id="mainContent">
-            <MainSideBar id="mainSideBar" />
-            <div id="dashboardCenterSection">
-              <div id="profileCenterContent">
-                <h2 id="editTitle" style={{ textAlign: "left" }}>
-                  PROFILE
-                </h2>
-                <p className="labelTitle">Name:</p>
-                <p className="profileAnswer">{profile.name}</p>
-                <p className="labelTitle">Email:</p>
-                <p className="profileAnswer">{profile.email}</p>
-                <p className="labelTitle">Password:</p>
-                <p className="profileAnswer">**********</p>
-                <div className="labelInLine">
-                  <p className="labelTitle">Email notifications:</p>
-                  <input
-                    type="checkbox"
-                    checked={profile.email_notifications === true}
-                  />
-                </div>
-                <div className="profileButtonContainer">
-                  <button id="buttonSave" className="button">
-                    EDIT PROFILE
-                  </button>
-                  <button id="buttonLeave" className="button">
-                    DELETE PROFILE
-                  </button>
-                </div>
+      <>
+        <Header></Header>
+        <div id="mainContent">
+          <MainSideBar id="mainSideBar" />
+          <div id="dashboardCenterSection">
+            <div id="profileCenterContent">
+              <h2 id="editTitle" style={{ textAlign: "left" }}>
+                EDIT PROFILE
+              </h2>
+              {updateResult && (
+                <p
+                  className={updateError ? "errorDisplayText" : "successText"}
+                  style={{ margin: 0 }}
+                >
+                  {updateResult}
+                </p>
+              )}
+              <p className="labelTitle">Name:</p>
+              <input
+                type="text"
+                className="formInputProfile"
+                value={profileName}
+                onChange={(e) => setProfileName(e.target.value)}
+              />
+              {validationErrors.name && (
+                <p className="errorDisplayText" style={{ margin: 0 }}>
+                  {validationErrors.name}
+                </p>
+              )}
+              <div className="labelInLine">
+                <p className="labelTitle">Email notifications:</p>
+                <input
+                  type="checkbox"
+                  checked={profileNotif}
+                  onChange={(e) => setProfileNotif(e.target.checked)}
+                />
+              </div>
+              <div className="profileButtonContainer">
+                <button
+                  id="buttonSave"
+                  onClick={saveProfile}
+                  className="button buttonProfile"
+                >
+                  SAVE PROFILE
+                </button>
+                <button
+                  id="buttonCancel"
+                  onClick={goBack}
+                  className="button buttonProfile"
+                >
+                  BACK
+                </button>
               </div>
             </div>
           </div>
-        </>
-      ) : (
-        <div>Loading...</div>
-      )}
+        </div>
+      </>
     </div>
   );
 }

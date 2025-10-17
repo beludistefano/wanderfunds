@@ -573,6 +573,39 @@ app.get("/api/profile", requireAuth, async (req, res) => {
 });
 
 /**
+ * This endpoint will update the the logged in user's name and email notif preferences on their profile
+ */
+app.put("/api/profile", requireAuth, async (req, res) => {
+  const { name, email_notifications } = req.body;
+
+  if (!name || name == "") {
+    return res.status(400).send("Error: Name cannot be empty");
+  }
+
+  const updateProfileQuery = `
+    UPDATE profiles
+    SET
+      name   = $1,
+      email_notifications = $2
+    WHERE user_id = $3
+    `;
+
+  try {
+    const profileUpdate = await pool.query(updateProfileQuery, [
+      name,
+      email_notifications,
+      req.user.id,
+    ]);
+
+    console.log(profileUpdate);
+
+    return res.status(200).json({ result: "Profile updated" });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
  * Accept invitation to a trip
  */
 app.get("/api/acceptinvitation", requireAuth, async (req, res) => {
