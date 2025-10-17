@@ -48,6 +48,7 @@ export default function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoading(true);
     console.log("Registration attempt:", { userEmail, name, password });
 
     setValidationErrors({});
@@ -64,7 +65,7 @@ export default function Register() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: userEmail,
       password: password,
       options: {
@@ -77,8 +78,38 @@ export default function Register() {
     if (error) {
       setErrorMsg(error.message);
       console.log(error.message);
+      return;
     } else {
-      navigate("/login");
+      setErrorMsg("");
+    }
+
+    const userId = data.user?.id;
+    console.log("New user ID:", userId);
+
+    var createProfileData = {};
+    createProfileData["name"] = name;
+    createProfileData["email"] = userEmail;
+    createProfileData["user_id"] = userId;
+
+    try {
+      const createProfile = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/profile",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(createProfileData),
+        }
+      );
+
+      const createResp = await createProfile.json();
+      console.log(createResp);
+      navigate("/");
+    } catch (e) {
+      console.log(e.message);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -166,8 +197,8 @@ export default function Register() {
             )}
           </div>
 
-          <button type="submit" className="loginButton">
-            Register
+          <button type="submit" className="loginButton" disabled={loading}>
+            {loading ? "Registering..." : "Register"}
           </button>
           {errorMsg != "" && (
             <div id="registrationResult" className="errorDisplayText">

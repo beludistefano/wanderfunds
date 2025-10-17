@@ -573,6 +573,45 @@ app.get("/api/profile", requireAuth, async (req, res) => {
 });
 
 /**
+ * This endpoint will create a profile for a recently registrated user
+ */
+app.post("/api/profile", async (req, res) => {
+  const { name, user_id, email } = req.body;
+
+  if (!name || name == "") {
+    return res.status(400).send("Error: Name cannot be empty");
+  }
+
+  if (!user_id || user_id == "") {
+    return res.status(400).send("Error: User ID cannot be empty");
+  }
+
+  if (!email || email == "") {
+    return res.status(400).send("Error: Email cannot be empty");
+  }
+
+  const createProfileQuery = `
+    INSERT INTO profiles (user_id, name, email, email_notifications)
+    VALUES ($1, $2, $3, $4)
+    `;
+
+  try {
+    const createProfile = await pool.query(createProfileQuery, [
+      user_id,
+      name,
+      email,
+      true,
+    ]);
+
+    console.log(createProfile);
+
+    return res.status(200).json({ result: "Profile created" });
+  } catch (e) {
+    return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
  * This endpoint will update the the logged in user's name and email notif preferences on their profile
  */
 app.put("/api/profile", requireAuth, async (req, res) => {
