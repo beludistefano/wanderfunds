@@ -1,19 +1,19 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import MainSideBar from "../components/MainSideBar";
-import TripHeader from "../components/TripHeader";
-import TripMenu from "../components/TripMenu";
 import "../css/profile.css";
-import MembersTrip from "./Trip/MembersTrip";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
+import Confirm from "../components/Confirmation";
 
 export default function Profile() {
   const [loading, setLoading] = useState(true);
   const { session, initialized } = useAuth();
   const [profile, setProfile] = useState(null);
   const [displayConfirm, setDisplayConfirm] = useState(false);
+
+  const navigate = useNavigate();
 
   async function getProfile() {
     try {
@@ -63,7 +63,10 @@ export default function Profile() {
         }
       );
 
+      await supabase.auth.signOut();
+
       console.log(deleteProfile);
+      navigate("/");
     } catch (e) {
       console.log(e);
     }

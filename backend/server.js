@@ -604,8 +604,6 @@ app.post("/api/profile", async (req, res) => {
       true,
     ]);
 
-    console.log(createProfile);
-
     return res.status(200).json({ result: "Profile created" });
   } catch (e) {
     return res.status(500).json({ error: e });
@@ -636,8 +634,6 @@ app.put("/api/profile", requireAuth, async (req, res) => {
       email_notifications,
       req.user.id,
     ]);
-
-    console.log(profileUpdate);
 
     return res.status(200).json({ result: "Profile updated" });
   } catch (e) {
@@ -692,7 +688,6 @@ app.get("/api/acceptinvitation", requireAuth, async (req, res) => {
     }
 
     const invitation = invitationData.rows[0];
-    console.log(invitation);
 
     if (invitation.status === "declined") {
       return res.status(500).json({ result: "Cannot accept a declined trip" });
@@ -746,7 +741,6 @@ app.get("/api/rejectinvitation", async (req, res) => {
       invitation_token,
     ]);
 
-    console.log(tripInvitationResult);
     if (tripInvitationResult.rows.length === 0) {
       return res.status(500).send("Error rejecting invitation");
     }
