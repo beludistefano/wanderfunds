@@ -1,4 +1,4 @@
-const { supabaseAdmin } = require("./supabase.js");
+import { supabaseAdmin } from "./supabase.js";
 
 export async function requireAuth(req, res, next) {
   const auth = req.headers.authorization || "";
