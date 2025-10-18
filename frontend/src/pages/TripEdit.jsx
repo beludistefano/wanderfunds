@@ -15,13 +15,16 @@ export default function TripEdit() {
   const { tripid } = useParams();
   const [trip, setTrip] = useState();
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(null);
   const { session, initialized } = useAuth();
+
+  const token = session?.access_token;
 
   async function getTrip() {
     try {
-      const { data } = await supabase.auth.getSession();
+      // const { data } = await supabase.auth.getSession();
 
-      const token = data.session?.access_token;
+      // const token = data.session?.access_token;
       if (!token) {
         setLoading(false);
         return;
@@ -36,7 +39,7 @@ export default function TripEdit() {
       const trip = await tripData.json();
 
       console.log(trip);
-      console.log(tripid);
+      setUserRole(trip[0]["role"]);
 
       setTrip(trip[0]);
       setLoading(false);
@@ -47,11 +50,11 @@ export default function TripEdit() {
   }
 
   useEffect(() => {
-    if (!initialized || !session) {
+    if (!initialized || !token) {
       return;
     }
     getTrip();
-  }, [initialized, session, tripid]);
+  }, [initialized, token, tripid]);
 
   return (
     <div>
@@ -63,7 +66,7 @@ export default function TripEdit() {
             <div id="dashboardCenterSection">
               <TripHeader destination={trip.destination} status={trip.status} />
               <TripMenu tripID={tripid} />
-              <EditTrip trip={trip} />
+              <EditTrip trip={trip} role={userRole} />
             </div>
           </div>
         </>

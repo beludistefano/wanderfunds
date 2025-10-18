@@ -20,12 +20,23 @@ function validateLogin(username, password) {
   return loginErrors;
 }
 
+function validateEmail(username) {
+  const loginErrors = {};
+
+  if (username == "") {
+    loginErrors.username = "Email cannot be empty";
+  }
+
+  return loginErrors;
+}
+
 export default function Login() {
   const [userEmail, setUserEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
+  const [updatePasswordMessage, setUpdatePasswordMessage] = useState(null);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,6 +52,37 @@ export default function Login() {
       navigate(redirectTo, { replace: true });
     }
   }, [initialized, session, navigate, location.state]);
+
+  async function updatePass() {
+    setValidationErrors({});
+    const errs = validateEmail(userEmail);
+    setValidationErrors(errs);
+    if (Object.keys(errs).length) {
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.resetPasswordForEmail(
+        userEmail,
+        {
+          redirectTo: "http://localhost:5173/update-password",
+        }
+      );
+
+      if (error) {
+        setErrorMsg(error.message);
+        setSubmitting(false);
+        return;
+      } else {
+        setSubmitting(false);
+        setUpdatePasswordMessage("Please check your inbox!");
+      }
+    } catch (e) {
+      setSubmitting(false);
+      setErrorMsg(error.message);
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -105,7 +147,7 @@ export default function Login() {
               <p className="errorDisplayText">{validationErrors.password}</p>
             )}
             <div className="forgotPassword">
-              <a href="#">Forgot Password?</a>
+              <a onClick={updatePass}>Forgot Password?</a>
             </div>
           </div>
 
@@ -115,6 +157,11 @@ export default function Login() {
           {errorMsg != "" && (
             <div id="loginResult" className="errorDisplayText">
               {errorMsg}
+            </div>
+          )}
+          {updatePasswordMessage != "" && (
+            <div id="updateMessage" className="errorDisplayText">
+              {updatePasswordMessage}
             </div>
           )}
         </form>

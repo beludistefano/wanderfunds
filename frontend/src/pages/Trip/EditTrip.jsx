@@ -38,10 +38,11 @@ function validateEdit(destination, fromDate, toDate) {
   return tripErrors;
 }
 
-export default function EditTrip({ trip }) {
+export default function EditTrip({ trip, role }) {
   const navigate = useNavigate();
 
   const [tripID, setTripID] = useState(trip.tripid);
+  const [userRole, setUserRole] = useState(role);
 
   const [updateDestination, setUpdateDestination] = useState(trip.destination);
   const [updateFromDate, setUpdateFromDate] = useState(

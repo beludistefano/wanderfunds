@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/members.css";
 
-export default function MembersTrip({ tripMembers }) {
+export default function MembersTrip({ tripMembers, role }) {
   const [tripMembersData, setTripMembersData] = useState(tripMembers);
+  const [userRole, setUserRole] = useState(role);
 
   return (
     <>
@@ -36,38 +37,48 @@ export default function MembersTrip({ tripMembers }) {
                 <FontAwesomeIcon className="fa-icon" icon={faUser} />
                 <div className="memberName">{member.name}</div>
                 <div className="memberRole">{"(" + member.role + ")"}</div>
-                <div className="removeRow">
-                  <FontAwesomeIcon icon={faX} /> Remove
-                </div>
+                {userRole === "Owner" && (
+                  <div className="removeRow">
+                    <FontAwesomeIcon icon={faX} /> Remove
+                  </div>
+                )}
               </div>
             );
           })}
         </div>
         <div id="memberButtonsContainer">
-          <button id="buttonSave" className="button">
-            ADD GUEST
-          </button>
-          <button id="buttonSave" className="button">
-            ADD PARTICIPANT
-          </button>
-          <button
-            onClick={() => {
-              navigate(`/trip/${trip.tripid}`);
-            }}
-            id="buttonLeave"
-            className="button"
-          >
-            LEAVE TRIP
-          </button>
-          <button
-            onClick={() => {
-              navigate(`/trip/${trip.tripid}`);
-            }}
-            id="buttonLeave"
-            className="button"
-          >
-            DELETE TRIP
-          </button>
+          {(userRole === "Owner" || userRole === "Participant") && (
+            <>
+              <button id="buttonSave" className="button">
+                ADD GUEST
+              </button>
+              <button id="buttonSave" className="button">
+                ADD PARTICIPANT
+              </button>
+            </>
+          )}
+          {(userRole === "Guest" || userRole === "Participant") && (
+            <button
+              onClick={() => {
+                navigate(`/trip/${trip.tripid}`);
+              }}
+              id="buttonLeave"
+              className="button"
+            >
+              LEAVE TRIP
+            </button>
+          )}
+          {userRole === "Owner" && (
+            <button
+              onClick={() => {
+                navigate(`/trip/${trip.tripid}`);
+              }}
+              id="buttonLeave"
+              className="button"
+            >
+              DELETE TRIP
+            </button>
+          )}
         </div>
       </div>
     </>

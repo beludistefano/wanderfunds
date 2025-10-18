@@ -15,6 +15,7 @@ import AuthProvider from "./auth/AuthProvider";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import UpdatePassword from "./pages/UpdatePassword";
 
 function App() {
   return (
@@ -85,6 +86,7 @@ function App() {
               path="/trip/reject/:invitationid"
               element={<RejectInvitation />}
             />
+            <Route path="/update-password" element={<UpdatePassword />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

@@ -166,6 +166,36 @@ app.delete("/api/trip", requireAuth, (req, res) =>
 );
 
 /**
+ * This GET request will return the user role of the logged in user for a given trip
+ */
+app.get("/api/trip/user_role/:tripID", requireAuth, async (req, res) => {
+  const { tripID } = req.params;
+
+  if (!tripID || tripID == "") {
+    return res.status(400).json("Trip ID is required");
+  }
+
+  const roleQuery = `
+    SELECT role
+    FROM user_role
+    WHERE tripid = $1
+    AND user_id = $2
+  `;
+
+  try {
+    const userRoleResult = await pool.query(roleQuery, [tripID, req.user.id]);
+
+    if (userRoleResult.rows.length <= 0) {
+      return res.status(204).json({ role: "no content" });
+    }
+
+    return res.status(200).json({ role: userRoleResult.rows[0] });
+  } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+});
+
+/**
  * This DELETE request will delete a trip by its ID
  */
 app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {

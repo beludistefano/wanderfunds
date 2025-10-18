@@ -37,6 +37,7 @@
 .forgotPassword {
   text-align: right;
   margin-top: 6px;
+  cursor: pointer;
 }
 
 .forgotPassword a {
@@ -83,4 +84,8 @@
   width: 30%;
   margin: auto;
   margin-bottom: 20px;
+}
+
+#mainContentIndex .loginButton:hover {
+  color: white;
 }

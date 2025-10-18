@@ -13,17 +13,29 @@ export default function Members() {
   const { tripid } = useParams();
   const [tripMembers, setTripMembers] = useState();
   const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null);
   const { session, initialized } = useAuth();
+
+  const token = session?.access_token;
 
   async function getTripMembers() {
     try {
-      const { data } = await supabase.auth.getSession();
 
-      const token = data.session?.access_token;
       if (!token) {
         setLoading(false);
         return;
       }
+
+      const tripData = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const tripJson = await tripData.json();
+
+      setRole(tripJson[0]["role"]);
 
       const tripMembersData = await fetch(
         `https://wanderfunds-backend.onrender.com/api/userroles?tripId=${tripid}`,
@@ -45,7 +57,7 @@ export default function Members() {
 
   useEffect(() => {
     getTripMembers();
-  }, [initialized, session, tripid]);
+  }, [initialized, token, tripid]);
 
   return (
     <div>
@@ -60,7 +72,7 @@ export default function Members() {
                 status={tripMembers[0].status}
               />
               <TripMenu tripID={tripid} />
-              <MembersTrip tripMembers={tripMembers} />
+              <MembersTrip tripMembers={tripMembers} role={role} />
             </div>
           </div>{" "}
         </>

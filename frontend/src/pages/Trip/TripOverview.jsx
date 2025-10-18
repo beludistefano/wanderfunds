@@ -9,7 +9,7 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { supabase } from "../../supabaseClient";
 import { useAuth } from "../../auth/AuthProvider";
 
-export default function TripOverview({ trip }) {
+export default function TripOverview({ trip, userRole }) {
   const { session, initialized } = useAuth();
   const [theTripID, setTheTripID] = useState(trip.tripid);
   const [savingsFund, setSavingsFund] = useState();
@@ -18,6 +18,7 @@ export default function TripOverview({ trip }) {
   const [totalTripCost, setTotalTripCost] = useState(0);
   const [pendingExpenses, setPendingExpenses] = useState(0);
   const [tripBalance, setTripBalance] = useState(0);
+  const [role, setRole] = useState(userRole);
 
   const [selectedExpense, setSelectedExpense] = useState(null);
 
@@ -25,6 +26,8 @@ export default function TripOverview({ trip }) {
   const [addFundsOpen, setAddFundsOpen] = useState(false);
   const [removeFundsOpen, setRemoveFundsOpen] = useState(false);
   const [editExpenseOpen, setEditExpenseOpen] = useState(false);
+
+  const token = session?.access_token;
 
   const noExpensesPhrases = [
     "Your wallet is safe... for now 💸",
@@ -38,14 +41,14 @@ export default function TripOverview({ trip }) {
   }
 
   async function refreshPage() {
-    await getSavingsFund();
+    if (role == "Owner" || role == "Participant") {
+      await getSavingsFund();
+    }
     await getExpenses();
   }
 
   async function getSavingsFund() {
     try {
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
       if (!token) {
         return;
       }
@@ -67,8 +70,6 @@ export default function TripOverview({ trip }) {
 
   async function getExpenses() {
     try {
-      const { data } = await supabase.auth.getSession();
-      const token = data.session?.access_token;
       if (!token) {
         return;
       }
@@ -89,14 +90,16 @@ export default function TripOverview({ trip }) {
   }
 
   useEffect(() => {
-    if (!initialized || !session || !trip) {
+    if (!initialized || !token || !trip) {
       return;
     }
     (async () => {
-      await getSavingsFund();
+      if (role == "Owner" || role == "Participant") {
+        await getSavingsFund();
+      }
       await getExpenses();
     })();
-  }, [initialized, session, trip?.tripid]);
+  }, [initialized, token, trip?.tripid]);
 
   useEffect(() => {
     if (savingsFund != null && expenses.length > 0) {
@@ -230,56 +233,58 @@ export default function TripOverview({ trip }) {
             )}
           </div>
         </div>
-        <div id="savingsContainer">
-          <div id="savingsFundTitle">
-            <h3>Savings Fund</h3>
-          </div>
-          <div id="fundsCardsContainer">
-            <div className="fundsCardsRow">
-              <div className="fundsCard">
-                {trip.status == "Planning" ? (
-                  <>
-                    <h4>Expected Expenses:</h4>
-                    <p>$ {pendingExpenses}</p>
-                  </>
-                ) : (
-                  <>
-                    <h4>Pending Expenses:</h4>
-                    <p>$ {pendingExpenses}</p>
-                  </>
-                )}
-              </div>
-              <div className="fundsCard">
-                <h4>Saved Funds:</h4>
-                <p>{savingsFund ? "$ " + savingsFund : "Loading..."}</p>
-              </div>
-              <div className="fundsCard balanceCard">
-                <h4>Balance:</h4>
-                <p className={tripBalance < 0 ? "redText" : "greenText"}>
-                  $ {tripBalance}
-                </p>
-              </div>
+        {(role == "Owner" || role == "Participant") && (
+          <div id="savingsContainer">
+            <div id="savingsFundTitle">
+              <h3>Savings Fund</h3>
             </div>
-            {trip.status == "Planning" ? null : (
+            <div id="fundsCardsContainer">
               <div className="fundsCardsRow">
-                <div className="fundsCard totalTripCard">
-                  <h4>Total Trip Cost:</h4>
-                  <p>$ {totalTripCost}</p>
+                <div className="fundsCard">
+                  {trip.status == "Planning" ? (
+                    <>
+                      <h4>Expected Expenses:</h4>
+                      <p>$ {pendingExpenses}</p>
+                    </>
+                  ) : (
+                    <>
+                      <h4>Pending Expenses:</h4>
+                      <p>$ {pendingExpenses}</p>
+                    </>
+                  )}
+                </div>
+                <div className="fundsCard">
+                  <h4>Saved Funds:</h4>
+                  <p>{savingsFund ? "$ " + savingsFund : "Loading..."}</p>
+                </div>
+                <div className="fundsCard balanceCard">
+                  <h4>Balance:</h4>
+                  <p className={tripBalance < 0 ? "redText" : "greenText"}>
+                    $ {tripBalance}
+                  </p>
                 </div>
               </div>
-            )}
-            <button
-              onClick={() => setAddFundsOpen(true)}
-              className="button"
-              id="addFundsButton"
-            >
-              Add Funds
-            </button>
-            <button onClick={() => setRemoveFundsOpen(true)} id="removeFunds">
-              Remove Funds
-            </button>
+              {trip.status == "Planning" ? null : (
+                <div className="fundsCardsRow">
+                  <div className="fundsCard totalTripCard">
+                    <h4>Total Trip Cost:</h4>
+                    <p>$ {totalTripCost}</p>
+                  </div>
+                </div>
+              )}
+              <button
+                onClick={() => setAddFundsOpen(true)}
+                className="button"
+                id="addFundsButton"
+              >
+                Add Funds
+              </button>
+              <button onClick={() => setRemoveFundsOpen(true)} id="removeFunds">
+                Remove Funds
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <AddExpense
         isOpen={isExpenseOpen}

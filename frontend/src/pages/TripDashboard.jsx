@@ -14,14 +14,14 @@ import { useAuth } from "../auth/AuthProvider";
 export default function TripDashboard() {
   const { tripid } = useParams();
   const [trip, setTrip] = useState(null);
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const { session, initialized } = useAuth();
 
+  const token = session?.access_token;
+
   async function getTrip() {
     try {
-      const { data } = await supabase.auth.getSession();
-
-      const token = data.session?.access_token;
       if (!token) {
         setLoading(false);
         return;
@@ -42,6 +42,7 @@ export default function TripDashboard() {
       const tripJson = await tripData.json();
 
       setTrip(tripJson[0]);
+      setRole(tripJson[0]["role"]);
       setLoading(false);
 
       console.log(tripJson[0]);
@@ -52,11 +53,11 @@ export default function TripDashboard() {
   }
 
   useEffect(() => {
-    if (!initialized || !session) {
+    if (!initialized || !token) {
       return;
     }
     getTrip();
-  }, [initialized, session, tripid]);
+  }, [initialized, token, tripid]);
 
   return (
     <div>
@@ -69,12 +70,12 @@ export default function TripDashboard() {
             <div id="dashboardCenterSection">
               <TripHeader destination={trip.destination} status={trip.status} />
               <TripMenu tripID={tripid} />
-              <TripOverview trip={trip} userID={""} />
+              <TripOverview trip={trip} userRole={role} />
             </div>
           </div>{" "}
         </>
       )}
-      + {!loading && !trip && <div>Unable to load trip.</div>}
+      {!loading && !trip && <div>Unable to load trip.</div>}
     </div>
   );
 }
