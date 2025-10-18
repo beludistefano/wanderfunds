@@ -61,7 +61,7 @@ export default function EditTrip({ trip, role }) {
 
   const [validationErrors, setValidationErrors] = useState({});
 
-  async function updateTrip(e) {
+  async function updateTripOwner(e) {
     e.preventDefault();
 
     setValidationErrors({});
@@ -106,6 +106,71 @@ export default function EditTrip({ trip, role }) {
 
       const updateResp = await fetch(
         "https://wanderfunds-backend.onrender.com/api/trip",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updateTrip),
+        }
+      );
+
+      console.log(await updateResp.json());
+
+      if (updateResp.status == 200) {
+        navigate(`/trip/${trip.tripid}`);
+      } else {
+        // HANDLE ERROR VISUALLY
+        console.log("Error");
+      }
+    } catch (e) {
+      // HANDLE ERROR VISUALLY
+      console.log(e);
+    }
+  }
+
+  async function updateTripParticipant(e) {
+    e.preventDefault();
+
+    setValidationErrors({});
+
+    const destination = updateDestination;
+    const fromDate = updateFromDate;
+    const toDate = updateToDate;
+    const status = updateStatus;
+    const description = updateDescription;
+
+    const today = new Date();
+    const formatFromDate = new Date(fromDate);
+    const formatToDate = new Date(toDate);
+
+    const formValidation = validateEdit(destination, fromDate, toDate);
+    setValidationErrors(formValidation);
+
+    if (Object.keys(formValidation).length != 0) {
+      return;
+    }
+
+    const updateTrip = {};
+    updateTrip["destination"] = destination;
+    updateTrip["from_date"] = formatFromDate;
+    updateTrip["to_date"] = formatToDate;
+    updateTrip["description"] = description;
+    updateTrip["status"] = status;
+    updateTrip["tripID"] = tripID;
+
+    console.log(updateTrip);
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const updateResp = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip-participant",
         {
           method: "PUT",
           headers: {
@@ -265,75 +330,83 @@ export default function EditTrip({ trip, role }) {
             <option value="Confirmed">Confirmed</option>
           </select>
         </div>
-        <div className="formRow">
-          <label className="formLabel" for="members">
-            Members
-          </label>
-          <input
-            id="members"
-            name="members"
-            className="formInput"
-            type="number"
-            min="0"
-            value={updateMembers}
-            onChange={(e) => setUpdateMembers(e.target.value)}
-            disabled
-          />
-        </div>
-        {updateMembers > 1 ? (
+        {userRole == "Owner" && (
           <>
             <div className="formRow">
-              <label className="formLabel" for="defaultSplit">
-                Default Split
-              </label>
-              <select
-                name="defaultSplit"
-                id="defaultSplit"
-                value={updateDefaultSplit}
-                onChange={(e) => setUpdateDefaultSplit(e.target.value)}
-              >
-                <option value="equal">Equal Shares</option>
-                <option value="own">Own Expenses</option>
-              </select>
-            </div>
-            <div className="formRow inline">
-              <label className="formLabel" for="autoAdd">
-                Auto-add expenses?
+              <label className="formLabel" for="members">
+                Members
               </label>
               <input
-                type="checkbox"
-                id="autoAdd"
-                name="autoAdd"
-                checked={updateAutoAdd}
-                onChange={(e) => setUpdateAutoAdd(e.target.checked)}
+                id="members"
+                name="members"
+                className="formInput"
+                type="number"
+                min="0"
+                value={updateMembers}
+                onChange={(e) => setUpdateMembers(e.target.value)}
+                disabled
               />
             </div>
+            {updateMembers > 1 ? (
+              <>
+                <div className="formRow">
+                  <label className="formLabel" for="defaultSplit">
+                    Default Split
+                  </label>
+                  <select
+                    name="defaultSplit"
+                    id="defaultSplit"
+                    value={updateDefaultSplit}
+                    onChange={(e) => setUpdateDefaultSplit(e.target.value)}
+                  >
+                    <option value="equal">Equal Shares</option>
+                    <option value="own">Own Expenses</option>
+                  </select>
+                </div>
+                <div className="formRow inline">
+                  <label className="formLabel" for="autoAdd">
+                    Auto-add expenses?
+                  </label>
+                  <input
+                    type="checkbox"
+                    id="autoAdd"
+                    name="autoAdd"
+                    checked={updateAutoAdd}
+                    onChange={(e) => setUpdateAutoAdd(e.target.checked)}
+                  />
+                </div>
+              </>
+            ) : null}
           </>
-        ) : null}
+        )}
         <input
           id="buttonSave"
           className="button"
           type="submit"
           value="SAVE"
-          onClick={updateTrip}
+          onClick={
+            userRole == "Owner" ? updateTripOwner : updateTripParticipant
+          }
         ></input>
       </form>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-start",
-        }}
-      >
-        <button
-          onClick={() => {
-            setDisplayConfirm(true);
+      {userRole == "Owner" && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-start",
           }}
-          id="buttonDelete"
-          className="button"
         >
-          DELETE TRIP
-        </button>
-      </div>
+          <button
+            onClick={() => {
+              setDisplayConfirm(true);
+            }}
+            id="buttonDelete"
+            className="button"
+          >
+            DELETE TRIP
+          </button>
+        </div>
+      )}
       <div
         style={{
           display: "flex",

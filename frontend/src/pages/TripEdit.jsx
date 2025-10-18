@@ -10,6 +10,7 @@ import { useAuth } from "../auth/AuthProvider";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "../supabaseClient";
+import NoPermission from "../components/NoPermission";
 
 export default function TripEdit() {
   const { tripid } = useParams();
@@ -66,7 +67,10 @@ export default function TripEdit() {
             <div id="dashboardCenterSection">
               <TripHeader destination={trip.destination} status={trip.status} />
               <TripMenu tripID={tripid} />
-              <EditTrip trip={trip} role={userRole} />
+              {(userRole == "Owner" || userRole == "Participant") && (
+                <EditTrip trip={trip} role={userRole} />
+              )}
+              {userRole == "Guest" && <NoPermission />}
             </div>
           </div>
         </>

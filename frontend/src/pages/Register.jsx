@@ -77,6 +77,7 @@ export default function Register() {
 
     if (error) {
       setErrorMsg(error.message);
+      setLoading(false);
       console.log(error.message);
       return;
     } else {

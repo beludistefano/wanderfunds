@@ -23,9 +23,6 @@ app.use(
 
 app.use(express.json());
 
-// Demo user with mariabelendistefano@gmail.com email
-// const DEMO_USER_ID = "e2f52ed5-19a9-45fa-aec2-5c9ac0b9a618";
-
 /**
  * This GET request returns all trips where the user has a role in
  */
@@ -220,7 +217,7 @@ app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
 });
 
 /**
- * This PUT request will update a trip
+ * This PUT request will update a trip with all owner fields
  */
 app.put("/api/trip", requireAuth, async (req, res) => {
   const {
@@ -266,6 +263,53 @@ app.put("/api/trip", requireAuth, async (req, res) => {
     status,
     default_split,
     auto_add,
+    tripID,
+  ];
+
+  try {
+    const updateResult = await pool.query(tripQuery, tripNewValues);
+
+    return res.status(200).json(updateResult);
+  } catch (e) {
+    return res.status(500).json(e);
+  }
+});
+
+/**
+ * This PUT request will update a trip with participant fields
+ */
+app.put("/api/trip-participant", requireAuth, async (req, res) => {
+  const { tripID, destination, description, from_date, to_date, status } =
+    req.body;
+
+  if (!tripID || !destination || destination == "" || tripID == "") {
+    return res
+      .status(400)
+      .send("Error: destination and trip ID cannot be empty");
+  }
+
+  if (from_date > to_date) {
+    return res.status(400).send("Error: Trip must start before end date");
+  }
+
+  const tripQuery = `
+    UPDATE trips
+    SET
+      destination   = $1,
+      description   = $2,
+      from_date     = $3,
+      to_date       = $4,
+      status        = $5
+    WHERE tripid    = $6
+    RETURNING *;
+    `;
+
+  const tripNewValues = [
+    destination,
+    description,
+    from_date,
+    to_date,
+    status,
     tripID,
   ];
 

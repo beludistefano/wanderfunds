@@ -171,14 +171,21 @@ export default function TripOverview({ trip, userRole }) {
         <div id="expensesContainer">
           <div id="expectedExpensesTitleSection">
             <h3 id="expectedExpensesTitle">Expected Expenses</h3>
-            <div
-              id="addExpenseButton"
-              onClick={() => {
-                setIsExpenseOpen(true);
-              }}
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </div>
+            {(role == "Owner" || role == "Participant") && (
+              <div
+                id="addExpenseButton"
+                onClick={() => {
+                  setIsExpenseOpen(true);
+                }}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </div>
+            )}
+            {role == "Guest" && (
+              <div id="addExpenseButton">
+                <></>
+              </div>
+            )}
           </div>
           <div id="expensesTableContainer">
             {expenses.length == 0 ? (
@@ -199,15 +206,18 @@ export default function TripOverview({ trip, userRole }) {
                   {expenses.map((e) => {
                     return (
                       <tr id={e.expense_id} key={e.expense_id}>
-                        <td
-                          className="editPencil"
-                          onClick={() => {
-                            setEditExpenseOpen(true);
-                            setSelectedExpense(e);
-                          }}
-                        >
-                          ✏️
-                        </td>
+                        {(role == "Owner" || role == "Participant") && (
+                          <td
+                            className="editPencil"
+                            onClick={() => {
+                              setEditExpenseOpen(true);
+                              setSelectedExpense(e);
+                            }}
+                          >
+                            ✏️
+                          </td>
+                        )}
+                        {role == "Guest" && <td></td>}
                         <td>{e.name}</td>
                         <td style={{ textAlign: "right" }}>$ {e.amount}</td>
                         <td style={{ textAlign: "right" }}>

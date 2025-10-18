@@ -1,0 +1,15 @@
+#mainNoPermission {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#mainNoPermission h2 {
+  color: #8ebed8;
+}
+
+#mainNoPermission img {
+  width: 20%;
+}
