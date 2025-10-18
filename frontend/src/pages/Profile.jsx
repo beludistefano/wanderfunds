@@ -13,6 +13,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const { session, initialized } = useAuth();
   const [profile, setProfile] = useState(null);
+  const [displayConfirm, setDisplayConfirm] = useState(false);
 
   async function getProfile() {
     try {
@@ -41,6 +42,32 @@ export default function Profile() {
       setLoading(false);
     }
   }
+
+  const deleteProfile = async (e) => {
+    e.preventDefault();
+
+    setDisplayConfirm(false);
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const deleteProfile = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/profile",
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log(deleteProfile);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     getProfile();
@@ -85,12 +112,25 @@ export default function Profile() {
                   >
                     EDIT PROFILE
                   </Link>
-                  <button id="buttonLeave" className="button">
+                  <button
+                    id="buttonLeave"
+                    onClick={() => {
+                      setDisplayConfirm(true);
+                    }}
+                    className="button"
+                  >
                     DELETE PROFILE
                   </button>
                 </div>
               </div>
             </div>
+            <Confirm
+              text={"Are you sure you want to delete your profile?"}
+              options={{ ok: "Delete", cancel: "Cancel" }}
+              isOpen={displayConfirm}
+              onConfirmOk={deleteProfile}
+              onConfirmNo={() => setDisplayConfirm(false)}
+            />
           </div>
         </>
       ) : (

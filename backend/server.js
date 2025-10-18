@@ -4,6 +4,7 @@ const cors = require("cors");
 const pool = require("./db.js");
 const { MailerSend, EmailParams, Sender, Recipient } = require("mailersend");
 const { requireAuth } = require("./authMiddleware");
+const { supabaseAdmin } = require("./supabase.js");
 
 const app = express();
 const port = process.env.PORT;
@@ -641,6 +642,28 @@ app.put("/api/profile", requireAuth, async (req, res) => {
     return res.status(200).json({ result: "Profile updated" });
   } catch (e) {
     return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * This DELETE request will delete a user and profile
+ */
+app.delete("/api/profile", requireAuth, async (req, res) => {
+  const deleteProfileQuery = `
+    DELETE FROM profiles
+    WHERE user_id = $1
+    `;
+
+  try {
+    const deleteProfile = await pool.query(deleteProfileQuery, [req.user.id]);
+
+    const deleteAuthUser = await supabaseAdmin.auth.admin.deleteUser(
+      req.user.id
+    );
+
+    return res.status(200).json({ result: "User deleted succesfully" });
+  } catch (e) {
+    return res.status(500).json(e);
   }
 });
 

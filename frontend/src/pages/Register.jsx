@@ -91,6 +91,8 @@ export default function Register() {
     createProfileData["email"] = userEmail;
     createProfileData["user_id"] = userId;
 
+    console.log(createProfileData);
+
     try {
       const createProfile = await fetch(
         "https://wanderfunds-backend.onrender.com/api/profile",
