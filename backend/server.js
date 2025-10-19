@@ -202,13 +202,68 @@ app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
     return res.status(400).json("Trip ID is required");
   }
 
+  const relatedRolesQuery = `
+    SELECT user_id, t.destination
+    FROM user_role as u
+    JOIN trips as t
+    ON u.tripid = t.tripid
+    WHERE u.user_id != $1
+    AND u.tripid = $2
+  `;
+
   const deleteTrip = `
   DELETE FROM trips
   WHERE tripid = $1
   RETURNING *`;
 
   try {
+    const usersAssociated = await pool.query(relatedRolesQuery, [
+      req.user.id,
+      tripID,
+    ]);
+
     const deleteTripResult = await pool.query(deleteTrip, [tripID]);
+
+    if (deleteTripResult.rowCount == 0) {
+      return res.status(404).json({ result: "Trip not found" });
+    }
+
+    var notificationCreationResult = "";
+
+    if (usersAssociated.rows.length > 0) {
+      const notifTitle = `Trip deleted!`;
+      const notifDesc = `Your trip to ${usersAssociated.rows[0].destination} has been deleted by its owner!`;
+
+      const values = usersAssociated.rows
+        .map((_, i) => `($1, $2, $3, $${i + 4})`)
+        .join(", ");
+
+      const bulkCreateNotifications = `
+        INSERT INTO notifications (notif_title, notif_desc, read, user_id)
+        VALUES ${values}
+      `;
+
+      const params = [
+        notifTitle,
+        notifDesc,
+        false,
+        ...usersAssociated.rows.map((user) => user.user_id),
+      ];
+
+      notificationCreationResult = await pool.query(
+        bulkCreateNotifications,
+        params
+      );
+    }
+
+    if (
+      notificationCreationResult != "" &&
+      notificationCreationResult.rowCount == 0
+    ) {
+      return res
+        .status(500)
+        .json({ result: "Trip deleted; failed notifications" });
+    }
 
     return res.status(200).json(deleteTripResult);
   } catch (e) {
@@ -719,17 +774,66 @@ app.put("/api/profile", requireAuth, async (req, res) => {
  * This DELETE request will delete a user and profile
  */
 app.delete("/api/profile", requireAuth, async (req, res) => {
+  const relatedRolesQuery = `
+    SELECT user_id, t.destination
+    FROM user_role as u
+    JOIN trips as t
+    ON u.tripid = t.tripid
+    WHERE t.ownerid = $1
+    AND u.user_id != $2
+  `;
+
   const deleteProfileQuery = `
     DELETE FROM profiles
     WHERE user_id = $1
     `;
 
   try {
+    const relatedUsersResult = await pool.query(relatedRolesQuery, [
+      req.user.id,
+      req.user.id,
+    ]);
+
     const deleteProfile = await pool.query(deleteProfileQuery, [req.user.id]);
+
+    if (deleteProfile.rowCount == 0) {
+      return res.status(500).json({ result: "Error deleting profile" });
+    }
 
     const deleteAuthUser = await supabaseAdmin.auth.admin.deleteUser(
       req.user.id
     );
+
+    var notificationsResult = "";
+
+    if (relatedUsersResult.rows.length > 0) {
+      const values = relatedUsersResult.rows
+        .map((_, i) => {
+          const base = i * 4 + 1;
+          return `($${base}, $${base + 1}, $${base + 2}, $${base + 3})`;
+        })
+        .join(", ");
+
+      const bulkCreateNotifications = `
+        INSERT INTO notifications (notif_title, notif_desc, read, user_id)
+        VALUES ${values}
+      `;
+
+      const params = relatedUsersResult.rows.flatMap((row) => [
+        "Trip deleted!",
+        `Your trip to ${row.destination} has been deleted because the owner deleted their account!`,
+        false,
+        row.user_id,
+      ]);
+
+      notificationsResult = await pool.query(bulkCreateNotifications, params);
+    }
+
+    if (notificationsResult != "" && notificationsResult.rowCount == 0) {
+      return res.status(500).json({
+        result: "User deleted succesfully but problem with notifications",
+      });
+    }
 
     return res.status(200).json({ result: "User deleted succesfully" });
   } catch (e) {
