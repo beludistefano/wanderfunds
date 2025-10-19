@@ -1,7 +1,8 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import "../css/login.css";
 import Header from "../components/header";
@@ -37,6 +38,10 @@ export default function Login() {
   const [validationErrors, setValidationErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const [updatePasswordMessage, setUpdatePasswordMessage] = useState(null);
+
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const hcaptchaRef = useRef();
+  const siteKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,17 +102,29 @@ export default function Login() {
       return;
     }
 
+    if (!captchaToken) {
+      setErrorMsg("Please complete the captcha verification.");
+      setSubmitting(false);
+      return;
+    }
+
     const { error } = await supabase.auth.signInWithPassword({
       email: userEmail,
-      password,
+      password: password,
+      options: { captchaToken },
     });
 
     if (error) {
       setErrorMsg(error.message);
       setSubmitting(false);
+      setCaptchaToken(null);
+      if (hcaptchaRef.current) {
+        hcaptchaRef.current.resetCaptcha();
+      }
       return;
     }
 
+    setFailedAttempts(0);
     setSubmitting(false);
   }
 
@@ -131,7 +148,6 @@ export default function Login() {
               <p className="errorDisplayText">{validationErrors.username}</p>
             )}
           </div>
-
           <div className="formGroup loginFormGroup">
             <label htmlFor="password">Password</label>
             <input
@@ -150,7 +166,24 @@ export default function Login() {
               <a onClick={updatePass}>Forgot Password?</a>
             </div>
           </div>
-
+          <HCaptcha
+            ref={hcaptchaRef}
+            sitekey="dad63dc4-0696-48ee-966a-a5e2f540dffa"
+            onVerify={(token) => {
+              setCaptchaToken(token);
+              setErrorMsg("");
+            }}
+            onExpire={() => {
+              setCaptchaToken(null);
+              setErrorMsg("Captcha expired. Please try again.");
+              setSubmitting(false);
+            }}
+            onError={() => {
+              setErrorMsg("Captcha error. Please try again.");
+              setSubmitting(false);
+              setCaptchaToken(null);
+            }}
+          />
           <button type="submit" className="loginButton">
             Login
           </button>

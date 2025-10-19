@@ -56,15 +56,15 @@ export default function EditTrip({ trip, role }) {
   );
   const [updateAutoAdd, setUpdateAutoAdd] = useState(trip.auto_add);
   const [updateMembers, setUpdateMembers] = useState(trip.members);
-
   const [displayConfirm, setDisplayConfirm] = useState(false);
-
   const [validationErrors, setValidationErrors] = useState({});
+  const [updateErrors, setUpdateErrors] = useState(null);
 
   async function updateTripOwner(e) {
     e.preventDefault();
 
     setValidationErrors({});
+    setUpdateErrors(null);
 
     const destination = updateDestination;
     const fromDate = updateFromDate;
@@ -121,11 +121,11 @@ export default function EditTrip({ trip, role }) {
       if (updateResp.status == 200) {
         navigate(`/trip/${trip.tripid}`);
       } else {
-        // HANDLE ERROR VISUALLY
+        setUpdateErrors("There was an error updating your trip!");
         console.log("Error");
       }
     } catch (e) {
-      // HANDLE ERROR VISUALLY
+      setUpdateErrors("There was an error updating your trip!");
       console.log(e);
     }
   }
@@ -134,6 +134,7 @@ export default function EditTrip({ trip, role }) {
     e.preventDefault();
 
     setValidationErrors({});
+    setUpdateErrors(null);
 
     const destination = updateDestination;
     const fromDate = updateFromDate;
@@ -186,17 +187,19 @@ export default function EditTrip({ trip, role }) {
       if (updateResp.status == 200) {
         navigate(`/trip/${trip.tripid}`);
       } else {
-        // HANDLE ERROR VISUALLY
+        setUpdateErrors("There was an error updating your trip!");
         console.log("Error");
       }
     } catch (e) {
-      // HANDLE ERROR VISUALLY
+      setUpdateErrors("There was an error updating your trip!");
       console.log(e);
     }
   }
 
   const deleteTrip = async (e) => {
     e.preventDefault();
+
+    setUpdateErrors(null);
 
     setDisplayConfirm(false);
 
@@ -218,11 +221,11 @@ export default function EditTrip({ trip, role }) {
       if (deleteResp.status == 200) {
         navigate("/");
       } else {
-        // HANDLE ERROR VISUALLY
+        setUpdateErrors("There was an error updating your trip!");
         console.log("Error");
       }
     } catch (e) {
-      // HANDLE ERROR VISUALLY
+      setUpdateErrors("There was an error updating your trip!");
       console.log(e);
     }
   };
@@ -247,6 +250,11 @@ export default function EditTrip({ trip, role }) {
       <h2 id="editTitle" style={{ textAlign: "left" }}>
         EDIT TRIP
       </h2>
+      {updateErrors ? (
+        <p className="errorDisplayText">{updateErrors}</p>
+      ) : (
+        <></>
+      )}
       <form id="editForm">
         <div className="formRow">
           <label className="formLabel" for="destination">
