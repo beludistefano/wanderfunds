@@ -20,7 +20,6 @@ export default function Members() {
 
   async function getTripMembers() {
     try {
-
       if (!token) {
         setLoading(false);
         return;
@@ -72,7 +71,11 @@ export default function Members() {
                 status={tripMembers[0].status}
               />
               <TripMenu tripID={tripid} />
-              <MembersTrip tripMembers={tripMembers} role={role} />
+              <MembersTrip
+                tripMembers={tripMembers}
+                role={role}
+                tripID={tripid}
+              />
             </div>
           </div>{" "}
         </>

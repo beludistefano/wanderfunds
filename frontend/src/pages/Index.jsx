@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
@@ -7,6 +7,7 @@ import Header from "../components/header";
 
 export default function Index() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -20,10 +21,10 @@ export default function Index() {
     <div id="centralDiv">
       <Header></Header>
       <div id="mainContentIndex">
-        <Link to="/login" className="loginButton">
+        <Link to="/login" className="loginButton" state={location.state}>
           Login
         </Link>
-        <Link to="/register" className="loginButton">
+        <Link to="/register" className="loginButton" state={location.state}>
           Register
         </Link>
       </div>

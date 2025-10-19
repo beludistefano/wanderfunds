@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
@@ -45,6 +45,7 @@ export default function Register() {
   const [validationErrors, setValidationErrors] = useState({});
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -62,6 +63,7 @@ export default function Register() {
     setValidationErrors(registerValidation);
 
     if (Object.keys(registerValidation).length != 0) {
+      setLoading(false);
       return;
     }
 
@@ -108,7 +110,12 @@ export default function Register() {
 
       const createResp = await createProfile.json();
       console.log(createResp);
-      navigate("/");
+      const from = location.state?.from;
+      const dest =
+        from && !["/login", "/register", "/"].includes(from.pathname)
+          ? `${from.pathname}${from.search || ""}`
+          : "/dashboard";
+      navigate(dest, { replace: true });
     } catch (e) {
       console.log(e.message);
     } finally {

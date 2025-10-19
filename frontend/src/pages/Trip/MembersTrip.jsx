@@ -2,10 +2,15 @@ import { faUser, faX } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/members.css";
+import InviteMember from "../../components/InviteMember";
 
-export default function MembersTrip({ tripMembers, role }) {
+export default function MembersTrip({ tripMembers, role, tripID }) {
   const [tripMembersData, setTripMembersData] = useState(tripMembers);
   const [userRole, setUserRole] = useState(role);
+  const [tripId, setTripId] = useState(tripID);
+
+  const [inviteGuestOpen, setInviteGuestOpen] = useState(false);
+  const [inviteParticipantOpen, setInviteParticipantOpen] = useState(false);
 
   return (
     <>
@@ -49,10 +54,18 @@ export default function MembersTrip({ tripMembers, role }) {
         <div id="memberButtonsContainer">
           {(userRole === "Owner" || userRole === "Participant") && (
             <>
-              <button id="buttonSave" className="button">
+              <button
+                id="buttonSave"
+                onClick={() => setInviteGuestOpen(true)}
+                className="button"
+              >
                 ADD GUEST
               </button>
-              <button id="buttonSave" className="button">
+              <button
+                id="buttonSave"
+                onClick={() => setInviteParticipantOpen(true)}
+                className="button"
+              >
                 ADD PARTICIPANT
               </button>
             </>
@@ -81,6 +94,22 @@ export default function MembersTrip({ tripMembers, role }) {
           )}
         </div>
       </div>
+      {inviteParticipantOpen && (
+        <InviteMember
+          isOpen={inviteParticipantOpen}
+          onCancel={() => setInviteParticipantOpen(false)}
+          memberType="participant"
+          tripID={tripId}
+        />
+      )}
+      {inviteGuestOpen && (
+        <InviteMember
+          isOpen={inviteGuestOpen}
+          onCancel={() => setInviteGuestOpen(false)}
+          memberType="guest"
+          tripID={tripId}
+        />
+      )}
     </>
   );
 }

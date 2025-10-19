@@ -49,10 +49,10 @@ export default function Login() {
 
   useEffect(() => {
     if (initialized && session) {
+      const from = location.state?.from;
       const redirectTo =
-        location.state?.from?.pathname &&
-        location.state.from.pathname !== "/login"
-          ? location.state.from.pathname
+        from && from.pathname !== "/login"
+          ? `${from.pathname}${from.search || ""}`
           : "/dashboard";
       navigate(redirectTo, { replace: true });
     }
