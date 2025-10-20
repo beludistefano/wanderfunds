@@ -527,7 +527,7 @@ app.put("/api/expenses", requireAuth, async (req, res) => {
 /**
  * This PUT request will set an Expense as accepted
  */
-app.put("/api/confirm-expense", requireAuth, async (req, res) => {
+app.put("/api/accept-expense", requireAuth, async (req, res) => {
   var { expenseID } = req.body;
 
   if (expenseID) {

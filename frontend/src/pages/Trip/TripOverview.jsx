@@ -91,6 +91,26 @@ export default function TripOverview({ trip, userRole }) {
     }
   }
 
+  async function approveExpense(expenseID) {
+    var acceptExpense = {};
+    acceptExpense["expenseID"] = expenseID;
+    console.log(acceptExpense);
+
+    try {
+      const acceptResp = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(acceptExpense),
+        }
+      );
+    } catch (e) {}
+  }
+
   useEffect(() => {
     if (!initialized || !token || !trip) {
       return;
