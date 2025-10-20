@@ -75,9 +75,10 @@ app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
         FROM trips AS t
         JOIN user_role AS r
         ON r.tripid = t.tripid
-        WHERE t.tripid = $1`;
+        WHERE t.tripid = $1
+        AND r.user_id = $2`;
 
-    const tripResult = await pool.query(query, [tripID]);
+    const tripResult = await pool.query(query, [tripID, req.user.id]);
 
     return res.status(200).json(tripResult.rows);
   } catch (err) {

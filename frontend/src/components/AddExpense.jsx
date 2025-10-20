@@ -23,7 +23,8 @@ export default function AddExpense({
   members,
   tripSplit,
   tripID,
-  userID,
+  tripRole,
+  autoadd,
 }) {
   const [expenseName, setExpenseName] = useState("");
   const [expenseAmount, setExpenseAmount] = useState(0);
@@ -31,6 +32,8 @@ export default function AddExpense({
   const [expenseDate, setExpenseDate] = useState();
   const [expenseAddStatus, setExpenseAddStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const [role, setRole] = useState(tripRole);
+  const [autoAdd, setAutoAdd] = useState(autoadd);
 
   useEffect(() => {
     if (!isOpen) {
@@ -64,7 +67,6 @@ export default function AddExpense({
     newExpense["name"] = expenseName;
     newExpense["amount"] = Number(expenseAmount);
     newExpense["expectedDate"] = expenseDate ? expenseDate : null;
-    newExpense["expenseStatus"] = "pending";
 
     if (
       expenseSplit == "Shared Expense" ||
@@ -80,6 +82,18 @@ export default function AddExpense({
     ) {
       newExpense["split"] = "own";
     }
+
+    if (autoAdd == true) {
+      newExpense["expenseStatus"] = "accepted";
+    } else {
+      if (newExpense["split"] == "own" || role == "Owner") {
+        newExpense["expenseStatus"] = "accepted";
+      } else {
+        newExpense["expenseStatus"] = "pending";
+      }
+    }
+
+    newExpense["role"] = role;
 
     console.log(newExpense);
 

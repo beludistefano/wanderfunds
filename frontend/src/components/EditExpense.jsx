@@ -27,6 +27,8 @@ export default function EditExpense({
   members,
   tripSplit,
   expense,
+  tripRole,
+  autoadd,
 }) {
   const [expenseID, setExpenseID] = useState(expense.expense_id);
   const [expenseName, setExpenseName] = useState(expense.name);
@@ -36,6 +38,8 @@ export default function EditExpense({
     formatDate(expense.expected_date)
   );
   const [expenseUpdateStatus, setExpenseUpdateStatus] = useState(null);
+  const [role, setRole] = useState(tripRole);
+  const [autoAdd, setAutoAdd] = useState(autoadd);
 
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -94,7 +98,18 @@ export default function EditExpense({
       updateExpense["split"] = "own";
     }
 
-    console.log(updateExpense);
+    if (autoAdd == true) {
+      updateExpense["expenseStatus"] = "accepted";
+    } else {
+      if (updateExpense["split"] == "own" || role == "Owner") {
+        updateExpense["expenseStatus"] = "accepted";
+      } else {
+        updateExpense["expenseStatus"] = "pending";
+      }
+    }
+
+    updateExpense["role"] = role;
+
 
     try {
       const { data } = await supabase.auth.getSession();

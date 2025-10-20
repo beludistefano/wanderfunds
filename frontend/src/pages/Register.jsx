@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "../supabaseClient";
+import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import "../css/login.css";
 import Header from "../components/header";
@@ -44,12 +45,16 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
 
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const hcaptchaRef = useRef();
+
   const navigate = useNavigate();
   const location = useLocation();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg("");
     console.log("Registration attempt:", { userEmail, name, password });
 
     setValidationErrors({});
@@ -67,6 +72,12 @@ export default function Register() {
       return;
     }
 
+    if (!captchaToken) {
+      setErrorMsg("Please complete the captcha verification.");
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email: userEmail,
       password: password,
@@ -74,13 +85,18 @@ export default function Register() {
         data: {
           display_name: name,
         },
+        captchaToken,
       },
     });
 
     if (error) {
       setErrorMsg(error.message);
       setLoading(false);
+      setCaptchaToken(null);
       console.log(error.message);
+      if (hcaptchaRef.current) {
+        hcaptchaRef.current.resetCaptcha();
+      }
       return;
     } else {
       setErrorMsg("");
@@ -117,6 +133,10 @@ export default function Register() {
           : "/dashboard";
       navigate(dest, { replace: true });
     } catch (e) {
+      setErrorMsg(
+        "There was a problem creating your profile. Please try again."
+      );
+      setCaptchaToken(null);
       console.log(e.message);
     } finally {
       setLoading(false);
@@ -206,6 +226,25 @@ export default function Register() {
               <p className="errorDisplayText">{validationErrors.match}</p>
             )}
           </div>
+
+          <HCaptcha
+            ref={hcaptchaRef}
+            sitekey="dad63dc4-0696-48ee-966a-a5e2f540dffa"
+            onVerify={(token) => {
+              setCaptchaToken(token);
+              setErrorMsg("");
+            }}
+            onExpire={() => {
+              setCaptchaToken(null);
+              setErrorMsg("Captcha expired. Please try again.");
+              setLoading(false);
+            }}
+            onError={() => {
+              setErrorMsg("Captcha error. Please try again.");
+              setLoading(false);
+              setCaptchaToken(null);
+            }}
+          />
 
           <button type="submit" className="loginButton" disabled={loading}>
             {loading ? "Registering..." : "Register"}

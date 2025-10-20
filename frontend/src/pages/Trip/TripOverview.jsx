@@ -18,7 +18,9 @@ export default function TripOverview({ trip, userRole }) {
   const [totalTripCost, setTotalTripCost] = useState(0);
   const [pendingExpenses, setPendingExpenses] = useState(0);
   const [tripBalance, setTripBalance] = useState(0);
+  const [tripOwner, setTripOwner] = useState(trip.ownerid);
   const [role, setRole] = useState(userRole);
+  const [tripAutoAdd, setTripAutoAdd] = useState(trip.auto_add);
 
   const [selectedExpense, setSelectedExpense] = useState(null);
 
@@ -303,6 +305,8 @@ export default function TripOverview({ trip, userRole }) {
         members={trip.members}
         tripSplit={trip.default_split}
         tripID={theTripID}
+        tripRole={role}
+        autoadd={tripAutoAdd}
       />
       {addFundsOpen && savingsFund != null && savingsFundID != null && (
         <AddFunds
@@ -330,6 +334,8 @@ export default function TripOverview({ trip, userRole }) {
           members={trip.members}
           tripSplit={trip.default_split}
           expense={selectedExpense}
+          tripRole={role}
+          autoadd={tripAutoAdd}
         />
       )}
     </>
