@@ -238,15 +238,93 @@ export default function TripOverview({ trip, userRole }) {
                             ? "$ " + e.amount
                             : "$ " + (e.amount / trip.members).toFixed(2)}
                         </td>
-                        <td>
+                        <td style={{ textAlign: "center" }}>
                           {trip.status == "Planning" ? (
                             e.expense_status == "pending" ? (
-                              <p>Pending expense</p>
+                              role == "Owner" ? (
+                                <div
+                                  style={{
+                                    display: "flex",
+                                    gap: "8px",
+                                    justifyContent: "center",
+                                  }}
+                                >
+                                  <button
+                                    type="button"
+                                    onClick={() => approveExpense(e.expense_id)}
+                                    id="confirmExpenseButton"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faCheck}
+                                      style={{ color: "white" }}
+                                    />
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => rejectExpense(e.expense_id)}
+                                    id="rejectExpenseButton"
+                                  >
+                                    <FontAwesomeIcon
+                                      icon={faXmark}
+                                      style={{ color: "white" }}
+                                    />
+                                  </button>
+                                </div>
+                              ) : (
+                                <span className="expenseLabelConfirm">
+                                  Pending
+                                </span>
+                              )
                             ) : (
-                              <p>Accepted</p>
+                              <div style={{ textAlign: "center" }}>
+                                <FontAwesomeIcon
+                                  icon={faCheck}
+                                  style={{ color: "black" }}
+                                />
+                              </div>
+                            )
+                          ) : e.expense_status == "pending" ? (
+                            role == "Owner" ? (
+                              <div
+                                style={{
+                                  display: "flex",
+                                  gap: "8px",
+                                  justifyContent: "center",
+                                }}
+                              >
+                                <button
+                                  type="button"
+                                  onClick={() => approveExpense(e.expense_id)}
+                                  id="confirmExpenseButton"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faCheck}
+                                    style={{ color: "white" }}
+                                  />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => rejectExpense(e.expense_id)}
+                                  id="rejectExpenseButton"
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faXmark}
+                                    style={{ color: "white" }}
+                                  />
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="expenseLabelConfirm">
+                                Pending
+                              </span>
                             )
                           ) : (
-                            <p>Confirmed</p>
+                            <div style={{ textAlign: "center" }}>
+                              <FontAwesomeIcon
+                                icon={faCheck}
+                                style={{ color: "black" }}
+                              />
+                            </div>
                           )}
                         </td>
                       </tr>

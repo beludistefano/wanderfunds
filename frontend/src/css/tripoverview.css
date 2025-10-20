@@ -28,15 +28,38 @@
 }
 
 .expenseLabelConfirm {
-  background-color: #f1b98f;
+  background-color: #ffedb0;
   border-radius: 9999px;
   text-align: center;
-  color: white;
+  color: rgb(117, 91, 32);
   font-weight: 600;
+  padding: 2px 8px;
 }
 
 .editPencil {
   cursor: pointer;
+}
+
+#rejectExpenseButton {
+  border: "none";
+  cursor: "pointer";
+  background-color: #ff7373;
+  display: "flex";
+  border-radius: 100%;
+  padding: 3px 5px;
+  align-items: "center";
+  justify-content: "center";
+}
+
+#confirmExpenseButton {
+  border: "none";
+  cursor: "pointer";
+  background-color: rgb(126, 186, 126);
+  display: "flex";
+  border-radius: 100%;
+  padding: 3px 5px;
+  align-items: "center";
+  justify-content: "center";
 }
 
 #addExpenseButton {

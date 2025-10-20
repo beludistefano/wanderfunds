@@ -525,6 +525,60 @@ app.put("/api/expenses", requireAuth, async (req, res) => {
 });
 
 /**
+ * This PUT request will set an Expense as accepted
+ */
+app.put("/api/confirm-expense", requireAuth, async (req, res) => {
+  var { expenseID } = req.body;
+
+  if (expenseID) {
+    return res.status(400).send("Error: expense ID cannot be empty");
+  }
+
+  const expenseQuery = `
+      UPDATE expected_expenses
+      SET
+        expense_status = 'accepted'
+      WHERE expense_id = $1`;
+
+  try {
+    const expenseResult = await pool.query(expenseQuery, [expenseID]);
+
+    if (expenseResult.rowCount == 0) {
+      return res.status(200).json({ result: "Error accepting expense" });
+    }
+    return res.status(200).json({ result: "Confirmed" });
+  } catch (err) {
+    return res.status(500).json({ result: "Error accepting expense" });
+  }
+});
+
+/**
+ * This DELETE request will delete an expense
+ */
+app.delete("/api/delete-expense", requireAuth, async (req, res) => {
+  var { expenseID } = req.body;
+
+  if (expenseID) {
+    return res.status(400).send("Error: expense ID cannot be empty");
+  }
+
+  const expenseQuery = `
+      DELETE FROM expected_expenses
+      WHERE expense_id = $1`;
+
+  try {
+    const expenseResult = await pool.query(expenseQuery, [expenseID]);
+
+    if (expenseResult.rowCount == 0) {
+      return res.status(200).json({ result: "Error deleting expense" });
+    }
+    return res.status(200).json({ result: "Deleted" });
+  } catch (err) {
+    return res.status(500).json({ result: "Error accepting expense" });
+  }
+});
+
+/**
  * This PUT request will update a savings fund amount
  */
 app.put("/api/trip/savings", requireAuth, async (req, res) => {
