@@ -124,7 +124,6 @@ export default function Login() {
       return;
     }
 
-    setFailedAttempts(0);
     setSubmitting(false);
   }
 

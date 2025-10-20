@@ -63,7 +63,6 @@ export default function AddExpense({
 
     const newExpense = {};
     newExpense["tripID"] = tripID;
-    newExpense["ownerID"] = userID;
     newExpense["name"] = expenseName;
     newExpense["amount"] = Number(expenseAmount);
     newExpense["expectedDate"] = expenseDate ? expenseDate : null;

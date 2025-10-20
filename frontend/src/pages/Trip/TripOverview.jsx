@@ -5,7 +5,7 @@ import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
 import EditExpense from "../../components/EditExpense";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { supabase } from "../../supabaseClient";
 import { useAuth } from "../../auth/AuthProvider";
 
@@ -150,6 +150,14 @@ export default function TripOverview({ trip, userRole }) {
     }
   }, [savingsFund, expenses]);
 
+  async function approveExpense(expenseId) {
+    // await refreshPage();
+  }
+
+  async function rejectExpense(expenseId) {
+    // await refreshPage();
+  }
+
   return (
     <>
       <div id="containerTop" style={{ paddingRight: "2%", paddingLeft: "2%" }}>
@@ -162,7 +170,7 @@ export default function TripOverview({ trip, userRole }) {
           }}
         >
           <div className="ownerContainer">
-            <p>OWNER</p>
+            <p>{role}</p>
           </div>
         </div>
         <h2 id="overviewTitle" style={{ textAlign: "left" }}>
@@ -231,10 +239,14 @@ export default function TripOverview({ trip, userRole }) {
                             : "$ " + (e.amount / trip.members).toFixed(2)}
                         </td>
                         <td>
-                          {e.expense_status == "confirmed" ? (
-                            <div style={{ textAlign: "center" }}>✔</div>
+                          {trip.status == "Planning" ? (
+                            e.expense_status == "pending" ? (
+                              <p>Pending expense</p>
+                            ) : (
+                              <p>Accepted</p>
+                            )
                           ) : (
-                            <div className="expenseLabelConfirm">Confirm</div>
+                            <p>Confirmed</p>
                           )}
                         </td>
                       </tr>
