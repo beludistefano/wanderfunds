@@ -1,6 +1,5 @@
 import { useParams } from "react-router-dom";
 import Header from "../components/header";
-import "../css/invitations.css";
 import { useEffect, useState } from "react";
 
 export default function AcceptInvitation() {
