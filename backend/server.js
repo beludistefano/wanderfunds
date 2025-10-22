@@ -530,7 +530,7 @@ app.put("/api/expenses", requireAuth, async (req, res) => {
 app.put("/api/accept-expense", requireAuth, async (req, res) => {
   var { expenseID } = req.body;
 
-  if (expenseID) {
+  if (!expenseID) {
     return res.status(400).send("Error: expense ID cannot be empty");
   }
 
@@ -543,11 +543,14 @@ app.put("/api/accept-expense", requireAuth, async (req, res) => {
   try {
     const expenseResult = await pool.query(expenseQuery, [expenseID]);
 
+    console.log(expenseResult);
+
     if (expenseResult.rowCount == 0) {
-      return res.status(200).json({ result: "Error accepting expense" });
+      return res.status(500).json({ result: "Error accepting expense" });
     }
     return res.status(200).json({ result: "Confirmed" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ result: "Error accepting expense" });
   }
 });
@@ -558,7 +561,7 @@ app.put("/api/accept-expense", requireAuth, async (req, res) => {
 app.delete("/api/delete-expense", requireAuth, async (req, res) => {
   var { expenseID } = req.body;
 
-  if (expenseID) {
+  if (!expenseID) {
     return res.status(400).send("Error: expense ID cannot be empty");
   }
 
@@ -570,7 +573,7 @@ app.delete("/api/delete-expense", requireAuth, async (req, res) => {
     const expenseResult = await pool.query(expenseQuery, [expenseID]);
 
     if (expenseResult.rowCount == 0) {
-      return res.status(200).json({ result: "Error deleting expense" });
+      return res.status(500).json({ result: "Error deleting expense" });
     }
     return res.status(200).json({ result: "Deleted" });
   } catch (err) {
@@ -948,6 +951,71 @@ app.get("/api/acceptinvitation", requireAuth, async (req, res) => {
     });
   } catch (e) {
     return res.status(500).json({ error: e.message });
+  }
+});
+
+/**
+ * This POST endpoint will create a user role - usually triggered after member accepting an invitation
+ */
+app.post("/api/user-role", requireAuth, async (req, res) => {
+  const { tripID, member_type } = req.body;
+
+  if (tripID == "" || member_type == "") {
+    return res
+      .status(400)
+      .send("Error: Trip ID and member type cannot be empty");
+  }
+
+  const roleQuery = `
+    INSERT INTO user_role (tripid, user_id, role)
+    VALUES ($1, $2, $3)
+  `;
+
+  try {
+    const roleValues = [tripID, req.user.id, member_type];
+
+    const roleResult = await pool.query(roleQuery, roleValues);
+
+    if (roleResult.rowCount == 0) {
+      return res.status(404).json({ result: "Error adding user role" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding user role" });
+  }
+});
+
+/**
+ * This POST endpoint will initialize a savings fund
+ */
+app.post("/api/new-savings-fund", requireAuth, async (req, res) => {
+  const { tripID } = req.body;
+
+  if (tripID == "") {
+    return res.status(400).send("Error: Trip ID cannot be empty");
+  }
+
+  const savingsFundQuery = `
+    INSERT INTO savings_funds (trip_id, owner_id, amount)
+    VALUES ($1, $2, $3)
+  `;
+
+  try {
+    const savingsFundValues = [tripID, req.user.id, 0];
+
+    const savingsFundResult = await pool.query(
+      savingsFundQuery,
+      savingsFundValues
+    );
+
+    if (savingsFundResult.rowCount == 0) {
+      return res.status(404).json({ result: "Error creating savings fund" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error creating savings fund" });
   }
 });
 

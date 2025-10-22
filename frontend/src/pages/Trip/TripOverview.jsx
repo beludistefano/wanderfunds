@@ -92,13 +92,14 @@ export default function TripOverview({ trip, userRole }) {
   }
 
   async function approveExpense(expenseID) {
+    console.log("Clicked button");
     var acceptExpense = {};
     acceptExpense["expenseID"] = expenseID;
     console.log(acceptExpense);
 
     try {
       const acceptResp = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/trip",
+        "http://localhost:3000/api/accept-expense",
         {
           method: "PUT",
           headers: {
@@ -108,7 +109,37 @@ export default function TripOverview({ trip, userRole }) {
           body: JSON.stringify(acceptExpense),
         }
       );
-    } catch (e) {}
+
+      await refreshPage();
+      console.log(acceptResp);
+    } catch (e) {
+      console.log("Error: " + e);
+    }
+  }
+
+  async function rejectExpense(expenseID) {
+    var deleteExpense = {};
+    deleteExpense["expenseID"] = expenseID;
+    console.log(deleteExpense);
+
+    try {
+      const deleteResp = await fetch(
+        "http://localhost:3000/api/delete-expense",
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deleteExpense),
+        }
+      );
+
+      await refreshPage();
+      console.log(deleteResp);
+    } catch (e) {
+      console.log("Error: " + e);
+    }
   }
 
   useEffect(() => {
@@ -169,14 +200,6 @@ export default function TripOverview({ trip, userRole }) {
       }
     }
   }, [savingsFund, expenses]);
-
-  async function approveExpense(expenseId) {
-    // await refreshPage();
-  }
-
-  async function rejectExpense(expenseId) {
-    // await refreshPage();
-  }
 
   return (
     <>

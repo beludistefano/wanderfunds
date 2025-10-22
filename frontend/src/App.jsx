@@ -16,6 +16,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
 import UpdatePassword from "./pages/UpdatePassword";
+import AcceptInvitation from "./pages/AcceptInvitation";
 
 function App() {
   return (
@@ -87,6 +88,14 @@ function App() {
               element={<RejectInvitation />}
             />
             <Route path="/update-password" element={<UpdatePassword />} />
+            <Route
+              path="/trip/accept/:invitationid"
+              element={
+                <ProtectedRoute>
+                  <AcceptInvitation />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </BrowserRouter>
       </AuthProvider>
