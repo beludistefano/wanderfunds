@@ -17,7 +17,7 @@ function validateRegistration(name, email, pass, repPass) {
     registrationErrors.email = "Email cannot be empty";
   }
 
-  if (pass == "") {
+  if (pass == "" || pass == null) {
     registrationErrors.pass = "Password cannot be empty";
   }
 
@@ -44,12 +44,30 @@ export default function Register() {
   const [errorMsg, setErrorMsg] = useState("");
   const [loading, setLoading] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
+  const [passwordStrength, setPasswordStrength] = useState(null);
 
   const [captchaToken, setCaptchaToken] = useState(null);
   const hcaptchaRef = useRef();
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  function checkPassStrength(value) {
+    const hasLetter = /[a-zA-Z]/.test(value);
+    const hasNumber = /[0-9]/.test(value);
+    const isLongEnough = value.length >= 8;
+
+    if (!isLongEnough || !hasLetter || !hasNumber) {
+      setPasswordStrength(
+        "Password must have at least 8 characters, and have at least 1 letter and 1 number"
+      );
+      setPassword(null);
+      return;
+    } else {
+      setPasswordStrength(null);
+      setPassword(value);
+    }
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -191,7 +209,7 @@ export default function Register() {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => checkPassStrength(e.target.value)}
               className={`formInput ${
                 validationErrors.pass || validationErrors.passLength
                   ? "borderRed"
@@ -200,6 +218,9 @@ export default function Register() {
             />
             {validationErrors.pass && (
               <p className="errorDisplayText">{validationErrors.pass}</p>
+            )}
+            {passwordStrength && (
+              <p className="errorDisplayText">{passwordStrength}</p>
             )}
             {validationErrors.passLength && (
               <p className="errorDisplayText">{validationErrors.passLength}</p>
