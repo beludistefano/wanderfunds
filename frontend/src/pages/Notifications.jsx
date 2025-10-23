@@ -40,6 +40,7 @@ export default function Notifications() {
       const notifJson = await notificationsData.json();
 
       console.log(notifJson);
+      await getNotifications();
     } catch (error) {
       console.log(error);
     }
@@ -70,6 +71,7 @@ export default function Notifications() {
       const notifJson = await notificationsData.json();
 
       console.log(notifJson);
+      await getNotifications();
     } catch (error) {
       console.log(error);
     }
