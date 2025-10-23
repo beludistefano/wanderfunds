@@ -51,11 +51,9 @@
   grid-row: 1;
   justify-self: end;
   align-self: center;
-
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
   color: #ef4444;
   font-size: 0.8rem;
   cursor: pointer;

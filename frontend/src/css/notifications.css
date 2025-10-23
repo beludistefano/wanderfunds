@@ -1,0 +1,52 @@
+#notificationsCenterContainer {
+  width: 100%;
+}
+
+.notificationsButtonContainer {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5%;
+}
+
+#markAllReadButton {
+  background-color: #8ebed8;
+  border: none;
+}
+
+#markAllReadButton:hover {
+  border: none;
+}
+
+.notificationCard {
+  width: 100%;
+  border-top: 1px solid #dddddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+div.notificationCard:last-of-type {
+  border-bottom: 1px solid #dddddd;
+}
+
+.notificationColumn {
+  text-align: left;
+}
+
+.notificationTitle {
+  color: #8ebed8;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.notifIcon {
+  color: #8ebed8;
+}
+
+.notifDate {
+  color: #a5a5a5;
+  font-size: 0.8em;
+}

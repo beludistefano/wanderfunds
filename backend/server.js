@@ -1092,7 +1092,7 @@ app.put("/api/allnotifications", requireAuth, async (req, res) => {
     const query = `
       UPDATE notifications
       SET
-        read = $1,
+        read = $1
       WHERE user_id = $2`;
 
     const notifResult = await pool.query(query, [true, req.user.id]);
