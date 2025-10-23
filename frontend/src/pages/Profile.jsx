@@ -105,6 +105,13 @@ export default function Profile() {
                 </div>
                 <div className="profileButtonContainer">
                   <Link
+                    id="buttonChangePass"
+                    to={"/change-pass"}
+                    className="button"
+                  >
+                    CHANGE PASSWORD
+                  </Link>
+                  <Link
                     to={"/profile/edit"}
                     id="buttonSave"
                     className="button buttonProfile"

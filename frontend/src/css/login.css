@@ -4,6 +4,11 @@
   width: 30%;
 }
 
+#changePassForm {
+  width: 100%;
+  margin: 0;
+}
+
 #registrationForm {
   margin-top: 20px;
 }
@@ -88,4 +93,8 @@
 
 #mainContentIndex .loginButton:hover {
   color: white;
+}
+
+#changePassMainContent {
+  display: flex;
 }

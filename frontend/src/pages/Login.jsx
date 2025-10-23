@@ -41,7 +41,6 @@ export default function Login() {
 
   const [captchaToken, setCaptchaToken] = useState(null);
   const hcaptchaRef = useRef();
-  const siteKey = import.meta.env.VITE_HCAPTCHA_SITE_KEY;
 
   const navigate = useNavigate();
   const location = useLocation();

@@ -52,3 +52,12 @@
 .successText {
   color: #3f883f;
 }
+
+#buttonChangePass {
+  background-color: #b3b3b3;
+  text-align: center;
+}
+
+#buttonChangePass:hover {
+  color: white;
+}
