@@ -18,6 +18,7 @@ import EditProfile from "./pages/EditProfile";
 import UpdatePassword from "./pages/UpdatePassword";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import ChangePassword from "./pages/ChangePassword";
+import Notifications from "./pages/Notifications";
 
 function App() {
   return (
@@ -102,6 +103,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
                 </ProtectedRoute>
               }
             />

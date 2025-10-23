@@ -1061,6 +1061,82 @@ app.get("/api/rejectinvitation", async (req, res) => {
 });
 
 /**
+ * This GET request returns up to 10 notifications for the logged in user
+ */
+app.get("/api/notifications", requireAuth, async (req, res) => {
+  try {
+    const query = `
+      SELECT *
+      FROM notifications
+      WHERE user_id = $1
+      ORDER BY created_at DESC
+      LIMIT 10`;
+
+    const notifResult = await pool.query(query, [req.user.id]);
+
+    if (notifResult.rowCount == 0) {
+      return res.status(204).json({ result: [] });
+    }
+
+    return res.status(200).json(notifResult.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
+ * This PUT request marks all notifs as read for the logged in user
+ */
+app.put("/api/allnotifications", requireAuth, async (req, res) => {
+  try {
+    const query = `
+      UPDATE notifications
+      SET
+        read = $1,
+      WHERE user_id = $2`;
+
+    const notifResult = await pool.query(query, [true, req.user.id]);
+
+    if (notifResult.rowCount == 0) {
+      return res.status(204).json({ result: [] });
+    }
+
+    return res.status(200).json(notifResult.rowCount);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
+ * This PUT request will mark one notif as read for the logged in user
+ */
+app.put("/api/notifications", requireAuth, async (req, res) => {
+  const { notifID } = req.body;
+
+  if (!notifID || notifID == "") {
+    return res.status(400).json({ error: "Notification ID cannot be empty" });
+  }
+
+  try {
+    const query = `
+      UPDATE notifications
+      SET
+        read = $1,
+      WHERE id = $2`;
+
+    const notifResult = await pool.query(query, [true, notifID]);
+
+    if (notifResult.rowCount == 0) {
+      return res.status(204).json({ result: [] });
+    }
+
+    return res.status(200).json(notifResult.rowCount);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
  * This function handles sending email invitations to members via MailerSend
  * @param {*} invitationID invitation ID to accept/reject
  * @param {*} username sender name

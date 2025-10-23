@@ -14,11 +14,7 @@
 }
 
 .profileLogo {
-  max-width: 30%;
-}
-
-.notifLogo {
-  max-width: 20%;
+  max-width: 40%;
 }
 
 #functionalitiesHeader {
@@ -29,6 +25,10 @@
 }
 
 .menuLogo {
+  display: none;
+}
+
+.dropdownMenu {
   display: none;
 }
 

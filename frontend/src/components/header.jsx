@@ -5,10 +5,21 @@ import prof from "../assets/iconProf.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  async function logoutUser() {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.log("Sign-out error:", error);
+    }
+    navigate("/");
+  }
 
   return (
     <>
@@ -17,20 +28,17 @@ export default function Header() {
           <img src={logo} alt="WanderFunds Logo" />
         </div>
         <div id="functionalitiesHeader">
-          <img
-            src={notif}
-            className="smallLogo notifLogo"
-            alt="Notifications Logo"
-          />
+          <Link to="/notifications">
+            <img
+              src={notif}
+              className="smallLogo profileLogo"
+              alt="Notifications Logo"
+            />
+          </Link>
           <FontAwesomeIcon
             icon={faBars}
             className="menuLogo"
             onClick={() => setMenuOpen(!menuOpen)}
-          />
-          <img
-            src={prof}
-            className="smallLogo profileLogo"
-            alt="Profile Logo"
           />
         </div>
       </header>
@@ -39,8 +47,14 @@ export default function Header() {
           <Link className="links" to="/">
             Home
           </Link>
-          <Link className="links" to="/">
+          <Link className="links" to="/notifications">
+            Notifications
+          </Link>
+          <Link className="links" to="/profile">
             Profile
+          </Link>
+          <Link className="links" onClick={logoutUser}>
+            Logout
           </Link>
         </div>
       )}
