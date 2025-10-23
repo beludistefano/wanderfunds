@@ -31,7 +31,7 @@ export default function RejectInvitation() {
       {!loading ? (
         <>
           <Header></Header>
-          <div id="mainContent">
+          <div id="mainContentInvitation">
             <h2>Bon voyage? More like Non voyage ✈️</h2>
             <p>
               Your trip invitation has been rejected. See you on the next
