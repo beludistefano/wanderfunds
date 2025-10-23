@@ -45,7 +45,35 @@ export default function Notifications() {
     }
   }
 
-  async function setNotifRead(id) {}
+  async function setNotifRead(id) {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const notificationsData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/notifications`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ notifID: id }),
+        }
+      );
+
+      const notifJson = await notificationsData.json();
+
+      console.log(notifJson);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async function getNotifications() {
     try {
