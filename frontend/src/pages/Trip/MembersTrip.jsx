@@ -3,14 +3,48 @@ import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/members.css";
 import InviteMember from "../../components/InviteMember";
+import { supabase } from "../../supabaseClient";
+import { Link, useParams, useNavigate } from "react-router-dom";
 
 export default function MembersTrip({ tripMembers, role, tripID }) {
   const [tripMembersData, setTripMembersData] = useState(tripMembers);
   const [userRole, setUserRole] = useState(role);
   const [tripId, setTripId] = useState(tripID);
 
+  const [errorMessages, setErrorMessages] = useState(null);
+
   const [inviteGuestOpen, setInviteGuestOpen] = useState(false);
   const [inviteParticipantOpen, setInviteParticipantOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  async function deleteTrip() {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const deleteTrip = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/trip/${tripId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!deleteTrip.ok) {
+        setErrorMessages("Error deleting your trip");
+        return;
+      }
+
+      setErrorMessages("Trip deleted succesfully!");
+      setTimeout(() => navigate("/"), 1000);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   return (
     <>
@@ -51,6 +85,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
             );
           })}
         </div>
+        {errorMessages && <p className="errorDisplay">{errorMessages}</p>}
         <div id="memberButtonsContainer">
           {(userRole === "Owner" || userRole === "Participant") && (
             <>
@@ -82,13 +117,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
             </button>
           )}
           {userRole === "Owner" && (
-            <button
-              onClick={() => {
-                navigate(`/trip/${trip.tripid}`);
-              }}
-              id="buttonLeave"
-              className="button"
-            >
+            <button onClick={deleteTrip} id="buttonLeave" className="button">
               DELETE TRIP
             </button>
           )}

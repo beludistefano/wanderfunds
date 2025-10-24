@@ -99,7 +99,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const acceptResp = await fetch(
-        "http://localhost:3000/api/accept-expense",
+        "https://wanderfunds-backend.onrender.com/api/accept-expense",
         {
           method: "PUT",
           headers: {
@@ -124,7 +124,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const deleteResp = await fetch(
-        "http://localhost:3000/api/delete-expense",
+        "https://wanderfunds-backend.onrender.com/api/delete-expense",
         {
           method: "DELETE",
           headers: {
@@ -235,7 +235,7 @@ export default function TripOverview({ trip, userRole }) {
               </div>
             )}
             {role == "Guest" && (
-              <div id="addExpenseButton">
+              <div>
                 <></>
               </div>
             )}

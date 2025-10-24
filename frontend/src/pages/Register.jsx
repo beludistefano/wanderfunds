@@ -61,7 +61,7 @@ export default function Register() {
       setPasswordStrength(
         "Password must have at least 8 characters, and have at least 1 letter and 1 number"
       );
-      setPassword(null);
+      setPassword(value);
       return;
     } else {
       setPasswordStrength(null);
@@ -109,12 +109,12 @@ export default function Register() {
 
     if (error) {
       setErrorMsg(error.message);
-      setLoading(false);
       setCaptchaToken(null);
       console.log(error.message);
       if (hcaptchaRef.current) {
         hcaptchaRef.current.resetCaptcha();
       }
+      setLoading(false);
       return;
     } else {
       setErrorMsg("");

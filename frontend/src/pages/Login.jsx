@@ -70,7 +70,7 @@ export default function Login() {
       var token = captchaToken;
       if (hcaptchaRef.current && !token) {
         token = await hcaptchaRef.current.execute({ async: true });
-        setCaptchaToken(token);
+        setCaptchaToken(token.response);
       }
 
       if (!token) {
@@ -79,12 +79,14 @@ export default function Login() {
         return;
       }
 
+      console.log(token);
+
       const { data, error } = await supabase.auth.resetPasswordForEmail(
         userEmail,
         {
           redirectTo:
             "https://wanderfunds-frontend.onrender.com/update-password",
-          captchaToken: token,
+          captchaToken: token.response,
         }
       );
 
@@ -98,7 +100,7 @@ export default function Login() {
       }
     } catch (e) {
       setSubmitting(false);
-      setErrorMsg(error.message);
+      setErrorMsg(e.message);
     }
   }
 
