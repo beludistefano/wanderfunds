@@ -78,7 +78,7 @@ export default function Login() {
         {
           redirectTo:
             "https://wanderfunds-frontend.onrender.com/update-password",
-          options: { captchaToken },
+          captchaToken: captchaToken,
         }
       );
 
