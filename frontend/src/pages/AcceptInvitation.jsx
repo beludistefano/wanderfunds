@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Header from "../components/header";
 import { useEffect, useState } from "react";
 
@@ -10,6 +11,8 @@ export default function AcceptInvitation() {
   const { invitationid } = useParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
+
+  const navigate = useNavigate();
 
   async function acceptInvitation() {
     try {
@@ -85,10 +88,16 @@ export default function AcceptInvitation() {
 
       setLoading(false);
       setResult("The trip has been added to your trips!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     } catch (e) {
       console.log(e);
       setLoading(false);
       setResult("There was an error accepting this trip!");
+      setTimeout(() => {
+        navigate("/");
+      }, 1000);
     }
   }
 
