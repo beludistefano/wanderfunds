@@ -472,6 +472,16 @@ app.post("/api/expenses", requireAuth, async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6, $7)
     `;
 
+  const getTripOwnerQuery = `
+    SELECT ownerid, destination FROM trips
+    WHERE tripid = $1
+  `;
+
+  const notificationQuery = `
+    INSERT INTO notifications (notif_title, notif_desc, read, user_id)
+    VALUES ($1, $2, $3, $4)
+  `;
+
   const expenseValues = [
     tripID,
     req.user.id,
@@ -484,6 +494,23 @@ app.post("/api/expenses", requireAuth, async (req, res) => {
 
   try {
     const expenseResult = await pool.query(expenseQuery, expenseValues);
+
+    if (expenseStatus == "pending") {
+      const tripOwnerResult = await pool.query(getTripOwnerQuery, [tripID]);
+
+      if (tripOwnerResult.rowCount > 0) {
+        const trip = tripOwnerResult.rows[0];
+
+        const notifParam = [
+          "New expense to review!",
+          `Please review the new expense added to your trip to ${trip.destination}`,
+          false,
+          trip.ownerid,
+        ];
+
+        const notifResult = await pool.query(notificationQuery, notifParam);
+      }
+    }
 
     return res.status(200).json({ expense: expenseResult });
   } catch (err) {
