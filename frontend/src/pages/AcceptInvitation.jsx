@@ -10,7 +10,10 @@ export default function AcceptInvitation() {
   async function acceptInvitation() {
     try {
       const acceptData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/acceptinvitation?invitation_token=${invitationid}`
+        `https://wanderfunds-backend.onrender.com/api/acceptinvitation?invitation_token=${invitationid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
       const acceptJson = await acceptData.json();
 
