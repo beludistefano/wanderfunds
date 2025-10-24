@@ -2,13 +2,24 @@ import { useParams } from "react-router-dom";
 import Header from "../components/header";
 import { useEffect, useState } from "react";
 
+import { supabase } from "../supabaseClient";
+import { useAuth } from "../auth/AuthProvider";
+
 export default function AcceptInvitation() {
+  const { session, initialized } = useAuth();
   const { invitationid } = useParams();
   const [loading, setLoading] = useState(true);
   const [result, setResult] = useState(null);
 
   async function acceptInvitation() {
     try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
       const acceptData = await fetch(
         `https://wanderfunds-backend.onrender.com/api/acceptinvitation?invitation_token=${invitationid}`,
         {
