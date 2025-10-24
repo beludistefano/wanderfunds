@@ -67,7 +67,13 @@ export default function Login() {
     }
 
     try {
-      if (!captchaToken) {
+      var token = captchaToken;
+      if (hcaptchaRef.current && !token) {
+        token = await hcaptchaRef.current.execute({ async: true });
+        setCaptchaToken(token);
+      }
+
+      if (!token) {
         setErrorMsg("Please complete the captcha verification.");
         setSubmitting(false);
         return;
@@ -78,7 +84,7 @@ export default function Login() {
         {
           redirectTo:
             "https://wanderfunds-frontend.onrender.com/update-password",
-          captchaToken: captchaToken,
+          captchaToken: token,
         }
       );
 
