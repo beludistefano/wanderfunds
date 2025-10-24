@@ -14,4 +14,4 @@ Milestone 4:
 
 Hosted backend: https://wanderfunds-backend.onrender.com  
 Hosted frontend: https://wanderfunds-frontend.onrender.com  
-\*Frontend is hosted but suspended until I develop login for security :)
+
