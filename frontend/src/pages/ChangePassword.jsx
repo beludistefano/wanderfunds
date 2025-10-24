@@ -77,8 +77,8 @@ export default function ChangePassword() {
     }
   }
 
-  async function changePassword(captcha) {
-    console.log("Token: " + captcha);
+  async function changePassword(captchaToken) {
+    console.log("Token: " + captchaToken);
     try {
       const { data } = await supabase.auth.getUser();
 
@@ -90,11 +90,13 @@ export default function ChangePassword() {
 
       const userEmail = data.user.email;
 
-      if (!captcha) {
+      if (!captchaToken) {
         setErrorMsg("Please complete the captcha verification.");
         setLoading(false);
         return;
       }
+
+      console.log(oldPassword);
 
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email: userEmail,
@@ -105,6 +107,7 @@ export default function ChangePassword() {
       if (loginError) {
         setErrorMsg("Current password is incorrect");
         setLoading(false);
+        hcaptchaRef.current?.resetCaptcha();
         return;
       }
 
