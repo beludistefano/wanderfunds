@@ -36,7 +36,11 @@ export default function AcceptInvitation() {
 
       const userRoleValues = {};
       userRoleValues["tripID"] = acceptJson.tripID;
-      userRoleValues["member_type"] = acceptJson.memberType;
+      if (acceptJson.memberType == "guest") {
+        userRoleValues["member_type"] = "Guest";
+      } else {
+        userRoleValues["member_type"] = "Participant";
+      }
 
       const createUserRole = await fetch(
         "https://wanderfunds-backend.onrender.com/api/user-role",
@@ -56,7 +60,7 @@ export default function AcceptInvitation() {
         return;
       }
 
-      if (acceptJson.memberType == "Participant") {
+      if (acceptJson.memberType == "participant") {
         const savingsFundValues = {};
         savingsFundValues["tripID"] = acceptJson.tripID;
 
@@ -83,6 +87,8 @@ export default function AcceptInvitation() {
       setResult("The trip has been added to your trips!");
     } catch (e) {
       console.log(e);
+      setLoading(false);
+      setResult("There was an error accepting this trip!");
     }
   }
 
