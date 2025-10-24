@@ -990,7 +990,7 @@ app.post("/api/user-role", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding user role" });
+    return res.status(500).json({ result: e });
   }
 });
 
