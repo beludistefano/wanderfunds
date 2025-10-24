@@ -70,7 +70,8 @@ export default function Login() {
       const { data, error } = await supabase.auth.resetPasswordForEmail(
         userEmail,
         {
-          redirectTo: "http://localhost:5173/update-password",
+          redirectTo:
+            "https://wanderfunds-frontend.onrender.com/update-password",
         }
       );
 
