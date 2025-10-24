@@ -157,7 +157,11 @@ export default function TripOverview({ trip, userRole }) {
   useEffect(() => {
     if (savingsFund != null && expenses.length > 0) {
       if (trip.status == "Planning") {
-        var pendingExp = expenses
+        const acceptedExpenses = expenses.filter(
+          (e) => e.expense_status === "accepted"
+        );
+
+        var pendingExp = acceptedExpenses
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
@@ -171,7 +175,12 @@ export default function TripOverview({ trip, userRole }) {
 
         setTripBalance((savingsFund - pendingExp).toFixed(2));
       } else {
-        var totalTripCost = expenses
+        const acceptedExpenses = expenses.filter(
+          (e) => e.expense_status === "accepted"
+        );
+
+        var totalTripCost = acceptedExpenses
+          .filter((e) => e.confirmed === null || e.confirmed === false)
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
@@ -183,8 +192,7 @@ export default function TripOverview({ trip, userRole }) {
 
         setTotalTripCost(totalTripCost);
 
-        var pendingExpenses = expenses
-          .filter((e) => e.expense_status === "pending")
+        var pendingExpenses = acceptedExpenses
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
