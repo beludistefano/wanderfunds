@@ -61,7 +61,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
           }}
         >
           <div className="ownerContainer">
-            <p>OWNER</p>
+            <p>{userRole}</p>
           </div>
         </div>
         <h2 id="editTitle" style={{ textAlign: "left" }}>

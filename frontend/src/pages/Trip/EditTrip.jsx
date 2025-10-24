@@ -244,7 +244,7 @@ export default function EditTrip({ trip, role }) {
         }}
       >
         <div className="ownerContainer">
-          <p>OWNER</p>
+          <p>{userRole}</p>
         </div>
       </div>
       <h2 id="editTitle" style={{ textAlign: "left" }}>
