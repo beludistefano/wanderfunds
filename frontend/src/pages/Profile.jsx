@@ -65,7 +65,6 @@ export default function Profile() {
 
       await supabase.auth.signOut();
 
-      console.log(deleteProfile);
       navigate("/");
     } catch (e) {
       console.log(e);

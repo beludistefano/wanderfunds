@@ -849,10 +849,46 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
     AND u.user_id != $2
   `;
 
+  const updateExpensesQuery = `
+    UPDATE expected_expenses e
+    SET owner_id = t.ownerid
+    FROM trips t
+    WHERE e.owner_id = $1
+      AND e.split = 'shared'
+      AND e.trip_id = t.tripid
+    RETURNING e.*`;
+
   const deleteProfileQuery = `
     DELETE FROM profiles
     WHERE user_id = $1
     `;
+
+  const deleteOwnedTripsQuery = `
+    DELETE FROM trips
+    WHERE ownerid = $1
+  `;
+
+  const deleteOwnedExpensesQuery = `
+    DELETE FROM expected_expenses
+    WHERE owner_id = $1
+    AND split = 'own'
+  `;
+
+  const deleteUserRolesQuery = `
+    DELETE FROM user_role
+    WHERE user_id = $1`;
+
+  const deleteSavingsFundQuery = `
+    DELETE FROM savings_funds
+    WHERE owner_id = $1`;
+
+  const deleteNotificationsQuery = `
+    DELETE FROM notifications
+    WHERE user_id = $1`;
+
+  const tripInvitationsQuery = `
+    DELETE FROM trip_invitations
+    WHERE sender_id = $1`;
 
   try {
     const relatedUsersResult = await pool.query(relatedRolesQuery, [
@@ -860,15 +896,55 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
       req.user.id,
     ]);
 
+    const updateExpenses = await pool.query(updateExpensesQuery, [req.user.id]);
+
+    console.log(updateExpenses);
+
     const deleteProfile = await pool.query(deleteProfileQuery, [req.user.id]);
 
     if (deleteProfile.rowCount == 0) {
       return res.status(500).json({ result: "Error deleting profile" });
     }
 
+    const deleteSavingsFund = await pool.query(deleteSavingsFundQuery, [
+      req.user.id,
+    ]);
+
+    console.log(deleteSavingsFund);
+
+    const deleteExpenses = await pool.query(deleteOwnedExpensesQuery, [
+      req.user.id,
+    ]);
+
+    console.log(deleteExpenses);
+
+    const deleteNotifications = await pool.query(deleteNotificationsQuery, [
+      req.user.id,
+    ]);
+
+    console.log(deleteNotifications);
+
+    const deleteInvitations = await pool.query(tripInvitationsQuery, [
+      req.user.id,
+    ]);
+
+    console.log(deleteInvitations);
+
+    const deleteRoles = await pool.query(deleteUserRolesQuery, [req.user.id]);
+
+    console.log(deleteRoles);
+
+    const deleteOwnerTrips = await pool.query(deleteOwnedTripsQuery, [
+      req.user.id,
+    ]);
+
+    console.log(deleteOwnerTrips);
+
     const deleteAuthUser = await supabaseAdmin.auth.admin.deleteUser(
       req.user.id
     );
+
+    console.log(deleteAuthUser);
 
     var notificationsResult = "";
 
@@ -903,7 +979,7 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "User deleted succesfully" });
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ error: e });
   }
 });
 
