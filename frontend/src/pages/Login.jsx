@@ -67,11 +67,18 @@ export default function Login() {
     }
 
     try {
+      if (!captchaToken) {
+        setErrorMsg("Please complete the captcha verification.");
+        setSubmitting(false);
+        return;
+      }
+
       const { data, error } = await supabase.auth.resetPasswordForEmail(
         userEmail,
         {
           redirectTo:
             "https://wanderfunds-frontend.onrender.com/update-password",
+          options: { captchaToken },
         }
       );
 
