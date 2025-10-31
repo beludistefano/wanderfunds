@@ -19,6 +19,7 @@ import UpdatePassword from "./pages/UpdatePassword";
 import AcceptInvitation from "./pages/AcceptInvitation";
 import ChangePassword from "./pages/ChangePassword";
 import Notifications from "./pages/Notifications";
+import ItineraryPage from "./pages/ItineraryPage";
 
 function App() {
   return (
@@ -111,6 +112,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Notifications />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trip/itinerary/:tripid"
+              element={
+                <ProtectedRoute>
+                  <ItineraryPage />
                 </ProtectedRoute>
               }
             />

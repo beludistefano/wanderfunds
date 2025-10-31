@@ -1,0 +1,31 @@
+#itineraryContainer {
+  text-align: left;
+  padding-left: 2%;
+  width: 50%;
+}
+
+#addFlightButton,
+#addHotelButton,
+#addOtherButton {
+  background-color: #8ebed8;
+  color: white;
+  font-weight: 800;
+  width: 2em;
+  height: 2em;
+  border-radius: 50%;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tripDataTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tripDataTitle h3 {
+  margin: 0;
+}
