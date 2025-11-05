@@ -1131,6 +1131,133 @@ app.post("/api/new-savings-fund", requireAuth, async (req, res) => {
 });
 
 /**
+ * This POST endpoint will store flight data for a trip
+ */
+app.post("/api/add-flight", async (req, res) => {
+  const {
+    tripID,
+    flightNumber,
+    flightDate,
+    airportFrom,
+    departureTime,
+    airportTo,
+    arrivalTime,
+    reservationCode,
+  } = req.body;
+
+  if (tripID == "" || flightNumber == "") {
+    return res
+      .status(400)
+      .send("Error: Trip ID and flight number cannot be empty");
+  }
+
+  const addFlightDataQuery = `
+    INSERT INTO trip_flights (flight_number, flight_date, airport_from, departure_time, airport_to, arrival_time, reservation_code, trip_id)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+  `;
+
+  try {
+    const tripFlightValues = [
+      flightNumber,
+      flightDate,
+      airportFrom,
+      departureTime,
+      airportTo,
+      arrivalTime,
+      reservationCode,
+      tripID,
+    ];
+
+    const tripFlightResult = await pool.query(
+      addFlightDataQuery,
+      tripFlightValues
+    );
+
+    if (tripFlightResult.rowCount == 0) {
+      return res.status(404).json({ result: "Here: Error adding flight data" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res
+      .status(500)
+      .json({ result: "Or here: Error adding flight data" });
+  }
+});
+
+/**
+ * This POST endpoint will store hotel data for a trip
+ */
+app.post("/api/add-hotel", async (req, res) => {
+  const { tripID, hotelName, address, dateFrom, dateTo, reservationWebsite } =
+    req.body;
+
+  if (tripID == "" || hotelName == "") {
+    return res
+      .status(400)
+      .send("Error: Trip ID and hotel name cannot be empty");
+  }
+
+  const tripHotelQuery = `
+    INSERT INTO trip_hotel (hotel_name, address, date_from, date_to, reservation_website, trip_id)
+    VALUES ($1, $2, $3, $4, $5, $6)
+  `;
+
+  try {
+    const tripHotelValues = [
+      hotelName,
+      address,
+      dateFrom,
+      dateTo,
+      reservationWebsite,
+      tripID,
+    ];
+
+    const tripHotelResult = await pool.query(tripHotelQuery, tripHotelValues);
+
+    if (tripHotelResult.rowCount == 0) {
+      return res.status(404).json({ result: "Error adding hotel data" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding hotel data" });
+  }
+});
+
+/**
+ * This POST endpoint will store other data for a trip itinerary
+ */
+app.post("/api/add-itinerary", async (req, res) => {
+  const { tripID, itineraryType, itineraryDesc } = req.body;
+
+  if (tripID == "" || itineraryType == "") {
+    return res
+      .status(400)
+      .send("Error: Trip ID and itinerary type cannot be empty");
+  }
+
+  const itineraryQuery = `
+    INSERT INTO trip_itinerary (itinerary_type, itinerary_desc, trip_id)
+    VALUES ($1, $2, $3)
+  `;
+
+  try {
+    const itineraryValues = [itineraryType, itineraryDesc, tripID];
+
+    const itineraryResults = await pool.query(itineraryQuery, itineraryValues);
+
+    if (itineraryResults.rowCount == 0) {
+      return res.status(404).json({ result: "Error adding itinerary data" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding itinerary data" });
+  }
+});
+
+/**
  * Reject invitation to a trip
  */
 app.get("/api/rejectinvitation", async (req, res) => {
