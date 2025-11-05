@@ -1,19 +1,49 @@
 import { useState, useEffect } from "react";
-import "../css/components/expensemodal.css";
+import "../css/components/itineraryModal.css";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
 
-function validateExpense(name, amount) {
-  const expenseErrors = {};
+function validateHotel(hotelName, checkIn, checkOut) {
+  const errors = {};
 
-  if (name == "") {
-    expenseErrors.name = "Expense name must be included";
+  if (hotelName == "" || hotelName == null) {
+    errors.hotelName = "Hotel name must be included";
   }
-  if (amount <= 0) {
-    expenseErrors.amount = "Expense amount must be included and over 0";
+  if (checkIn == null || checkIn == "") {
+    errors.checkIn = "Check-in date must be included";
+  }
+  if (checkOut == null || checkOut == "") {
+    errors.checkOut = "Check-out date must be included";
+  }
+  if (checkIn != "" && checkOut != "") {
+    const inD = new Date(checkIn);
+    const outD = new Date(checkOut);
+    if (outD <= inD) {
+      errors.checkOut = "Check-out must be after check-in";
+    }
   }
 
-  return expenseErrors;
+  return errors;
+}
+
+function validateFlight(flightNumber) {
+  const flightErrors = {};
+
+  if (flightNumber == "") {
+    flightErrors.number = "Flight number must be included";
+  }
+
+  return flightErrors;
+}
+
+function validateItinerary(itItem) {
+  const itineraryItemErrors = {};
+
+  if (itItem == "") {
+    itineraryItemErrors.itItem = "Itinerary item cannot be empty";
+  }
+
+  return itineraryItemErrors;
 }
 
 export default function AddItinerary({
@@ -56,92 +86,104 @@ export default function AddItinerary({
       setTripId("");
       setValidationErrors({});
     }
+    if (isOpen) {
+      setDatatype(dataType);
+    }
   }, [isOpen]);
 
   if (isOpen == false) {
     return null;
   }
 
-  async function handleAdd() {}
+  async function addHotel() {
+    setValidationErrors({});
 
-  // async function addExpense() {
-  //   setValidationErrors({});
+    const hotelValidation = validateHotel(hotelName, checkIn, checkOut);
+    setValidationErrors(hotelValidation);
 
-  //   const expenseValidation = validateExpense(expenseName, expenseAmount);
-  //   setValidationErrors(expenseValidation);
+    if (Object.keys(hotelValidation).length != 0) {
+      return;
+    }
+  }
 
-  //   if (Object.keys(expenseValidation).length != 0) {
-  //     return;
-  //   }
+  async function addFlight() {
+    setValidationErrors({});
 
-  //   const newExpense = {};
-  //   newExpense["tripID"] = tripID;
-  //   newExpense["name"] = expenseName;
-  //   newExpense["amount"] = Number(expenseAmount);
-  //   newExpense["expectedDate"] = expenseDate ? expenseDate : null;
+    const flightVal = validateFlight(flightNumber);
+    setValidationErrors(flightVal);
 
-  //   if (
-  //     expenseSplit == "Shared Expense" ||
-  //     expenseSplit == "Trip Default - Shared" ||
-  //     expenseSplit == "equal" ||
-  //     expenseSplit == "shared"
-  //   ) {
-  //     newExpense["split"] = "shared";
-  //   } else if (
-  //     expenseSplit == "Own Expense" ||
-  //     expenseSplit == "Trip Default - Own" ||
-  //     expenseSplit == "own"
-  //   ) {
-  //     newExpense["split"] = "own";
-  //   }
+    if (Object.keys(flightVal).length != 0) {
+      return;
+    }
+  }
 
-  //   if (autoAdd == true) {
-  //     newExpense["expenseStatus"] = "accepted";
-  //   } else {
-  //     if (newExpense["split"] == "own" || role == "Owner") {
-  //       newExpense["expenseStatus"] = "accepted";
-  //     } else {
-  //       newExpense["expenseStatus"] = "pending";
-  //     }
-  //   }
+  async function addOther() {
+    setValidationErrors({});
 
-  //   newExpense["role"] = role;
+    const otherVal = validateItinerary(otherName);
+    setValidationErrors(otherVal);
 
-  //   console.log(newExpense);
+    if (Object.keys(otherVal).length != 0) {
+      return;
+    }
 
-  //   try {
-  //     const { data } = await supabase.auth.getSession();
-  //     const token = data.session?.access_token;
-  //     if (!token) {
-  //       return;
-  //     }
+    const newIt = {};
+    newIt["tripID"] = tripId;
+    newIt["itineraryType"] = otherName;
+    newIt["itineraryDesc"] = otherDescription ? otherDescription : null;
 
-  //     const expenseCreation = await fetch(
-  //       "https://wanderfunds-backend.onrender.com/api/expenses",
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(newExpense),
-  //       }
-  //     );
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
 
-  //     if (expenseCreation.ok) {
-  //       setExpenseAddStatus("success");
-  //       onAdd();
-  //     } else {
-  //       setExpenseAddStatus("fail");
-  //     }
+    if (!token) {
+      return;
+    }
 
-  //     setTimeout(() => onCancel(), 800);
-  //   } catch (e) {
-  //     console.log("There was an error" + e);
-  //     setExpenseAddStatus("fail");
-  //     setTimeout(() => onCancel(), 800);
-  //   }
-  // }
+    const otherItCreation = await fetch(
+      "https://wanderfunds-backend.onrender.com/api/add-itinerary",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newIt),
+      }
+    );
+
+    if (!otherItCreation.ok) {
+      throw new Error("Add itinerary failed");
+    }
+
+    return true;
+  }
+
+  async function handleAdd() {
+    var result = "";
+    try {
+      if (datatype == "hotel") {
+        result = await addHotel();
+      } else if (datatype == "flight") {
+        result = await addFlight();
+      } else {
+        result = await addOther();
+      }
+
+      if (result) {
+        setExpenseAddStatus("success");
+        onAdd();
+      } else {
+        setExpenseAddStatus("fail");
+      }
+
+      setTimeout(() => onCancel(), 1000);
+    } catch (e) {
+      console.log("There was an error" + e);
+      setExpenseAddStatus("fail");
+    } finally {
+      setTimeout(() => onCancel(), 1000);
+    }
+  }
 
   return (
     <div id="modalConfirm">
@@ -157,63 +199,84 @@ export default function AddItinerary({
           <>
             {/* HOTEL */}
             {datatype === "hotel" && (
-              <div className="formGrid">
-                <div className="row">
-                  <label htmlFor="hotelName" className="label">
+              <div className="itineraryFormGrid">
+                <div className="itineraryRow">
+                  <label htmlFor="hotelName" className="itineraryLabel">
                     Name:
                   </label>
                   <input
                     id="hotelName"
                     type="text"
-                    className="input"
+                    className={`itineraryInput ${
+                      validationErrors.hotelName ? "borderRed" : ""
+                    }`}
                     value={hotelName}
                     onChange={(e) => setHotelName(e.target.value)}
                     placeholder="Hotel name"
                   />
+                  {validationErrors.hotelName && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.hotelName}
+                    </p>
+                  )}
                 </div>
 
-                <div className="row">
-                  <label htmlFor="hotelAddress" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="hotelAddress" className="itineraryLabel">
                     Address:
                   </label>
                   <input
                     id="hotelAddress"
                     type="text"
-                    className="input"
+                    className="itineraryInput"
                     value={hotelAddress}
                     onChange={(e) => setHotelAddress(e.target.value)}
                     placeholder="Street, city, etc."
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="checkIn" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="checkIn" className="itineraryLabel">
                     Check-in:
                   </label>
                   <input
                     id="checkIn"
-                    type="datetime-local"
-                    className="input"
+                    type="date"
+                    className={`itineraryInput ${
+                      validationErrors.checkIn ? "borderRed" : ""
+                    }`}
                     value={checkIn}
                     onChange={(e) => setCheckIn(e.target.value)}
                   />
+                  {validationErrors.checkIn && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.checkIn}
+                    </p>
+                  )}
                 </div>
 
-                <div className="row">
-                  <label htmlFor="checkOut" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="checkOut" className="itineraryLabel">
                     Check-out:
                   </label>
                   <input
                     id="checkOut"
-                    type="datetime-local"
-                    className="input"
+                    type="date"
+                    className={`itineraryInput ${
+                      validationErrors.checkOut ? "borderRed" : ""
+                    }`}
                     value={checkOut}
                     onChange={(e) => setCheckOut(e.target.value)}
                   />
+                  {validationErrors.checkOut && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.checkOut}
+                    </p>
+                  )}
                 </div>
 
-                <div className="row">
-                  <label htmlFor="hotelFile" className="label">
+                <div className="itineraryRowFile">
+                  <label htmlFor="hotelFile" className="itineraryLabel">
                     Attach file:
                   </label>
                   <input
@@ -228,90 +291,97 @@ export default function AddItinerary({
 
             {/* FLIGHT */}
             {datatype === "flight" && (
-              <div className="formGrid">
-                <div className="row">
-                  <label htmlFor="flightDate" className="label">
+              <div className="itineraryFormGrid">
+                <div className="itineraryRow">
+                  <label htmlFor="flightNumber" className="itineraryLabel">
+                    Flight:
+                  </label>
+                  <input
+                    id="flightNumber"
+                    type="text"
+                    className={`itineraryInput ${
+                      validationErrors.number ? "borderRed" : ""
+                    }`}
+                    value={flightNumber}
+                    onChange={(e) => setFlightNumber(e.target.value)}
+                    placeholder="e.g., AC123"
+                  />
+                  {validationErrors.number && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.number}
+                    </p>
+                  )}
+                </div>
+
+                <div className="itineraryRow">
+                  <label htmlFor="flightDate" className="itineraryLabel">
                     Date:
                   </label>
                   <input
                     id="flightDate"
                     type="date"
-                    className="input"
+                    className="itineraryInput"
                     value={flightDate}
                     onChange={(e) => setFlightDate(e.target.value)}
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="departureTime" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="departureTime" className="itineraryLabel">
                     Departure time:
                   </label>
                   <input
                     id="departureTime"
-                    type="time"
-                    className="input"
+                    type="text"
+                    className="itineraryInput"
                     value={departureTime}
                     onChange={(e) => setDepartureTime(e.target.value)}
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="arrivalTime" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="arrivalTime" className="itineraryLabel">
                     Arrival time:
                   </label>
                   <input
                     id="arrivalTime"
-                    type="time"
-                    className="input"
+                    type="text"
+                    className="itineraryInput"
                     value={arrivalTime}
                     onChange={(e) => setArrivalTime(e.target.value)}
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="airline" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="airline" className="itineraryLabel">
                     Airline:
                   </label>
                   <input
                     id="airline"
                     type="text"
-                    className="input"
+                    className="itineraryInput"
                     value={airline}
                     onChange={(e) => setAirline(e.target.value)}
                     placeholder="e.g., Air Canada"
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="reservationCode" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="reservationCode" className="itineraryLabel">
                     Reservation code:
                   </label>
                   <input
                     id="reservationCode"
                     type="text"
-                    className="input"
+                    className="itineraryInput"
                     value={reservationCode}
                     onChange={(e) => setReservationCode(e.target.value)}
                     placeholder="e.g., ABC123"
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="flightNumber" className="label">
-                    Flight:
-                  </label>
-                  <input
-                    id="flightNumber"
-                    type="text"
-                    className="input"
-                    value={flightNumber}
-                    onChange={(e) => setFlightNumber(e.target.value)}
-                    placeholder="e.g., AC123"
-                  />
-                </div>
-
-                <div className="row">
-                  <label htmlFor="flightFile" className="label">
+                <div className="itineraryRowFile">
+                  <label htmlFor="flightFile" className="itineraryLabel">
                     Attach file:
                   </label>
                   <input
@@ -326,28 +396,35 @@ export default function AddItinerary({
 
             {/* OTHER */}
             {datatype === "other" && (
-              <div className="formGrid">
-                <div className="row">
-                  <label htmlFor="otherName" className="label">
+              <div className="itineraryFormGrid">
+                <div className="itineraryRow">
+                  <label htmlFor="otherName" className="itineraryLabel">
                     Name:
                   </label>
                   <input
                     id="otherName"
                     type="text"
-                    className="input"
+                    className={`itineraryInput ${
+                      validationErrors.itItem ? "borderRed" : ""
+                    }`}
                     value={otherName}
                     onChange={(e) => setOtherName(e.target.value)}
                     placeholder="Item name"
                   />
+                  {validationErrors.itItem && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.itItem}
+                    </p>
+                  )}
                 </div>
 
-                <div className="row">
-                  <label htmlFor="otherDescription" className="label">
+                <div className="itineraryRow">
+                  <label htmlFor="otherDescription" className="itineraryLabel">
                     Description:
                   </label>
                   <textarea
                     id="otherDescription"
-                    className="input"
+                    className="itineraryInput"
                     rows={3}
                     value={otherDescription}
                     onChange={(e) => setOtherDescription(e.target.value)}
@@ -355,8 +432,8 @@ export default function AddItinerary({
                   />
                 </div>
 
-                <div className="row">
-                  <label htmlFor="otherFile" className="label">
+                <div className="itineraryRowFile">
+                  <label htmlFor="otherFile" className="itineraryLabel">
                     Attach file:
                   </label>
                   <input

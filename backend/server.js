@@ -1133,7 +1133,7 @@ app.post("/api/new-savings-fund", requireAuth, async (req, res) => {
 /**
  * This POST endpoint will store flight data for a trip
  */
-app.post("/api/add-flight", async (req, res) => {
+app.post("/api/add-flight", requireAuth, async (req, res) => {
   const {
     tripID,
     flightNumber,
@@ -1174,21 +1174,19 @@ app.post("/api/add-flight", async (req, res) => {
     );
 
     if (tripFlightResult.rowCount == 0) {
-      return res.status(404).json({ result: "Here: Error adding flight data" });
+      return res.status(404).json({ result: "Error adding flight data" });
     }
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res
-      .status(500)
-      .json({ result: "Or here: Error adding flight data" });
+    return res.status(500).json({ result: "Error adding flight data" });
   }
 });
 
 /**
  * This POST endpoint will store hotel data for a trip
  */
-app.post("/api/add-hotel", async (req, res) => {
+app.post("/api/add-hotel", requireAuth, async (req, res) => {
   const { tripID, hotelName, address, dateFrom, dateTo, reservationWebsite } =
     req.body;
 
@@ -1228,7 +1226,7 @@ app.post("/api/add-hotel", async (req, res) => {
 /**
  * This POST endpoint will store other data for a trip itinerary
  */
-app.post("/api/add-itinerary", async (req, res) => {
+app.post("/api/add-itinerary", requireAuth, async (req, res) => {
   const { tripID, itineraryType, itineraryDesc } = req.body;
 
   if (tripID == "" || itineraryType == "") {
