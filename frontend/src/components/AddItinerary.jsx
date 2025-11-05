@@ -64,13 +64,15 @@ export default function AddItinerary({
   const [hotelAddress, setHotelAddress] = useState("");
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
+  const [reservationWebsite, setReservationWebsite] = useState("");
   const [hotelFile, setHotelFile] = useState(null);
 
   // FLIGHT
   const [flightDate, setFlightDate] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
   const [departureTime, setDepartureTime] = useState("");
-  const [airline, setAirline] = useState("");
+  const [airportFrom, setAirportFrom] = useState("");
+  const [airportTo, setAirportTo] = useState("");
   const [reservationCode, setReservationCode] = useState("");
   const [flightNumber, setFlightNumber] = useState("");
   const [flightFile, setFlightFile] = useState(null);
@@ -88,6 +90,7 @@ export default function AddItinerary({
     }
     if (isOpen) {
       setDatatype(dataType);
+      setTripId(tripID);
     }
   }, [isOpen]);
 
@@ -96,41 +99,90 @@ export default function AddItinerary({
   }
 
   async function addHotel() {
-    setValidationErrors({});
+    const newHotel = {};
+    newHotel["tripID"] = tripId;
+    newHotel["hotelName"] = hotelName;
+    newHotel["address"] = hotelAddress ? hotelAddress : null;
+    newHotel["dateFrom"] = checkIn;
+    newHotel["dateTo"] = checkOut;
+    newHotel["reservationWebsite"] = reservationWebsite
+      ? reservationWebsite
+      : null;
 
-    const hotelValidation = validateHotel(hotelName, checkIn, checkOut);
-    setValidationErrors(hotelValidation);
+    console.log(newHotel);
 
-    if (Object.keys(hotelValidation).length != 0) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+
+    if (!token) {
       return;
     }
+
+    const hotelCreation = await fetch(
+      "https://wanderfunds-backend.onrender.com/api/add-hotel",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newHotel),
+      }
+    );
+
+    if (!hotelCreation.ok) {
+      throw new Error("Add itinerary failed");
+    }
+
+    return true;
   }
 
   async function addFlight() {
-    setValidationErrors({});
+    const newFlight = {};
+    newFlight["tripID"] = tripId;
+    newFlight["flightNumber"] = flightNumber;
+    newFlight["flightDate"] = flightDate ? flightDate : null;
+    newFlight["airportFrom"] = airportFrom ? airportFrom : null;
+    newFlight["departureTime"] = departureTime ? departureTime : null;
+    newFlight["airportTo"] = airportTo ? airportTo : null;
+    newFlight["arrivalTime"] = arrivalTime ? arrivalTime : null;
+    newFlight["reservationCode"] = reservationCode ? reservationCode : null;
 
-    const flightVal = validateFlight(flightNumber);
-    setValidationErrors(flightVal);
+    console.log(newFlight);
 
-    if (Object.keys(flightVal).length != 0) {
+    const { data } = await supabase.auth.getSession();
+    const token = data.session?.access_token;
+
+    if (!token) {
       return;
     }
+
+    const flightCreation = await fetch(
+      "https://wanderfunds-backend.onrender.com/api/add-flight",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newFlight),
+      }
+    );
+
+    if (!flightCreation.ok) {
+      throw new Error("Add itinerary failed");
+    }
+
+    return true;
   }
 
   async function addOther() {
-    setValidationErrors({});
-
-    const otherVal = validateItinerary(otherName);
-    setValidationErrors(otherVal);
-
-    if (Object.keys(otherVal).length != 0) {
-      return;
-    }
-
     const newIt = {};
     newIt["tripID"] = tripId;
     newIt["itineraryType"] = otherName;
     newIt["itineraryDesc"] = otherDescription ? otherDescription : null;
+
+    console.log(newIt);
 
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
@@ -159,6 +211,23 @@ export default function AddItinerary({
   }
 
   async function handleAdd() {
+    setValidationErrors({});
+    var errors;
+    if (datatype == "hotel") {
+      errors = validateHotel(hotelName, checkIn, checkOut);
+      setValidationErrors(errors);
+    } else if (datatype == "flight") {
+      errors = validateFlight(flightNumber);
+      setValidationErrors(errors);
+    } else {
+      errors = validateItinerary(otherName);
+      setValidationErrors(errors);
+    }
+
+    if (Object.keys(errors).length != 0) {
+      return;
+    }
+
     var result = "";
     try {
       if (datatype == "hotel") {
@@ -170,16 +239,16 @@ export default function AddItinerary({
       }
 
       if (result) {
-        setExpenseAddStatus("success");
-        onAdd();
+        setDataAddStatus("success");
+        // onAdd();
       } else {
-        setExpenseAddStatus("fail");
+        setDataAddStatus("fail");
       }
 
       setTimeout(() => onCancel(), 1000);
     } catch (e) {
       console.log("There was an error" + e);
-      setExpenseAddStatus("fail");
+      setDataAddStatus("fail");
     } finally {
       setTimeout(() => onCancel(), 1000);
     }
@@ -275,6 +344,20 @@ export default function AddItinerary({
                   )}
                 </div>
 
+                <div className="itineraryRow">
+                  <label htmlFor="hotelReserv" className="itineraryLabel">
+                    Reservation Website:
+                  </label>
+                  <input
+                    id="hotelReserv"
+                    type="text"
+                    className="itineraryInput"
+                    value={reservationWebsite}
+                    onChange={(e) => setReservationWebsite(e.target.value)}
+                    placeholder="Booking, Expedia"
+                  />
+                </div>
+
                 <div className="itineraryRowFile">
                   <label htmlFor="hotelFile" className="itineraryLabel">
                     Attach file:
@@ -327,6 +410,20 @@ export default function AddItinerary({
                 </div>
 
                 <div className="itineraryRow">
+                  <label htmlFor="airline" className="itineraryLabel">
+                    Airport From:
+                  </label>
+                  <input
+                    id="airline"
+                    type="text"
+                    className="itineraryInput"
+                    value={airportFrom}
+                    onChange={(e) => setAirportFrom(e.target.value)}
+                    placeholder="e.g., Toronto Pearson"
+                  />
+                </div>
+
+                <div className="itineraryRow">
                   <label htmlFor="departureTime" className="itineraryLabel">
                     Departure time:
                   </label>
@@ -340,6 +437,20 @@ export default function AddItinerary({
                 </div>
 
                 <div className="itineraryRow">
+                  <label htmlFor="airportTo" className="itineraryLabel">
+                    Airport To:
+                  </label>
+                  <input
+                    id="airportTo"
+                    type="text"
+                    className="itineraryInput"
+                    value={airportTo}
+                    onChange={(e) => setAirportTo(e.target.value)}
+                    placeholder="e.g., Orlando International"
+                  />
+                </div>
+
+                <div className="itineraryRow">
                   <label htmlFor="arrivalTime" className="itineraryLabel">
                     Arrival time:
                   </label>
@@ -349,20 +460,6 @@ export default function AddItinerary({
                     className="itineraryInput"
                     value={arrivalTime}
                     onChange={(e) => setArrivalTime(e.target.value)}
-                  />
-                </div>
-
-                <div className="itineraryRow">
-                  <label htmlFor="airline" className="itineraryLabel">
-                    Airline:
-                  </label>
-                  <input
-                    id="airline"
-                    type="text"
-                    className="itineraryInput"
-                    value={airline}
-                    onChange={(e) => setAirline(e.target.value)}
-                    placeholder="e.g., Air Canada"
                   />
                 </div>
 
