@@ -4,11 +4,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/itinerary.css";
 import InviteMember from "../../components/InviteMember";
 import { supabase } from "../../supabaseClient";
+import { useAuth } from "../../auth/AuthProvider";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddItinerary from "../../components/AddItinerary";
 
 export default function Itinerary({ role, tripID }) {
+  const { session, initialized } = useAuth();
+
   const [tripId, setTripId] = useState(tripID);
   const [userRole, setUserRole] = useState(role);
 
@@ -20,7 +23,55 @@ export default function Itinerary({ role, tripID }) {
   const [isHotelOpen, setIsHotelOpen] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
 
+  const token = session?.access_token;
+
+  async function getData() {
+    try {
+      if (!token) {
+        return;
+      }
+
+      const itineraryData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/itinerary/${tripId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const hotelsData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/hotels/${tripId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const flightsData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/flights/${tripId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      console.log(flightsData);
+      console.log(hotelsData);
+      console.log(itineraryData);
+      // setSavingsFund(savingsFundJson[0].amount);
+      // setSavingsFundID(savingsFundJson[0].savings_funds_id);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   async function refreshPage() {}
+
+  useEffect(() => {
+    if (!initialized || !token || !tripID) {
+      return;
+    }
+    (async () => {
+      await getData();
+    })();
+  }, [initialized, token, tripID]);
 
   return (
     <>

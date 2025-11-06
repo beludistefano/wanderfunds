@@ -1256,6 +1256,66 @@ app.post("/api/add-itinerary", requireAuth, async (req, res) => {
 });
 
 /**
+ * This GET request returns the flights that match the trip ID
+ */
+app.get("/api/flights/:tripID", requireAuth, async (req, res) => {
+  const { tripID } = req.params;
+
+  try {
+    const query = `
+        SELECT *
+        FROM trip_flights
+        WHERE trip_id = $1`;
+
+    const tripFlights = await pool.query(query, [tripID]);
+
+    return res.status(200).json(tripFlights.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
+ * This GET request returns the hotels that match the trip ID
+ */
+app.get("/api/hotels/:tripID", requireAuth, async (req, res) => {
+  const { tripID } = req.params;
+
+  try {
+    const query = `
+        SELECT *
+        FROM trip_hotel
+        WHERE trip_id = $1`;
+
+    const tripHotels = await pool.query(query, [tripID]);
+
+    return res.status(200).json(tripHotels.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
+ * This GET request returns the itinerary items that match the trip ID
+ */
+app.get("/api/itinerary/:tripID", async (req, res) => {
+  const { tripID } = req.params;
+
+  try {
+    const query = `
+        SELECT *
+        FROM trip_itinerary
+        WHERE trip_id = $1`;
+
+    const tripItinerary = await pool.query(query, [tripID]);
+
+    return res.status(200).json(tripItinerary.rows);
+  } catch (err) {
+    return res.status(500).send("Server error");
+  }
+});
+
+/**
  * Reject invitation to a trip
  */
 app.get("/api/rejectinvitation", async (req, res) => {
