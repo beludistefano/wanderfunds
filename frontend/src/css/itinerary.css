@@ -29,3 +29,22 @@
 .tripDataTitle h3 {
   margin: 0;
 }
+
+.itineraryCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  background-color: #f7f7f7;
+  min-height: 50px;
+  padding: 2%;
+}
+
+.itineraryCard p {
+  margin: 0;
+}
+
+.itineraryTitle {
+  font-weight: 500;
+}

@@ -1,13 +1,11 @@
-import { faUser, faX } from "@fortawesome/free-solid-svg-icons";
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/itinerary.css";
-import InviteMember from "../../components/InviteMember";
-import { supabase } from "../../supabaseClient";
 import { useAuth } from "../../auth/AuthProvider";
-import { Link, useParams, useNavigate } from "react-router-dom";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
 import AddItinerary from "../../components/AddItinerary";
+
+const formatDate = (d) => new Date(d).toISOString().slice(0, 10);
 
 export default function Itinerary({ role, tripID }) {
   const { session, initialized } = useAuth();
@@ -52,17 +50,17 @@ export default function Itinerary({ role, tripID }) {
         }
       );
 
-      console.log(flightsData);
-      console.log(hotelsData);
-      console.log(itineraryData);
-      // setSavingsFund(savingsFundJson[0].amount);
-      // setSavingsFundID(savingsFundJson[0].savings_funds_id);
+      setFlights(await flightsData.json());
+      setHotels(await hotelsData.json());
+      setDataItems(await itineraryData.json());
     } catch (e) {
       console.log(e);
     }
   }
 
-  async function refreshPage() {}
+  async function refreshPage() {
+    await getData();
+  }
 
   useEffect(() => {
     if (!initialized || !token || !tripID) {
@@ -113,11 +111,11 @@ export default function Itinerary({ role, tripID }) {
           ) : (
             flights.map((f) => {
               return (
-                <div className="itineraryCard">
+                <div className="itineraryCard" key={f.id}>
                   <div className="itineraryInfoCol">
-                    <p>{f.flight_number}</p>
-                    <p>
-                      {f.flight_date} - {f.airport_from}
+                    <p className="itineraryTitle">{f.flight_number}</p>
+                    <p className="itinerarySubTitle">
+                      {formatDate(f.flight_date)} - {f.airport_from}
                     </p>
                   </div>
                   <div>
@@ -145,10 +143,12 @@ export default function Itinerary({ role, tripID }) {
           ) : (
             hotels.map((h) => {
               return (
-                <div className="itineraryCard">
+                <div className="itineraryCard" key={h.id}>
                   <div className="itineraryInfoCol">
-                    <p>{h.hotel_name}</p>
-                    <p>{h.address}</p>
+                    <p className="itineraryTitle">{h.hotel_name}</p>
+                    <p>
+                      {formatDate(h.date_from)} - {formatDate(h.date_to)}
+                    </p>
                   </div>
                   <div>
                     <FontAwesomeIcon icon={faArrowRight} />
@@ -175,9 +175,9 @@ export default function Itinerary({ role, tripID }) {
           ) : (
             dataItems.map((i) => {
               return (
-                <div className="itineraryCard">
+                <div className="itineraryCard" key={i.id}>
                   <div className="itineraryInfoCol">
-                    <p>{i.itinerary_type}</p>
+                    <p className="itineraryTitle">{i.itinerary_type}</p>
                     <p>{i.itinerary_desc}</p>
                   </div>
                   <div>

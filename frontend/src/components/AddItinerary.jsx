@@ -240,7 +240,7 @@ export default function AddItinerary({
 
       if (result) {
         setDataAddStatus("success");
-        // onAdd();
+        onAdd();
       } else {
         setDataAddStatus("fail");
       }
