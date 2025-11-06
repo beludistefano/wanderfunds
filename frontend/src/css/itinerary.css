@@ -48,3 +48,7 @@
 .itineraryTitle {
   font-weight: 500;
 }
+
+.clickableIcon {
+  cursor: pointer;
+}

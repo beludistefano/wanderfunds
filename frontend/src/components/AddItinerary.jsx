@@ -130,25 +130,42 @@ export default function AddItinerary({
       }
     );
 
+    if (!hotelCreation.ok) {
+      throw new Error("Add itinerary failed");
+    }
+
     if (hotelFile != null) {
+      const hotelData = await hotelCreation.json();
+      const hotelID = hotelData.id;
+
       const path = `trips/${tripId}/hotels/${hotelFile.name}`;
 
       const { data, error } = await supabase.storage
         .from("trip-hotels")
         .upload(path, hotelFile, { contentType: hotelFile.type });
 
-      console.log(data);
+      if (error) {
+        throw new Error("File upload failed");
+      }
 
       const publicUrl = supabase.storage
         .from("trip-hotels")
         .getPublicUrl(`trips/${tripId}/hotels/${hotelFile.name}`)
         .data.publicUrl;
 
-      console.log(publicUrl);
-    }
+      const hotelUpdateFile = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/update-hotel",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ hotelID: hotelID, fileURL: publicUrl }),
+        }
+      );
 
-    if (!hotelCreation.ok) {
-      throw new Error("Add itinerary failed");
+      console.log(hotelUpdateFile);
     }
 
     return true;
@@ -190,6 +207,40 @@ export default function AddItinerary({
       throw new Error("Add itinerary failed");
     }
 
+    if (flightFile != null) {
+      const flightData = await flightCreation.json();
+      const flightId = flightData.id;
+
+      const path = `trips/${tripId}/flights/${flightFile.name}`;
+
+      const { data, error } = await supabase.storage
+        .from("trip-flights")
+        .upload(path, flightFile, { contentType: flightFile.type });
+
+      if (error) {
+        throw new Error("File upload failed");
+      }
+
+      const publicUrl = supabase.storage
+        .from("trip-flights")
+        .getPublicUrl(`trips/${tripId}/flights/${flightFile.name}`)
+        .data.publicUrl;
+
+      const flightUpdateResult = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/update-flight",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ flightID: flightId, fileURL: publicUrl }),
+        }
+      );
+
+      console.log(flightUpdateResult);
+    }
+
     return true;
   }
 
@@ -222,6 +273,40 @@ export default function AddItinerary({
 
     if (!otherItCreation.ok) {
       throw new Error("Add itinerary failed");
+    }
+
+    if (otherFile != null) {
+      const itineraryData = await otherItCreation.json();
+      const itId = itineraryData.id;
+
+      const path = `trips/${tripId}/itinerary/${otherFile.name}`;
+
+      const { data, error } = await supabase.storage
+        .from("trip-itinerary")
+        .upload(path, otherFile, { contentType: otherFile.type });
+
+      if (error) {
+        throw new Error("File upload failed");
+      }
+
+      const publicUrl = supabase.storage
+        .from("trip-itinerary")
+        .getPublicUrl(`trips/${tripId}/itinerary/${otherFile.name}`)
+        .data.publicUrl;
+
+      const itineraryUpdateResult = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/update-itinerary",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ itID: itId, fileURL: publicUrl }),
+        }
+      );
+
+      console.log(itineraryUpdateResult);
     }
 
     return true;

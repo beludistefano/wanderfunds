@@ -119,7 +119,16 @@ export default function Itinerary({ role, tripID }) {
                     </p>
                   </div>
                   <div>
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    {f.file_url ? (
+                      <a href={f.file_url} target="_blank">
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className="clickableIcon"
+                        />
+                      </a>
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowRight} />
+                    )}
                   </div>
                 </div>
               );
@@ -151,7 +160,16 @@ export default function Itinerary({ role, tripID }) {
                     </p>
                   </div>
                   <div>
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    {h.file_url ? (
+                      <a href={h.file_url} target="_blank">
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className="clickableIcon"
+                        />
+                      </a>
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowRight} />
+                    )}
                   </div>
                 </div>
               );
@@ -181,7 +199,16 @@ export default function Itinerary({ role, tripID }) {
                     <p>{i.itinerary_desc}</p>
                   </div>
                   <div>
-                    <FontAwesomeIcon icon={faArrowRight} />
+                    {i.file_url ? (
+                      <a href={i.file_url} target="_blank">
+                        <FontAwesomeIcon
+                          icon={faArrowRight}
+                          className="clickableIcon"
+                        />
+                      </a>
+                    ) : (
+                      <FontAwesomeIcon icon={faArrowRight} />
+                    )}
                   </div>
                 </div>
               );
