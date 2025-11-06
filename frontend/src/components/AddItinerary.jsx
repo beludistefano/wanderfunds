@@ -130,6 +130,23 @@ export default function AddItinerary({
       }
     );
 
+    if (hotelFile != null) {
+      const path = `trips/${tripId}/hotels/${hotelFile.name}`;
+
+      const { data, error } = await supabase.storage
+        .from("trip-hotels")
+        .upload(path, hotelFile, { contentType: hotelFile.type });
+
+      console.log(data);
+
+      const publicUrl = supabase.storage
+        .from("trip-hotels")
+        .getPublicUrl(`trips/${tripId}/hotels/${hotelFile.name}`)
+        .data.publicUrl;
+
+      console.log(publicUrl);
+    }
+
     if (!hotelCreation.ok) {
       throw new Error("Add itinerary failed");
     }
