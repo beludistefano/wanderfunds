@@ -1154,6 +1154,7 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
   const addFlightDataQuery = `
     INSERT INTO trip_flights (flight_number, flight_date, airport_from, departure_time, airport_to, arrival_time, reservation_code, trip_id)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    RETURNING id
   `;
 
   try {
@@ -1177,7 +1178,9 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
       return res.status(404).json({ result: "Error adding flight data" });
     }
 
-    return res.status(200).json({ result: "Success" });
+    return res
+      .status(200)
+      .json({ result: "Success", id: tripFlightResult.rows[0].id });
   } catch (e) {
     return res.status(500).json({ result: "Error adding flight data" });
   }
@@ -1199,6 +1202,7 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
   const tripHotelQuery = `
     INSERT INTO trip_hotel (hotel_name, address, date_from, date_to, reservation_website, trip_id)
     VALUES ($1, $2, $3, $4, $5, $6)
+    RETURNING id
   `;
 
   try {
@@ -1217,7 +1221,9 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
       return res.status(404).json({ result: "Error adding hotel data" });
     }
 
-    return res.status(200).json({ result: "Success" });
+    return res
+      .status(200)
+      .json({ result: "Success", id: tripHotelResult.rows[0].id });
   } catch (e) {
     return res.status(500).json({ result: "Error adding hotel data" });
   }
@@ -1238,6 +1244,7 @@ app.post("/api/add-itinerary", requireAuth, async (req, res) => {
   const itineraryQuery = `
     INSERT INTO trip_itinerary (itinerary_type, itinerary_desc, trip_id)
     VALUES ($1, $2, $3)
+    RETURNING id
   `;
 
   try {
@@ -1247,6 +1254,101 @@ app.post("/api/add-itinerary", requireAuth, async (req, res) => {
 
     if (itineraryResults.rowCount == 0) {
       return res.status(404).json({ result: "Error adding itinerary data" });
+    }
+
+    return res
+      .status(200)
+      .json({ result: "Success", id: itineraryResults.rows[0].id });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding itinerary data" });
+  }
+});
+
+/**
+ * This PUT endpoint will store the file URL in the itinerary data
+ */
+app.put("/api/update-itinerary", requireAuth, async (req, res) => {
+  const { itID, fileURL } = req.body;
+
+  if (itID == "" || fileURL == "") {
+    return res.status(400).send("Error: ID and file URL cannot be empty");
+  }
+
+  const itineraryQuery = `
+    UPDATE trip_itinerary
+    SET file_URL = $1
+    WHERE id = $2
+  `;
+
+  try {
+    const itineraryValues = [fileURL, itID];
+
+    const itineraryResults = await pool.query(itineraryQuery, itineraryValues);
+
+    if (itineraryResults.rowCount == 0) {
+      return res.status(404).json({ result: "Error updating itinerary data" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding itinerary data" });
+  }
+});
+
+/**
+ * This PUT endpoint will update the file URL in the flight data
+ */
+app.put("/api/update-flight", requireAuth, async (req, res) => {
+  const { flightID, fileURL } = req.body;
+
+  if (flightID == "" || fileURL == "") {
+    return res.status(400).send("Error: ID and file URL cannot be empty");
+  }
+
+  const flightQuery = `
+    UPDATE trip_flights
+    SET file_URL = $1
+    WHERE id = $2
+  `;
+
+  try {
+    const flightValues = [fileURL, flightID];
+
+    const flightResults = await pool.query(flightQuery, flightValues);
+
+    if (flightResults.rowCount == 0) {
+      return res.status(404).json({ result: "Error updating flight data" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error adding itinerary data" });
+  }
+});
+
+/**
+ * This PUT endpoint will store the file URL in the hotel data
+ */
+app.put("/api/update-hotel", requireAuth, async (req, res) => {
+  const { hotelID, fileURL } = req.body;
+
+  if (hotelID == "" || fileURL == "") {
+    return res.status(400).send("Error: ID and file URL cannot be empty");
+  }
+
+  const hotelQuery = `
+    UPDATE trip_hotel
+    SET file_URL = $1
+    WHERE id = $2
+  `;
+
+  try {
+    const hotelValues = [fileURL, hotelID];
+
+    const hotelResults = await pool.query(hotelQuery, hotelValues);
+
+    if (hotelResults.rowCount == 0) {
+      return res.status(404).json({ result: "Error updating hotel data" });
     }
 
     return res.status(200).json({ result: "Success" });
