@@ -22,9 +22,11 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
   const [expenseConfStatus, setExpenseConfStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
 
+  console.log(expenseID);
+
   useEffect(() => {
     if (!isOpen) {
-      setExpenseAddStatus(null);
+      setExpenseConfStatus(null);
       setConfDate(() => {
         const today = new Date();
         return today.toISOString().split("T")[0];
@@ -61,7 +63,7 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
       const confirmExpenseResult = await fetch(
         "https://wanderfunds-backend.onrender.com/api/confirm-expense",
         {
-          method: "POST",
+          method: "PUT",
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -106,6 +108,14 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
                   value={confDate}
                   onChange={(e) => setConfDate(e.target.value)}
                 />
+                {validationErrors.date && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.date}
+                  </p>
+                )}
               </div>
             </div>
             <div id="modalConfirmOptions">
@@ -123,7 +133,7 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
               </button>
             </div>
           </>
-        ) : expenseAddStatus === "success" ? (
+        ) : expenseConfStatus === "success" ? (
           <>
             <p className="greenText">Expense confirmed succesfully!</p>
           </>

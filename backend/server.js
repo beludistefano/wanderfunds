@@ -1418,6 +1418,38 @@ app.get("/api/itinerary/:tripID", async (req, res) => {
 });
 
 /**
+ * This PUT endpoint will confirm an expense
+ */
+app.put("/api/confirm-expense", requireAuth, async (req, res) => {
+  const { expenseID, confirmed_date } = req.body;
+
+  if (expenseID == "" || confirmed_date == "") {
+    return res.status(400).send("Error: ID and date cannot be empty");
+  }
+
+  const confirmQuery = `
+    UPDATE expected_expenses
+    SET confirmed = $1,
+        confirmed_date = $2
+    WHERE expense_id = $3
+  `;
+
+  try {
+    const confirmValues = [true, confirmed_date, expenseID];
+
+    const confirmResults = await pool.query(confirmQuery, confirmValues);
+
+    if (confirmResults.rowCount == 0) {
+      return res.status(404).json({ result: "Error confirming expense" });
+    }
+
+    return res.status(200).json({ result: "Success" });
+  } catch (e) {
+    return res.status(500).json({ result: "Error confirming expense: " + e });
+  }
+});
+
+/**
  * Reject invitation to a trip
  */
 app.get("/api/rejectinvitation", async (req, res) => {
