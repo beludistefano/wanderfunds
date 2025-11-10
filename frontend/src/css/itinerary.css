@@ -52,3 +52,18 @@
 .clickableIcon {
   cursor: pointer;
 }
+
+.fileLink {
+  color: black;
+}
+
+.fileNoLink {
+  color: #e6e6e6;
+}
+
+#calendarViewButton {
+  background-color: #8ebed8;
+  border-radius: 9999px;
+  color: white;
+  padding: 2% 5%;
+}

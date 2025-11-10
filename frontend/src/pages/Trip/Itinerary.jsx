@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 import "../../css/itinerary.css";
 import { useAuth } from "../../auth/AuthProvider";
 import { faArrowRight, faPlus } from "@fortawesome/free-solid-svg-icons";
@@ -50,8 +51,11 @@ export default function Itinerary({ role, tripID }) {
         }
       );
 
+      const hotelsJson = await hotelsData.json();
+      console.log(hotelsJson);
+
       setFlights(await flightsData.json());
-      setHotels(await hotelsData.json());
+      setHotels(hotelsJson);
       setDataItems(await itineraryData.json());
     } catch (e) {
       console.log(e);
@@ -74,7 +78,7 @@ export default function Itinerary({ role, tripID }) {
   return (
     <>
       <div
-        id="containerEditTop"
+        id="containerItineraryTop"
         style={{ paddingRight: "2%", paddingLeft: "2%" }}
       >
         <div
@@ -120,14 +124,17 @@ export default function Itinerary({ role, tripID }) {
                   </div>
                   <div>
                     {f.file_url ? (
-                      <a href={f.file_url} target="_blank">
+                      <a href={f.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
                           icon={faArrowRight}
                           className="clickableIcon"
                         />
                       </a>
                     ) : (
-                      <FontAwesomeIcon icon={faArrowRight} />
+                      <FontAwesomeIcon
+                        className="fileNoLink"
+                        icon={faArrowRight}
+                      />
                     )}
                   </div>
                 </div>
@@ -161,14 +168,17 @@ export default function Itinerary({ role, tripID }) {
                   </div>
                   <div>
                     {h.file_url ? (
-                      <a href={h.file_url} target="_blank">
+                      <a href={h.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
                           icon={faArrowRight}
                           className="clickableIcon"
                         />
                       </a>
                     ) : (
-                      <FontAwesomeIcon icon={faArrowRight} />
+                      <FontAwesomeIcon
+                        className="fileNoLink"
+                        icon={faArrowRight}
+                      />
                     )}
                   </div>
                 </div>
@@ -200,20 +210,28 @@ export default function Itinerary({ role, tripID }) {
                   </div>
                   <div>
                     {i.file_url ? (
-                      <a href={i.file_url} target="_blank">
+                      <a href={i.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
                           icon={faArrowRight}
                           className="clickableIcon"
                         />
                       </a>
                     ) : (
-                      <FontAwesomeIcon icon={faArrowRight} />
+                      <FontAwesomeIcon
+                        className="fileNoLink"
+                        icon={faArrowRight}
+                      />
                     )}
                   </div>
                 </div>
               );
             })
           )}
+          <div>
+            <Link id="calendarViewButton" to={`/trip/calendar/${tripID}`}>
+              See Calendar View
+            </Link>
+          </div>
         </div>
       </div>
       <AddItinerary

@@ -1276,7 +1276,7 @@ app.put("/api/update-itinerary", requireAuth, async (req, res) => {
 
   const itineraryQuery = `
     UPDATE trip_itinerary
-    SET file_URL = $1
+    SET file_url = $1
     WHERE id = $2
   `;
 
@@ -1307,7 +1307,7 @@ app.put("/api/update-flight", requireAuth, async (req, res) => {
 
   const flightQuery = `
     UPDATE trip_flights
-    SET file_URL = $1
+    SET file_url = $1
     WHERE id = $2
   `;
 
@@ -1338,7 +1338,7 @@ app.put("/api/update-hotel", requireAuth, async (req, res) => {
 
   const hotelQuery = `
     UPDATE trip_hotel
-    SET file_URL = $1
+    SET file_url = $1
     WHERE id = $2
   `;
 

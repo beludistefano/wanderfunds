@@ -218,8 +218,11 @@ export default function AddItinerary({
         .upload(path, flightFile, { contentType: flightFile.type });
 
       if (error) {
+        console.log(error);
         throw new Error("File upload failed");
       }
+
+      console.log(data);
 
       const publicUrl = supabase.storage
         .from("trip-flights")
