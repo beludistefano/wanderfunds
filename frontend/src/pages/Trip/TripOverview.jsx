@@ -4,6 +4,7 @@ import AddExpense from "../../components/AddExpense";
 import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
 import EditExpense from "../../components/EditExpense";
+import ConfirmExpense from "../../components/ConfirmExpense";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
@@ -28,8 +29,10 @@ export default function TripOverview({ trip, userRole }) {
   const [tripAutoAdd, setTripAutoAdd] = useState(trip.auto_add);
 
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const [selectedConfExpense, setSelectedConfExpense] = useState(null);
 
   const [isExpenseOpen, setIsExpenseOpen] = useState(false);
+  const [confirmExpenseOpen, setConfirmExpenseOpen] = useState(false);
   const [addFundsOpen, setAddFundsOpen] = useState(false);
   const [removeFundsOpen, setRemoveFundsOpen] = useState(false);
   const [editExpenseOpen, setEditExpenseOpen] = useState(false);
@@ -388,7 +391,11 @@ export default function TripOverview({ trip, userRole }) {
                           ) : (
                             <button
                               type="button"
-                              onClick={() => confirmExpense(e.expense_id)}
+                              onClick={() => {
+                                console.log(e);
+                                setConfirmExpenseOpen(true);
+                                setSelectedConfExpense(e);
+                              }}
                               id="confirmExpenseButton"
                             >
                               Confirm
@@ -494,6 +501,14 @@ export default function TripOverview({ trip, userRole }) {
           expense={selectedExpense}
           tripRole={role}
           autoadd={tripAutoAdd}
+        />
+      )}
+      {confirmExpenseOpen && expenses.length > 0 && (
+        <ConfirmExpense
+          isOpen={confirmExpenseOpen}
+          onAdd={refreshPage}
+          onCancel={() => setConfirmExpenseOpen(false)}
+          expenseID={selectedConfExpense.expense_id}
         />
       )}
     </>
