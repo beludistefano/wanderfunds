@@ -5,7 +5,12 @@ import AddFunds from "../../components/AddFunds";
 import RemoveFunds from "../../components/RemoveFunds";
 import EditExpense from "../../components/EditExpense";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus, faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faCheck,
+  faDollarSign,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import { supabase } from "../../supabaseClient";
 import { useAuth } from "../../auth/AuthProvider";
 
@@ -115,6 +120,10 @@ export default function TripOverview({ trip, userRole }) {
     } catch (e) {
       console.log("Error: " + e);
     }
+  }
+
+  async function confirmExpense(expenseID) {
+    console.log("Clicked button");
   }
 
   async function rejectExpense(expenseID) {
@@ -290,7 +299,9 @@ export default function TripOverview({ trip, userRole }) {
                             : "$ " + (e.amount / trip.members).toFixed(2)}
                         </td>
                         <td style={{ textAlign: "center" }}>
-                          {trip.status == "Planning" ? (
+                          {role === "Guest" ? (
+                            <></>
+                          ) : trip.status == "Planning" ? (
                             e.expense_status == "pending" ? (
                               role == "Owner" ? (
                                 <div
@@ -303,7 +314,7 @@ export default function TripOverview({ trip, userRole }) {
                                   <button
                                     type="button"
                                     onClick={() => approveExpense(e.expense_id)}
-                                    id="confirmExpenseButton"
+                                    id="approveExpenseButton"
                                   >
                                     <FontAwesomeIcon
                                       icon={faCheck}
@@ -346,7 +357,7 @@ export default function TripOverview({ trip, userRole }) {
                                 <button
                                   type="button"
                                   onClick={() => approveExpense(e.expense_id)}
-                                  id="confirmExpenseButton"
+                                  id="approveExpenseButton"
                                 >
                                   <FontAwesomeIcon
                                     icon={faCheck}
@@ -369,13 +380,19 @@ export default function TripOverview({ trip, userRole }) {
                                 Pending
                               </span>
                             )
+                          ) : e.confirmed == true ? (
+                            <p>
+                              Paid
+                              <FontAwesomeIcon icon={faCheck} />
+                            </p>
                           ) : (
-                            <div style={{ textAlign: "center" }}>
-                              <FontAwesomeIcon
-                                icon={faCheck}
-                                style={{ color: "black" }}
-                              />
-                            </div>
+                            <button
+                              type="button"
+                              onClick={() => confirmExpense(e.expense_id)}
+                              id="confirmExpenseButton"
+                            >
+                              Confirm
+                            </button>
                           )}
                         </td>
                       </tr>

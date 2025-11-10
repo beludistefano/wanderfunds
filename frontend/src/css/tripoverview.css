@@ -51,7 +51,7 @@
   justify-content: "center";
 }
 
-#confirmExpenseButton {
+#approveExpenseButton {
   border: "none";
   cursor: "pointer";
   background-color: rgb(126, 186, 126);
@@ -60,6 +60,20 @@
   padding: 3px 5px;
   align-items: "center";
   justify-content: "center";
+}
+
+#confirmExpenseButton {
+  border: none;
+  cursor: "pointer";
+  background-color: rgb(126, 186, 126);
+  display: "flex";
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: white;
+}
+
+#confirmExpenseButton:hover {
+  border: none;
 }
 
 #addExpenseButton {
