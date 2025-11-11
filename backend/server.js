@@ -1421,7 +1421,7 @@ app.get("/api/itinerary/:tripID", async (req, res) => {
  * This PUT endpoint will confirm an expense
  */
 app.put("/api/confirm-expense", requireAuth, async (req, res) => {
-  const { expenseID, confirmed_date } = req.body;
+  const { expenseID, confirmed_date, tripID, amount } = req.body;
 
   if (expenseID == "" || confirmed_date == "") {
     return res.status(400).send("Error: ID and date cannot be empty");
@@ -1442,6 +1442,20 @@ app.put("/api/confirm-expense", requireAuth, async (req, res) => {
     if (confirmResults.rowCount == 0) {
       return res.status(404).json({ result: "Error confirming expense" });
     }
+
+    const updateSavingsFunds = `
+      UPDATE savings_funds
+      SET amount = amount - $1
+      WHERE trip_id = $2
+        AND amount > $3
+    `;
+
+    const updateSavingsValues = [amount, tripID, amount];
+
+    const updateResult = await pool.query(
+      updateSavingsFunds,
+      updateSavingsValues
+    );
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {

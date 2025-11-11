@@ -13,12 +13,23 @@ function validateExpense(date) {
   return expenseErrors;
 }
 
-export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
+export default function ConfirmExpense({
+  isOpen,
+  onAdd,
+  onCancel,
+  expenseID,
+  tripID,
+  amount,
+}) {
   const [expenseId, setExpenseId] = useState(expenseID);
   const [confDate, setConfDate] = useState(() => {
     const today = new Date();
     return today.toISOString().split("T")[0];
   });
+
+  const [tripId, setTripId] = useState(tripID);
+  const [expenseAmount, setExpenseAmount] = useState(amount);
+
   const [expenseConfStatus, setExpenseConfStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -52,6 +63,8 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
     const confExpense = {};
     confExpense["expenseID"] = expenseId;
     confExpense["confirmed_date"] = confDate;
+    confExpense["tripID"] = tripId;
+    confExpense["amount"] = expenseAmount;
 
     try {
       const { data } = await supabase.auth.getSession();
@@ -61,7 +74,7 @@ export default function ConfirmExpense({ isOpen, onAdd, onCancel, expenseID }) {
       }
 
       const confirmExpenseResult = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/confirm-expense",
+        "http://localhost:3000/api/confirm-expense",
         {
           method: "PUT",
           headers: {

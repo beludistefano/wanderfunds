@@ -63,7 +63,7 @@ export default function TripOverview({ trip, userRole }) {
         return;
       }
       const savingsFundData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}`,
+        `http://localhost:3000/api/savings?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -85,7 +85,7 @@ export default function TripOverview({ trip, userRole }) {
       }
 
       const expensesData = await fetch(
-        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}`,
+        `http://localhost:3000/api/expenses?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -107,7 +107,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const acceptResp = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/accept-expense",
+        "http://localhost:3000/api/accept-expense",
         {
           method: "PUT",
           headers: {
@@ -136,7 +136,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const deleteResp = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/delete-expense",
+        "http://localhost:3000/api/delete-expense",
         {
           method: "DELETE",
           headers: {
@@ -192,7 +192,6 @@ export default function TripOverview({ trip, userRole }) {
         );
 
         var totalTripCost = acceptedExpenses
-          .filter((e) => e.confirmed === null || e.confirmed === false)
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
@@ -204,7 +203,8 @@ export default function TripOverview({ trip, userRole }) {
 
         setTotalTripCost(totalTripCost);
 
-        var pendingExpenses = acceptedExpenses
+        var pendingExpenses = expenses
+          .filter((e) => e.confirmed === null || e.confirmed === false)
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
@@ -509,6 +509,8 @@ export default function TripOverview({ trip, userRole }) {
           onAdd={refreshPage}
           onCancel={() => setConfirmExpenseOpen(false)}
           expenseID={selectedConfExpense.expense_id}
+          tripID={theTripID}
+          amount={selectedConfExpense.amount / trip.members}
         />
       )}
     </>

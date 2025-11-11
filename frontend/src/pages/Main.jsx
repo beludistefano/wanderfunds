@@ -28,12 +28,9 @@ export default function Main() {
           setLoading(false);
           return;
         }
-        const tripData = await fetch(
-          "https://wanderfunds-backend.onrender.com/api/trips",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const tripData = await fetch("http://localhost:3000/api/trips", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         if (!tripData.ok) {
           console.error("Trips fetch failed:", tripData.status);
           setTrips([]);
