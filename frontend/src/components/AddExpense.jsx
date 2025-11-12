@@ -104,7 +104,7 @@ export default function AddExpense({
       }
 
       const expenseCreation = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/expenses",
+        "http://localhost:3000/api/expenses",
         {
           method: "POST",
           headers: {

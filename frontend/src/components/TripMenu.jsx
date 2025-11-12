@@ -16,7 +16,7 @@ export default function TripMenu({ tripID }) {
           </Link>
         </li>
         <li>
-          <Link className="tripMenuLinks" to={"/trip/expenses/" + tripID}>
+          <Link className="tripMenuLinks" to={"/trip/expenselog/" + tripID}>
             Expense Log
           </Link>
         </li>

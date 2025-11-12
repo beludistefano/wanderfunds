@@ -125,10 +125,6 @@ export default function TripOverview({ trip, userRole }) {
     }
   }
 
-  async function confirmExpense(expenseID) {
-    console.log("Clicked button");
-  }
-
   async function rejectExpense(expenseID) {
     var deleteExpense = {};
     deleteExpense["expenseID"] = expenseID;

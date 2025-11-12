@@ -4,7 +4,7 @@ import MainSideBar from "../components/MainSideBar";
 import TripHeader from "../components/TripHeader";
 import TripMenu from "../components/TripMenu";
 import "../css/tripdash.css";
-import Itinerary from "./Trip/Itinerary";
+import ExpenseLogContent from "./Trip/ExpenseLogContent";
 import MembersTrip from "./Trip/MembersTrip";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
@@ -15,6 +15,8 @@ export default function ExpenseLog() {
   const [loading, setLoading] = useState(true);
   const { session, initialized } = useAuth();
   const [tripData, setTripData] = useState(null);
+  const [expenses, setExpenses] = useState(null);
+  const [role, setRole] = useState(null);
 
   const token = session?.access_token;
 
@@ -25,18 +27,13 @@ export default function ExpenseLog() {
         return;
       }
 
-      const tripData = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       const tripJson = await tripData.json();
 
       setRole(tripJson[0]["role"]);
-
-      console.log(tripJson);
 
       setTripData(tripJson[0]);
       setLoading(false);
@@ -63,7 +60,11 @@ export default function ExpenseLog() {
                 status={tripData.status}
               />
               <TripMenu tripID={tripid} />
-              <Itinerary role={role} tripID={tripid} />
+              <ExpenseLogContent
+                role={role}
+                tripID={tripData.tripid}
+                trip={tripData}
+              />
             </div>
           </div>{" "}
         </>

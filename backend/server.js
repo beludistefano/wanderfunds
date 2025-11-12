@@ -442,6 +442,35 @@ app.get("/api/expenses", requireAuth, async (req, res) => {
 });
 
 /**
+ * This GET request will fetch all confirmed expenses for a given trip
+ */
+app.get("/api/confirmed-expenses", requireAuth, async (req, res) => {
+  const { tripId } = req.query;
+
+  if (tripId == "") {
+    return res.status(400).json("Error: Trip ID cannot be empty");
+  }
+
+  try {
+    const query = `
+    SELECT *
+    FROM expected_expenses
+    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared') AND confirmed = true`;
+
+    const expensesResult = await pool.query(query, [tripId, req.user.id]);
+
+    if (expensesResult.rows.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    return res.status(200).json(expensesResult.rows);
+  } catch (err) {
+    console.error("GET /api/trip/savings failed", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+/**
  * This POST request will create an Expense for a trip
  */
 app.post("/api/expenses", requireAuth, async (req, res) => {
