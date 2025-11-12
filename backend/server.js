@@ -548,6 +548,107 @@ app.post("/api/expenses", requireAuth, async (req, res) => {
 });
 
 /**
+ * This POST request will create a confirmed Expense for a trip
+ */
+app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
+  var {
+    tripID,
+    name,
+    amount,
+    expectedDate,
+    confirmedDate,
+    expenseStatus,
+    split,
+  } = req.body;
+
+  if (expectedDate == "") {
+    expectedDate = null;
+  }
+
+  if (
+    name == "" ||
+    amount == 0 ||
+    tripID == "" ||
+    expenseStatus == "" ||
+    split == "" ||
+    confirmedDate == ""
+  ) {
+    return res
+      .status(400)
+      .send(
+        "Error: destination, amount, confirmation date and split cannot be empty"
+      );
+  }
+
+  if (split != "shared" && split != "own") {
+    return res.status(400).send("Split must be own or shared");
+  }
+
+  const expenseQuery = `
+      INSERT INTO expected_expenses (trip_id, owner_id, name, amount, expected_date, expense_status, split, confirmed, confirmed_date)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
+
+  const expenseValues = [
+    tripID,
+    req.user.id,
+    name,
+    Number(amount),
+    expectedDate,
+    expenseStatus,
+    split,
+    true,
+    confirmedDate,
+  ];
+
+  try {
+    const expenseResult = await pool.query(expenseQuery, expenseValues);
+
+    if (expenseResult.rowCount == 0) {
+      return res.status(500).json({ error: "Error adding confirmed expense" });
+    }
+
+    if (split == "own") {
+      const updateSavingsFunds = `
+        UPDATE savings_funds
+        SET amount = amount - $1
+        WHERE owner_id = $2
+          AND amount > $3
+      `;
+
+      const updateSavingsValues = [amount, req.user.id, amount];
+
+      const updateResult = await pool.query(
+        updateSavingsFunds,
+        updateSavingsValues
+      );
+
+      console.log(updateResult);
+    } else {
+      const updateSavingsFunds = `
+        UPDATE savings_funds
+        SET amount = amount - $1
+        WHERE trip_id = $2
+          AND amount > $3
+      `;
+
+      const updateSavingsValues = [amount, tripID, amount];
+
+      const updateResult = await pool.query(
+        updateSavingsFunds,
+        updateSavingsValues
+      );
+
+      console.log(updateResult);
+    }
+
+    return res.status(200).json({ expense: expenseResult });
+  } catch (err) {
+    return res.status(500).json(err);
+  }
+});
+
+/**
  * This PUT request will update an Expense for a trip
  */
 app.put("/api/expenses", requireAuth, async (req, res) => {
@@ -1450,7 +1551,7 @@ app.get("/api/itinerary/:tripID", async (req, res) => {
  * This PUT endpoint will confirm an expense
  */
 app.put("/api/confirm-expense", requireAuth, async (req, res) => {
-  const { expenseID, confirmed_date, tripID, amount } = req.body;
+  const { expenseID, confirmed_date, tripID, amount, split } = req.body;
 
   if (expenseID == "" || confirmed_date == "") {
     return res.status(400).send("Error: ID and date cannot be empty");
@@ -1472,19 +1573,39 @@ app.put("/api/confirm-expense", requireAuth, async (req, res) => {
       return res.status(404).json({ result: "Error confirming expense" });
     }
 
-    const updateSavingsFunds = `
-      UPDATE savings_funds
-      SET amount = amount - $1
-      WHERE trip_id = $2
-        AND amount > $3
-    `;
+    if (split == "own") {
+      const updateSavingsFunds = `
+        UPDATE savings_funds
+        SET amount = amount - $1
+        WHERE owner_id = $2
+          AND amount > $3
+      `;
 
-    const updateSavingsValues = [amount, tripID, amount];
+      const updateSavingsValues = [amount, req.user.id, amount];
 
-    const updateResult = await pool.query(
-      updateSavingsFunds,
-      updateSavingsValues
-    );
+      const updateResult = await pool.query(
+        updateSavingsFunds,
+        updateSavingsValues
+      );
+
+      console.log(updateResult);
+    } else {
+      const updateSavingsFunds = `
+        UPDATE savings_funds
+        SET amount = amount - $1
+        WHERE trip_id = $2
+          AND amount > $3
+      `;
+
+      const updateSavingsValues = [amount, tripID, amount];
+
+      const updateResult = await pool.query(
+        updateSavingsFunds,
+        updateSavingsValues
+      );
+
+      console.log(updateResult);
+    }
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {

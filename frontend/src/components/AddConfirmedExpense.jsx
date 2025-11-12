@@ -73,7 +73,6 @@ export default function AddConfirmedExpense({
     newExpense["name"] = expenseName;
     newExpense["amount"] = Number(expenseAmount);
     newExpense["expectedDate"] = expenseDate ? expenseDate : null;
-    newExpense["expectedDate"] = expenseDate ? expenseDate : null;
 
     if (
       expenseSplit == "Shared Expense" ||
