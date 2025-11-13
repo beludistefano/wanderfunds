@@ -37,7 +37,7 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
       }
 
       const expensesData = await fetch(
-        `http://localhost:3000/api/confirmed-expenses?tripId=${tripId}`,
+        `https://wanderfunds-backend.onrender.com/api/confirmed-expenses?tripId=${tripId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

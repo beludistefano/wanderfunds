@@ -63,7 +63,7 @@ export default function TripOverview({ trip, userRole }) {
         return;
       }
       const savingsFundData = await fetch(
-        `http://localhost:3000/api/savings?tripId=${theTripID}`,
+        `https://wanderfunds-backend.onrender.com/api/savings?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -85,7 +85,7 @@ export default function TripOverview({ trip, userRole }) {
       }
 
       const expensesData = await fetch(
-        `http://localhost:3000/api/expenses?tripId=${theTripID}`,
+        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${theTripID}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -107,7 +107,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const acceptResp = await fetch(
-        "http://localhost:3000/api/accept-expense",
+        "https://wanderfunds-backend.onrender.com/api/accept-expense",
         {
           method: "PUT",
           headers: {
@@ -132,7 +132,7 @@ export default function TripOverview({ trip, userRole }) {
 
     try {
       const deleteResp = await fetch(
-        "http://localhost:3000/api/delete-expense",
+        "https://wanderfunds-backend.onrender.com/api/delete-expense",
         {
           method: "DELETE",
           headers: {
@@ -507,6 +507,7 @@ export default function TripOverview({ trip, userRole }) {
           expenseID={selectedConfExpense.expense_id}
           tripID={theTripID}
           amount={selectedConfExpense.amount / trip.members}
+          split={selectedConfExpense.split}
         />
       )}
     </>

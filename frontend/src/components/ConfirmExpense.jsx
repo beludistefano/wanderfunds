@@ -20,6 +20,7 @@ export default function ConfirmExpense({
   expenseID,
   tripID,
   amount,
+  split,
 }) {
   const [expenseId, setExpenseId] = useState(expenseID);
   const [confDate, setConfDate] = useState(() => {
@@ -29,6 +30,7 @@ export default function ConfirmExpense({
 
   const [tripId, setTripId] = useState(tripID);
   const [expenseAmount, setExpenseAmount] = useState(amount);
+  const [expenseSplit, setExpenseSplit] = useState(split);
 
   const [expenseConfStatus, setExpenseConfStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
@@ -65,6 +67,7 @@ export default function ConfirmExpense({
     confExpense["confirmed_date"] = confDate;
     confExpense["tripID"] = tripId;
     confExpense["amount"] = expenseAmount;
+    confExpense["split"] = expenseSplit;
 
     try {
       const { data } = await supabase.auth.getSession();

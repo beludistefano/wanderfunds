@@ -27,9 +27,12 @@ export default function TripDashboard() {
         return;
       }
 
-      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const tripData = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       if (!tripData.ok) {
         setLoading(false);
@@ -67,7 +70,12 @@ export default function TripDashboard() {
             <div id="dashboardCenterSection">
               <TripHeader destination={trip.destination} status={trip.status} />
               <TripMenu tripID={tripid} />
-              <TripOverview trip={trip} userRole={role} />
+              {(trip.status === "Confirmed" || trip.status === "Planning") && (
+                <TripOverview trip={trip} userRole={role} />
+              )}
+              {trip.status === "On Trip" && (
+                <TripOverview trip={trip} userRole={role} />
+              )}
             </div>
           </div>{" "}
         </>

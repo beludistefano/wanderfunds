@@ -27,9 +27,12 @@ export default function ExpenseLog() {
         return;
       }
 
-      const tripData = await fetch("http://localhost:3000/api/trip/" + tripid, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const tripData = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/trip/" + tripid,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       const tripJson = await tripData.json();
 

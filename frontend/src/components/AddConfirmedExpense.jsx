@@ -33,6 +33,7 @@ export default function AddConfirmedExpense({
   const [expenseSplit, setExpenseSplit] = useState(tripSplit);
   const [expenseDate, setExpenseDate] = useState();
   const [expenseAddStatus, setExpenseAddStatus] = useState(null);
+  const [tripMembers, setTripMembers] = useState(members);
   const [expenseConfDate, setExpenseConfDate] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
   const [role, setRole] = useState(tripRole);
@@ -73,6 +74,7 @@ export default function AddConfirmedExpense({
     newExpense["name"] = expenseName;
     newExpense["amount"] = Number(expenseAmount);
     newExpense["expectedDate"] = expenseDate ? expenseDate : null;
+    newExpense["members"] = tripMembers;
 
     if (
       expenseSplit == "Shared Expense" ||

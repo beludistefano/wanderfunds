@@ -57,6 +57,7 @@ app.get("/api/trips", requireAuth, async (req, res) => {
 
     return res.status(200).json(tripsResult.rows);
   } catch (err) {
+    console.error(err);
     return res.status(500).send("Server error");
   }
 });
@@ -559,6 +560,7 @@ app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
     confirmedDate,
     expenseStatus,
     split,
+    members,
   } = req.body;
 
   if (expectedDate == "") {
@@ -571,7 +573,8 @@ app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
     tripID == "" ||
     expenseStatus == "" ||
     split == "" ||
-    confirmedDate == ""
+    confirmedDate == "" ||
+    members == ""
   ) {
     return res
       .status(400)
@@ -632,7 +635,9 @@ app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
           AND amount > $3
       `;
 
-      const updateSavingsValues = [amount, tripID, amount];
+      const share = Number(amount) / Number(members);
+
+      const updateSavingsValues = [share, tripID, share];
 
       const updateResult = await pool.query(
         updateSavingsFunds,

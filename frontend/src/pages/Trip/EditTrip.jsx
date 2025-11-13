@@ -336,6 +336,7 @@ export default function EditTrip({ trip, role }) {
           >
             <option value="Planning">Planning</option>
             <option value="Confirmed">Confirmed</option>
+            <option value="On Trip">On Trip</option>
           </select>
         </div>
         {userRole == "Owner" && (
