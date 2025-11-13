@@ -1,0 +1,112 @@
+#expensesSavingsCont {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding-right: 2%;
+  padding-left: 2%;
+  margin-bottom: 100px;
+  min-height: 1vh;
+}
+
+#expenseLogContainerOnTrip {
+  width: 58%;
+}
+
+#expenseLogTableOnTrip,
+#expensesTableOnTrip,
+#expenseLogTitleOnTrip {
+  width: 100%;
+}
+
+#expenseLogTitleOnTrip {
+  display: flex;
+  justify-content: space-between;
+}
+
+#quickAddContainer {
+  width: 40%;
+}
+
+#expensesTableOnTrip,
+#quickAddTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+#expensesTableOnTrip th,
+#quickAddTable th {
+  background-color: #d9d9d9;
+  color: #737373;
+  border: none;
+  padding: 6px;
+}
+
+#expensesTableOnTrip td,
+#quickAddTable td {
+  border-bottom: 1px solid #ddd;
+  padding: 6px;
+}
+
+#quickAddTable {
+  width: 100%;
+}
+
+.quickAddButton {
+  background-color: #f1b98f;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  border-radius: 999px;
+  padding: 3px 10px;
+  color: white;
+}
+
+#balanceSummaryContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.onTripFundsCard {
+  padding: 20px;
+  background-color: #f9f9f9;
+  min-width: 30%;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  text-align: left;
+}
+
+.onTripFundsCard p {
+  font-size: 1.3em;
+  font-weight: 600;
+  margin: 0;
+}
+
+.onTripFundsCard h4 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.totalBalanceOnTrip {
+  color: #898888;
+}
+
+.availableFundsOnTrip {
+  text-align: right;
+}
+
+.textGreen {
+  color: #4caf50;
+}
+
+.textGreenYellow {
+  color: #cddc39;
+}
+
+.textOrange {
+  color: #ffb74d;
+}
+
+.textRed {
+  color: #ef5350;
+}

@@ -37,6 +37,10 @@
   font-size: 2em;
 }
 
+.statusOntrip {
+  background-color: #4a98ff;
+}
+
 @media (max-width: 768px) {
   #mainSideBar {
     display: none;

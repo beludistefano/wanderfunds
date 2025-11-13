@@ -257,7 +257,7 @@ export default function EditTrip({ trip, role }) {
       )}
       <form id="editForm">
         <div className="formRow">
-          <label className="formLabel" for="destination">
+          <label className="formLabel" htmlFor="destination">
             Destination
           </label>
           <input
@@ -312,7 +312,7 @@ export default function EditTrip({ trip, role }) {
           )}
         </div>
         <div className="formRow">
-          <label className="formLabel" for="description">
+          <label className="formLabel" htmlFor="description">
             Description
           </label>
           <textarea
@@ -325,7 +325,7 @@ export default function EditTrip({ trip, role }) {
           </textarea>
         </div>
         <div className="formRow">
-          <label className="formLabel" for="status">
+          <label className="formLabel" htmlFor="status">
             Status
           </label>
           <select
@@ -336,13 +336,13 @@ export default function EditTrip({ trip, role }) {
           >
             <option value="Planning">Planning</option>
             <option value="Confirmed">Confirmed</option>
-            <option value="On Trip">On Trip</option>
+            <option value="On trip">On Trip</option>
           </select>
         </div>
         {userRole == "Owner" && (
           <>
             <div className="formRow">
-              <label className="formLabel" for="members">
+              <label className="formLabel" htmlFor="members">
                 Members
               </label>
               <input
@@ -359,7 +359,7 @@ export default function EditTrip({ trip, role }) {
             {updateMembers > 1 ? (
               <>
                 <div className="formRow">
-                  <label className="formLabel" for="defaultSplit">
+                  <label className="formLabel" htmlFor="defaultSplit">
                     Default Split
                   </label>
                   <select
@@ -373,7 +373,7 @@ export default function EditTrip({ trip, role }) {
                   </select>
                 </div>
                 <div className="formRow inline">
-                  <label className="formLabel" for="autoAdd">
+                  <label className="formLabel" htmlFor="autoAdd">
                     Auto-add expenses?
                   </label>
                   <input

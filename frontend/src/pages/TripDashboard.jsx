@@ -10,6 +10,7 @@ import TripOverview from "./Trip/TripOverview";
 import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
+import OnTrip from "./Trip/OnTrip";
 
 export default function TripDashboard() {
   const { tripid } = useParams();
@@ -73,8 +74,8 @@ export default function TripDashboard() {
               {(trip.status === "Confirmed" || trip.status === "Planning") && (
                 <TripOverview trip={trip} userRole={role} />
               )}
-              {trip.status === "On Trip" && (
-                <TripOverview trip={trip} userRole={role} />
+              {trip.status === "On trip" && (
+                <OnTrip trip={trip} role={role} tripID={tripid} />
               )}
             </div>
           </div>{" "}

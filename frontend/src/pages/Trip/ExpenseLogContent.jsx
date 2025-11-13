@@ -68,7 +68,7 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
 
   return (
     <div id="expenseLogContainer">
-      {tripData.status == "Confirmed" ? (
+      {tripData.status == "Confirmed" || tripData.status == "On trip" ? (
         <>
           <div id="containerItineraryTop">
             <div
