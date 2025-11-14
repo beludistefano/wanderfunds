@@ -67,3 +67,20 @@
   color: white;
   padding: 2% 5%;
 }
+
+.pendingItinerary {
+  background-color: #fce2ac;
+  padding: 5px;
+  color: white;
+  margin-right: 5px;
+  border-radius: 9999px;
+}
+
+.acceptItContainer {
+  background-color: #a0dea5;
+  padding: 5px;
+  margin-left: 5px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+}

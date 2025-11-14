@@ -142,28 +142,32 @@ export default function OnTrip({ role, tripID, trip }) {
       </div>
       <div id="expensesSavingsCont">
         <div id="expenseLogContainerOnTrip">
-          <div id="balanceSummaryContainer">
-            <div className="onTripFundsCard totalBalanceOnTrip">
-              <h4>Total Spent:</h4>
-              <p>{totalTripCost ? "$ " + totalTripCost : "Loading..."}</p>
+          {userRole == "Guest" ? (
+            <></>
+          ) : (
+            <div id="balanceSummaryContainer">
+              <div className="onTripFundsCard totalBalanceOnTrip">
+                <h4>Total Spent:</h4>
+                <p>{totalTripCost ? "$ " + totalTripCost : "Loading..."}</p>
+              </div>
+              <div className="onTripFundsCard availableFundsOnTrip">
+                <h4>Available Funds:</h4>
+                <p
+                  className={
+                    savingsFund > 1000
+                      ? "textGreen"
+                      : savingsFund > 500
+                      ? "textGreenYellow"
+                      : savingsFund > 300
+                      ? "textOrange"
+                      : "textRed"
+                  }
+                >
+                  {savingsFund ? "$ " + savingsFund : "Loading..."}
+                </p>
+              </div>
             </div>
-            <div className="onTripFundsCard availableFundsOnTrip">
-              <h4>Available Funds:</h4>
-              <p
-                className={
-                  savingsFund > 1000
-                    ? "textGreen"
-                    : savingsFund > 500
-                    ? "textGreenYellow"
-                    : savingsFund > 300
-                    ? "textOrange"
-                    : "textRed"
-                }
-              >
-                {savingsFund ? "$ " + savingsFund : "Loading..."}
-              </p>
-            </div>
-          </div>
+          )}
           <div id="expenseLogTitleOnTrip">
             <h3 id="expectedExpensesTitle">Expense Log</h3>
             {(role == "Owner" || role == "Participant") && (
