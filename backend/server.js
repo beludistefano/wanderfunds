@@ -1566,7 +1566,9 @@ app.put("/api/confirm-flight", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error confirming flight: " + e });
+    return res
+      .status(500)
+      .json({ result: "Error confirming flight: " + e.message });
   }
 });
 
@@ -1597,7 +1599,9 @@ app.put("/api/confirm-hotel", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error confirming hotel: " + e });
+    return res
+      .status(500)
+      .json({ result: "Error confirming hotel: " + e.message });
   }
 });
 
@@ -1628,7 +1632,9 @@ app.put("/api/confirm-itinerary", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error confirming itinerary: " + e });
+    return res
+      .status(500)
+      .json({ result: "Error confirming itinerary: " + e.message });
   }
 });
 
