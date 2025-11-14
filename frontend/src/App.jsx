@@ -21,6 +21,7 @@ import ChangePassword from "./pages/ChangePassword";
 import Notifications from "./pages/Notifications";
 import ItineraryPage from "./pages/ItineraryPage";
 import ExpenseLog from "./pages/ExpenseLog";
+import CalendarPage from "./pages/CalendarPage";
 
 function App() {
   return (
@@ -129,6 +130,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ExpenseLog />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trip/calendar/:tripid"
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
                 </ProtectedRoute>
               }
             />
