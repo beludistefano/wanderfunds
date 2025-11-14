@@ -1551,7 +1551,7 @@ app.put("/api/confirm-flight", requireAuth, async (req, res) => {
 
   const confirmQuery = `
     UPDATE trip_flights
-    SET confirmed = $1,
+    SET confirmed = $1
     WHERE id = $2
   `;
 
@@ -1566,6 +1566,7 @@ app.put("/api/confirm-flight", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
+    console.log(e.message);
     return res
       .status(500)
       .json({ result: "Error confirming flight: " + e.message });
@@ -1584,7 +1585,7 @@ app.put("/api/confirm-hotel", requireAuth, async (req, res) => {
 
   const confirmQuery = `
     UPDATE trip_hotel
-    SET confirmed = $1,
+    SET confirmed = $1
     WHERE id = $2
   `;
 
@@ -1617,7 +1618,7 @@ app.put("/api/confirm-itinerary", requireAuth, async (req, res) => {
 
   const confirmQuery = `
     UPDATE trip_itinerary
-    SET confirmed = $1,
+    SET confirmed = $1
     WHERE id = $2
   `;
 
