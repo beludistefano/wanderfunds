@@ -58,7 +58,7 @@ app.get("/api/trips", requireAuth, async (req, res) => {
     return res.status(200).json(tripsResult.rows);
   } catch (err) {
     console.error(err);
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: "Server error" + err });
   }
 });
 
@@ -91,7 +91,7 @@ app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
 
     return res.status(200).json(tripResult.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: "Server error" + err });
   }
 });
 
@@ -161,7 +161,7 @@ app.post("/api/trip", requireAuth, async (req, res) => {
       .status(200)
       .json({ trip: tripResult, role: roleResult, fund: fundResult });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -277,7 +277,7 @@ app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
 
     return res.status(200).json(deleteTripResult);
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ error: e });
   }
 });
 
@@ -336,7 +336,7 @@ app.put("/api/trip", requireAuth, async (req, res) => {
 
     return res.status(200).json(updateResult);
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ error: e });
   }
 });
 
@@ -383,7 +383,7 @@ app.put("/api/trip-participant", requireAuth, async (req, res) => {
 
     return res.status(200).json(updateResult);
   } catch (e) {
-    return res.status(500).json(e);
+    return res.status(500).json({ error: e });
   }
 });
 
@@ -409,7 +409,7 @@ app.get("/api/savings", requireAuth, async (req, res) => {
 
     return res.status(200).json(savingsResult.rows);
   } catch (e) {
-    return res.status(500).json({ error: e.message });
+    return res.status(500).json({ error: e });
   }
 });
 
@@ -437,8 +437,7 @@ app.get("/api/expenses", requireAuth, async (req, res) => {
 
     return res.status(200).json(expensesResult.rows);
   } catch (err) {
-    console.error("GET /api/trip/savings failed", err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -466,8 +465,7 @@ app.get("/api/confirmed-expenses", requireAuth, async (req, res) => {
 
     return res.status(200).json(expensesResult.rows);
   } catch (err) {
-    console.error("GET /api/trip/savings failed", err);
-    return res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -544,7 +542,7 @@ app.post("/api/expenses", requireAuth, async (req, res) => {
 
     return res.status(200).json({ expense: expenseResult });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -649,7 +647,7 @@ app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
 
     return res.status(200).json({ expense: expenseResult });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -690,7 +688,7 @@ app.put("/api/expenses", requireAuth, async (req, res) => {
 
     return res.status(200).json({ expense: expenseResult });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -721,7 +719,7 @@ app.put("/api/accept-expense", requireAuth, async (req, res) => {
     return res.status(200).json({ result: "Confirmed" });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ result: "Error accepting expense" });
+    return res.status(500).json({ result: "Error accepting expense" + err });
   }
 });
 
@@ -747,7 +745,7 @@ app.delete("/api/delete-expense", requireAuth, async (req, res) => {
     }
     return res.status(200).json({ result: "Deleted" });
   } catch (err) {
-    return res.status(500).json({ result: "Error accepting expense" });
+    return res.status(500).json({ result: "Error accepting expense " + err });
   }
 });
 
@@ -782,7 +780,7 @@ app.put("/api/trip/savings", requireAuth, async (req, res) => {
 
     return res.status(200).json({ expenseUpdate: savingsUpdateResult });
   } catch (err) {
-    return res.status(500).json(err);
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -826,7 +824,6 @@ app.get("/api/userroles", requireAuth, async (req, res) => {
 
     return res.status(200).json(userRolesData.rows);
   } catch (err) {
-    console.error("GET /api/trip/savings failed", err);
     return res.status(500).json({ error: err.message });
   }
 });
@@ -1261,7 +1258,7 @@ app.post("/api/new-savings-fund", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error creating savings fund" });
+    return res.status(500).json({ result: "Error creating savings fund " + e });
   }
 });
 
@@ -1317,7 +1314,7 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
       .status(200)
       .json({ result: "Success", id: tripFlightResult.rows[0].id });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding flight data" });
+    return res.status(500).json({ result: "Error adding flight data " + e });
   }
 });
 
@@ -1360,7 +1357,7 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
       .status(200)
       .json({ result: "Success", id: tripHotelResult.rows[0].id });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding hotel data" });
+    return res.status(500).json({ result: "Error adding hotel data " + e });
   }
 });
 
@@ -1395,7 +1392,7 @@ app.post("/api/add-itinerary", requireAuth, async (req, res) => {
       .status(200)
       .json({ result: "Success", id: itineraryResults.rows[0].id });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding itinerary data" });
+    return res.status(500).json({ result: "Error adding itinerary data " + e });
   }
 });
 
@@ -1426,7 +1423,7 @@ app.put("/api/update-itinerary", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding itinerary data" });
+    return res.status(500).json({ result: "Error adding itinerary data " + e });
   }
 });
 
@@ -1457,7 +1454,7 @@ app.put("/api/update-flight", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding itinerary data" });
+    return res.status(500).json({ result: "Error adding itinerary data " + e });
   }
 });
 
@@ -1488,7 +1485,7 @@ app.put("/api/update-hotel", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Success" });
   } catch (e) {
-    return res.status(500).json({ result: "Error adding itinerary data" });
+    return res.status(500).json({ result: "Error adding itinerary data " + e });
   }
 });
 
@@ -1508,7 +1505,7 @@ app.get("/api/flights/:tripID", requireAuth, async (req, res) => {
 
     return res.status(200).json(tripFlights.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -1528,7 +1525,7 @@ app.get("/api/hotels/:tripID", requireAuth, async (req, res) => {
 
     return res.status(200).json(tripHotels.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -1548,7 +1545,7 @@ app.get("/api/itinerary/:tripID", async (req, res) => {
 
     return res.status(200).json(tripItinerary.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -1671,7 +1668,7 @@ app.get("/api/notifications", requireAuth, async (req, res) => {
 
     return res.status(200).json(notifResult.rows);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -1694,7 +1691,7 @@ app.put("/api/allnotifications", requireAuth, async (req, res) => {
 
     return res.status(200).json(notifResult.rowCount);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
@@ -1723,7 +1720,7 @@ app.put("/api/notifications", requireAuth, async (req, res) => {
 
     return res.status(200).json(notifResult.rowCount);
   } catch (err) {
-    return res.status(500).send("Server error");
+    return res.status(500).json({ error: err });
   }
 });
 
