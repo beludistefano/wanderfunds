@@ -97,7 +97,6 @@ export default function AddItinerary({
 
   const [userRole, serUserRole] = useState(role);
 
-  // HOTEL
   const [hotelName, setHotelName] = useState("");
   const [hotelAddress, setHotelAddress] = useState("");
   const [checkIn, setCheckIn] = useState("");
@@ -105,7 +104,6 @@ export default function AddItinerary({
   const [reservationWebsite, setReservationWebsite] = useState("");
   const [hotelFile, setHotelFile] = useState(null);
 
-  // FLIGHT
   const [flightDate, setFlightDate] = useState("");
   const [arrivalTime, setArrivalTime] = useState("");
   const [departureTime, setDepartureTime] = useState("");
@@ -115,7 +113,6 @@ export default function AddItinerary({
   const [flightNumber, setFlightNumber] = useState("");
   const [flightFile, setFlightFile] = useState(null);
 
-  // OTHER
   const [otherName, setOtherName] = useState("");
   const [otherDescription, setOtherDescription] = useState("");
   const [otherFile, setOtherFile] = useState(null);
