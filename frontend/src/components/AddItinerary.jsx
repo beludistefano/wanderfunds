@@ -356,7 +356,7 @@ export default function AddItinerary({
       const path = `trips/${tripId}/itinerary/${otherFile.name}`;
 
       const { data, error } = await supabase.storage
-        .from("trip-itinerary")
+        .from("trip-items")
         .upload(path, otherFile, { contentType: otherFile.type });
 
       if (error) {
@@ -364,7 +364,7 @@ export default function AddItinerary({
       }
 
       const publicUrl = supabase.storage
-        .from("trip-itinerary")
+        .from("trip-items")
         .getPublicUrl(`trips/${tripId}/itinerary/${otherFile.name}`)
         .data.publicUrl;
 
