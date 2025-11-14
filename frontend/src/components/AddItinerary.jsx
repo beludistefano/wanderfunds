@@ -333,6 +333,9 @@ export default function AddItinerary({
       return;
     }
 
+    const buckets = await supabase.storage.listBuckets();
+    console.log(buckets);
+
     const otherItCreation = await fetch(
       "https://wanderfunds-backend.onrender.com/api/add-itinerary",
       {
