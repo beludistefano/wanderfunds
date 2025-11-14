@@ -77,7 +77,7 @@ export default function ConfirmExpense({
       }
 
       const confirmExpenseResult = await fetch(
-        "http://localhost:3000/api/confirm-expense",
+        "https://wanderfunds-backend.onrender.com/api/confirm-expense",
         {
           method: "PUT",
           headers: {
