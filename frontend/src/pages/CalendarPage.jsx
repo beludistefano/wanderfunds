@@ -12,9 +12,12 @@ import Calendar from "../components/Calendar";
 export default function CalendarPage() {
   const { tripid } = useParams();
   const [loading, setLoading] = useState(true);
+  const [loadingExp, setLoadingExp] = useState(true);
   const [role, setRole] = useState(null);
   const { session, initialized } = useAuth();
   const [tripData, setTripData] = useState(null);
+
+  const [expenses, setExpenses] = useState(null);
 
   const token = session?.access_token;
 
@@ -44,13 +47,38 @@ export default function CalendarPage() {
     }
   }
 
+  async function getExpenses() {
+    try {
+      if (!token) {
+        return;
+      }
+
+      const expensesData = await fetch(
+        `https://wanderfunds-backend.onrender.com/api/expenses?tripId=${tripid}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const expenses = await expensesData.json();
+
+      console.log(expenses);
+
+      setExpenses(expenses);
+      setLoadingExp(false);
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     getTrip();
+    getExpenses();
   }, [initialized, token, tripid]);
 
   return (
     <div>
-      {!loading ? (
+      {!loading && !loadingExp ? (
         <>
           <Header></Header>
           <div id="mainContent">
@@ -61,7 +89,11 @@ export default function CalendarPage() {
                 status={tripData.status}
               />
               <TripMenu tripID={tripid} />
-              <Calendar />
+              <Calendar
+                startDate={tripData.from_date}
+                endDate={tripData.to_date}
+                expenses={expenses}
+              />
             </div>
           </div>{" "}
         </>
