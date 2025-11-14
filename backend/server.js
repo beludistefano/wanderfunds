@@ -1275,6 +1275,7 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
     airportTo,
     arrivalTime,
     reservationCode,
+    confirmed,
   } = req.body;
 
   if (tripID == "" || flightNumber == "") {
@@ -1284,8 +1285,8 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
   }
 
   const addFlightDataQuery = `
-    INSERT INTO trip_flights (flight_number, flight_date, airport_from, departure_time, airport_to, arrival_time, reservation_code, trip_id)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+    INSERT INTO trip_flights (flight_number, flight_date, airport_from, departure_time, airport_to, arrival_time, reservation_code, trip_id, confirmed)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     RETURNING id
   `;
 
@@ -1299,6 +1300,7 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
       arrivalTime,
       reservationCode,
       tripID,
+      confirmed,
     ];
 
     const tripFlightResult = await pool.query(
@@ -1322,8 +1324,15 @@ app.post("/api/add-flight", requireAuth, async (req, res) => {
  * This POST endpoint will store hotel data for a trip
  */
 app.post("/api/add-hotel", requireAuth, async (req, res) => {
-  const { tripID, hotelName, address, dateFrom, dateTo, reservationWebsite } =
-    req.body;
+  const {
+    tripID,
+    hotelName,
+    address,
+    dateFrom,
+    dateTo,
+    reservationWebsite,
+    confirmed,
+  } = req.body;
 
   if (tripID == "" || hotelName == "") {
     return res
@@ -1332,8 +1341,8 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
   }
 
   const tripHotelQuery = `
-    INSERT INTO trip_hotel (hotel_name, address, date_from, date_to, reservation_website, trip_id)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO trip_hotel (hotel_name, address, date_from, date_to, reservation_website, trip_id, confirmed)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING id
   `;
 
@@ -1345,6 +1354,7 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
       dateTo,
       reservationWebsite,
       tripID,
+      confirmed,
     ];
 
     const tripHotelResult = await pool.query(tripHotelQuery, tripHotelValues);
@@ -1365,7 +1375,7 @@ app.post("/api/add-hotel", requireAuth, async (req, res) => {
  * This POST endpoint will store other data for a trip itinerary
  */
 app.post("/api/add-itinerary", requireAuth, async (req, res) => {
-  const { tripID, itineraryType, itineraryDesc } = req.body;
+  const { tripID, itineraryType, itineraryDesc, confirmed } = req.body;
 
   if (tripID == "" || itineraryType == "") {
     return res
@@ -1374,13 +1384,13 @@ app.post("/api/add-itinerary", requireAuth, async (req, res) => {
   }
 
   const itineraryQuery = `
-    INSERT INTO trip_itinerary (itinerary_type, itinerary_desc, trip_id)
-    VALUES ($1, $2, $3)
+    INSERT INTO trip_itinerary (itinerary_type, itinerary_desc, trip_id, confirmed)
+    VALUES ($1, $2, $3, $4)
     RETURNING id
   `;
 
   try {
-    const itineraryValues = [itineraryType, itineraryDesc, tripID];
+    const itineraryValues = [itineraryType, itineraryDesc, tripID, confirmed];
 
     const itineraryResults = await pool.query(itineraryQuery, itineraryValues);
 

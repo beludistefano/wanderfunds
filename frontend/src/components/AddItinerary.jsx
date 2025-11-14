@@ -3,7 +3,15 @@ import "../css/components/itineraryModal.css";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
 
-function validateHotel(hotelName, checkIn, checkOut) {
+const allowedTypes = [
+  "application/pdf",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+];
+
+function validateHotel(hotelName, checkIn, checkOut, file) {
   const errors = {};
 
   if (hotelName == "" || hotelName == null) {
@@ -22,25 +30,52 @@ function validateHotel(hotelName, checkIn, checkOut) {
       errors.checkOut = "Check-out must be after check-in";
     }
   }
+  if (file != null) {
+    if (!allowedTypes.includes(file.type)) {
+      errors.file =
+        "Invalid file type. Only PDF or images (PNG, JPG, WEBP) are allowed.";
+    }
+  }
 
   return errors;
 }
 
-function validateFlight(flightNumber) {
+function validateFlight(flightNumber, flightDate, file) {
   const flightErrors = {};
 
   if (flightNumber == "") {
     flightErrors.number = "Flight number must be included";
   }
 
+  if (flightDate == "" || flightDate == null) {
+    flightErrors.date = "Flight date must be included";
+  }
+
+  console.log(file);
+  console.log(file.type);
+
+  if (file != null) {
+    if (!allowedTypes.includes(file.type)) {
+      flightErrors.file =
+        "Invalid file type. Only PDF or images (PNG, JPG, WEBP) are allowed.";
+    }
+  }
+
   return flightErrors;
 }
 
-function validateItinerary(itItem) {
+function validateItinerary(itItem, file) {
   const itineraryItemErrors = {};
 
   if (itItem == "") {
     itineraryItemErrors.itItem = "Itinerary item cannot be empty";
+  }
+
+  if (file != null) {
+    if (!allowedTypes.includes(file.type)) {
+      itineraryItemErrors.file =
+        "Invalid file type. Only PDF or images (PNG, JPG, WEBP) are allowed.";
+    }
   }
 
   return itineraryItemErrors;
@@ -52,12 +87,15 @@ export default function AddItinerary({
   onCancel,
   tripID,
   dataType,
+  role,
 }) {
   const [tripId, setTripId] = useState(tripID);
   const [datatype, setDatatype] = useState(dataType);
   const [dataAddStatus, setDataAddStatus] = useState(null);
 
   const [validationErrors, setValidationErrors] = useState({});
+
+  const [userRole, serUserRole] = useState(role);
 
   // HOTEL
   const [hotelName, setHotelName] = useState("");
@@ -87,6 +125,24 @@ export default function AddItinerary({
       setDatatype(null);
       setTripId("");
       setValidationErrors({});
+      setDataAddStatus(null);
+      setHotelName("");
+      setHotelAddress("");
+      setCheckIn("");
+      setCheckOut("");
+      setReservationWebsite("");
+      setHotelFile(null);
+      setFlightNumber("");
+      setFlightDate("");
+      setAirportFrom("");
+      setDepartureTime("");
+      setAirportTo("");
+      setArrivalTime("");
+      setReservationCode("");
+      setFlightFile(null);
+      setOtherName("");
+      setOtherDescription("");
+      setOtherFile(null);
     }
     if (isOpen) {
       setDatatype(dataType);
@@ -110,6 +166,12 @@ export default function AddItinerary({
       : null;
 
     console.log(newHotel);
+
+    if (userRole == "Guest") {
+      newHotel["confirmed"] = false;
+    } else {
+      newHotel["confirmed"] = true;
+    }
 
     const { data } = await supabase.auth.getSession();
     const token = data.session?.access_token;
@@ -182,6 +244,12 @@ export default function AddItinerary({
     newFlight["arrivalTime"] = arrivalTime ? arrivalTime : null;
     newFlight["reservationCode"] = reservationCode ? reservationCode : null;
 
+    if (userRole == "Guest") {
+      newFlight["confirmed"] = false;
+    } else {
+      newFlight["confirmed"] = true;
+    }
+
     console.log(newFlight);
 
     const { data } = await supabase.auth.getSession();
@@ -253,6 +321,12 @@ export default function AddItinerary({
     newIt["itineraryType"] = otherName;
     newIt["itineraryDesc"] = otherDescription ? otherDescription : null;
 
+    if (userRole == "Guest") {
+      newIt["confirmed"] = false;
+    } else {
+      newIt["confirmed"] = true;
+    }
+
     console.log(newIt);
 
     const { data } = await supabase.auth.getSession();
@@ -319,13 +393,13 @@ export default function AddItinerary({
     setValidationErrors({});
     var errors;
     if (datatype == "hotel") {
-      errors = validateHotel(hotelName, checkIn, checkOut);
+      errors = validateHotel(hotelName, checkIn, checkOut, hotelFile);
       setValidationErrors(errors);
     } else if (datatype == "flight") {
-      errors = validateFlight(flightNumber);
+      errors = validateFlight(flightNumber, flightDate, flightFile);
       setValidationErrors(errors);
     } else {
-      errors = validateItinerary(otherName);
+      errors = validateItinerary(otherName, otherFile);
       setValidationErrors(errors);
     }
 
@@ -470,9 +544,15 @@ export default function AddItinerary({
                   <input
                     id="hotelFile"
                     type="file"
+                    className={`${validationErrors.file ? "borderRed" : ""}`}
                     accept="application/pdf,image/*"
                     onChange={(e) => setHotelFile(e.target.files?.[0] || null)}
                   />
+                  {validationErrors.file && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.file}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -508,10 +588,17 @@ export default function AddItinerary({
                   <input
                     id="flightDate"
                     type="date"
-                    className="itineraryInput"
+                    className={`itineraryInput ${
+                      validationErrors.date ? "borderRed" : ""
+                    }`}
                     value={flightDate}
                     onChange={(e) => setFlightDate(e.target.value)}
                   />
+                  {validationErrors.date && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.date}
+                    </p>
+                  )}
                 </div>
 
                 <div className="itineraryRow">
@@ -589,9 +676,15 @@ export default function AddItinerary({
                   <input
                     id="flightFile"
                     type="file"
+                    className={`${validationErrors.file ? "borderRed" : ""}`}
                     accept="application/pdf,image/*"
                     onChange={(e) => setFlightFile(e.target.files?.[0] || null)}
                   />
+                  {validationErrors.file && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.file}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -641,9 +734,15 @@ export default function AddItinerary({
                   <input
                     id="otherFile"
                     type="file"
+                    className={`${validationErrors.file ? "borderRed" : ""}`}
                     accept="application/pdf,image/*"
                     onChange={(e) => setOtherFile(e.target.files?.[0] || null)}
                   />
+                  {validationErrors.file && (
+                    <p className="errorDisplayText" style={{ margin: 0 }}>
+                      {validationErrors.file}
+                    </p>
+                  )}
                 </div>
               </div>
             )}

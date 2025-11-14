@@ -110,7 +110,7 @@ export default function Itinerary({ role, tripID }) {
               <FontAwesomeIcon icon={faPlus} />
             </div>
           </div>
-          {flights == null ? (
+          {flights == null || flights.length == 0 ? (
             <p>No data yet</p>
           ) : (
             flights.map((f) => {
@@ -154,7 +154,7 @@ export default function Itinerary({ role, tripID }) {
               <FontAwesomeIcon icon={faPlus} />
             </div>
           </div>
-          {hotels == null ? (
+          {hotels == null || hotels.length == 0 ? (
             <p>No data yet</p>
           ) : (
             hotels.map((h) => {
@@ -198,7 +198,7 @@ export default function Itinerary({ role, tripID }) {
               <FontAwesomeIcon icon={faPlus} />
             </div>
           </div>
-          {dataItems == null ? (
+          {dataItems == null || dataItems.length == 0 ? (
             <p>No data yet</p>
           ) : (
             dataItems.map((i) => {
@@ -240,6 +240,7 @@ export default function Itinerary({ role, tripID }) {
         onCancel={() => setIsFlightOpen(false)}
         tripID={tripId}
         dataType={"flight"}
+        role={userRole}
       />
       <AddItinerary
         isOpen={isHotelOpen}
@@ -247,6 +248,7 @@ export default function Itinerary({ role, tripID }) {
         onCancel={() => setIsHotelOpen(false)}
         tripID={tripId}
         dataType={"hotel"}
+        role={userRole}
       />
       <AddItinerary
         isOpen={isOtherOpen}
@@ -254,6 +256,7 @@ export default function Itinerary({ role, tripID }) {
         onCancel={() => setIsOtherOpen(false)}
         tripID={tripId}
         dataType={"other"}
+        role={userRole}
       />
     </>
   );

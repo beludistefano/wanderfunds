@@ -143,7 +143,10 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
           </div>
         </>
       ) : (
-        <p>Expense log is only available on Confirmed trips!</p>
+        <p>
+          Expense log is only available on trips with a status of Confirmed or
+          On Trip!
+        </p>
       )}
 
       <AddConfirmedExpense
