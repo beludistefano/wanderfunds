@@ -9,7 +9,7 @@ I, Maria Belen Di Stefano, ID 000864409 certify that this material is my origina
 
 Milestone 1: https://youtu.be/dPvr6FD5h_A?si=Zded0MNPexLMZwNp  
 Milestone 2: https://www.youtube.com/watch?v=kRLOaHoirfM
-Milestone 3:  
+Milestone 3: https://www.youtube.com/watch?v=6RnxzUoDciY
 Milestone 4:
 
 Hosted backend: https://wanderfunds-backend.onrender.com  
