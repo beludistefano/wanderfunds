@@ -805,6 +805,7 @@ app.get("/api/userroles", requireAuth, async (req, res) => {
       t.members,
       r.role,
       r.userroleid,
+      r.user_id,
       p.name,
       au.email
     FROM public.user_role AS r
@@ -1138,6 +1139,95 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "User deleted succesfully" });
   } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+});
+
+/**
+ * This POST request will remove a member from a trip
+ */
+app.post("/api/remove-member", requireAuth, async (req, res) => {
+  const { memberID, tripID, memberRole } = req.body;
+
+  console.log(memberID);
+  console.log(tripID);
+  console.log(memberRole);
+
+  if (!memberID || memberID == "") {
+    return res.status(400).send("Error: Member cannot be empty");
+  }
+
+  if (!tripID || tripID == "") {
+    return res.status(400).send("Error: Trip ID cannot be empty");
+  }
+
+  if (!memberRole || memberRole == "") {
+    return res.status(400).send("Error: Member role cannot be empty");
+  }
+
+  const deleteUserRoleQuery = `
+    DELETE FROM user_role
+    WHERE tripid = $1
+    AND user_id = $2
+  `;
+
+  const deleteSavingsFund = `
+    DELETE FROM savings_fund
+    WHERE trip_id = $1
+    AND owner_id = $2
+  `;
+
+  const updateExpensesQuery = `
+    UPDATE expected_expenses e
+    SET owner_id = t.ownerid
+    FROM trips t
+    WHERE e.owner_id = $1
+      AND e.trip_id = $2
+      AND e.split = 'shared'
+      AND e.trip_id = t.tripid
+    RETURNING e.*`;
+
+  const deleteFullyOwnedExpenses = `
+    DELETE FROM expected_expenses
+    WHERE owner_id = $1
+    AND trip_id = $2
+    AND split = 'own'
+  `;
+
+  try {
+    const updateExpensesResult = await pool.query(updateExpensesQuery, [
+      memberID,
+      tripID,
+    ]);
+
+    console.log(updateExpensesResult);
+
+    const fullyOwnedResult = await pool.query(deleteFullyOwnedExpenses, [
+      memberID,
+      tripID,
+    ]);
+
+    console.log(fullyOwnedResult);
+
+    if (memberRole != "Guest") {
+      const savingsFundResult = await pool.query(deleteSavingsFund, [
+        tripID,
+        memberID,
+      ]);
+
+      console.log(savingsFundResult);
+    }
+
+    const deleteUserRole = await pool.query(deleteUserRoleQuery, [
+      tripID,
+      memberID,
+    ]);
+
+    console.log(deleteUserRole);
+
+    return res.status(200).json({ result: "Member removed succesfully" });
+  } catch (e) {
+    console.log(e);
     return res.status(500).json({ error: e });
   }
 });

@@ -18,6 +18,43 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
 
   const navigate = useNavigate();
 
+  async function removeMember(memberid, role) {
+    if (userRole != "Owner") {
+      return;
+    }
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const removeMemberData = {
+        memberID: memberid,
+        tripID: tripId,
+        memberRole: role,
+      };
+
+      const removeMemberResponse = await fetch(
+        "http://localhost:3000/api/remove-member",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(removeMemberData),
+        }
+      );
+
+      console.log(removeMemberResponse);
+    } catch (e) {
+      
+      console.log(e);
+    }
+  }
+
   async function deleteTrip() {
     try {
       const { data } = await supabase.auth.getSession();
@@ -77,7 +114,10 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
                 <div className="memberName">{member.name}</div>
                 <div className="memberRole">{"(" + member.role + ")"}</div>
                 {userRole === "Owner" && (
-                  <div className="removeRow">
+                  <div
+                    className="removeRow"
+                    onClick={() => removeMember(member.userroleid, member.role)}
+                  >
                     <FontAwesomeIcon icon={faX} /> Remove
                   </div>
                 )}

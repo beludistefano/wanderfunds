@@ -1,12 +1,16 @@
 import "../css/components/tripheader.css";
-import bgImg from "../assets/backgroundplaceholder.png";
+import bgImg from "../assets/backgroundPlaceholder.jpg";
 import nycImf from "../assets/nycSample.jpg";
 
 export default function TripHeader({ status, destination }) {
   return (
     <div
       id="tripHeaderContainer"
-      style={{ backgroundImage: `url(${nycImf})`, backgroundSize: "cover" }}
+      style={{
+        backgroundImage: `url(${bgImg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
       <div id="tripStatusContainer">
         <div className={`statusContainer status${status.replaceAll(" ", "")}`}>

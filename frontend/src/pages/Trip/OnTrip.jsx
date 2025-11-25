@@ -21,6 +21,8 @@ export default function OnTrip({ role, tripID, trip }) {
 
   const [isAddExpenseOpen, setIsAddExpenseOpen] = useState(false);
 
+  const [quickAddError, setQuickAddError] = useState(false);
+
   const noExpensesPhrases = [
     "You haven't paid for anything... yet 💸",
     "Zero adventures logged here yet ✨",
@@ -120,6 +122,42 @@ export default function OnTrip({ role, tripID, trip }) {
       await getSavingsFund();
     })();
   }, [initialized, token, tripId]);
+
+  async function quickAddExpense(expenseData) {
+    const confExpense = {};
+    confExpense["expenseID"] = expenseData.expense_id;
+    confExpense["confirmed_date"] = new Date().toISOString();
+    confExpense["tripID"] = expenseData.trip_id;
+    confExpense["amount"] = expenseData.amount;
+    confExpense["split"] = expenseData.split;
+
+    try {
+      if (!token) {
+        return;
+      }
+
+      const confirmExpenseResult = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/confirm-expense",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(confExpense),
+        }
+      );
+
+      if (confirmExpenseResult.ok) {
+        refreshPage();
+      } else {
+        setQuickAddError(true);
+      }
+    } catch (e) {
+      setQuickAddError(true);
+      console.log(e);
+    }
+  }
 
   return (
     <>
@@ -273,7 +311,14 @@ export default function OnTrip({ role, tripID, trip }) {
                             justifyContent: "center",
                           }}
                         >
-                          <div className="quickAddButton">ADD</div>
+                          <div
+                            className="quickAddButton"
+                            onClick={() => {
+                              quickAddExpense(e);
+                            }}
+                          >
+                            ADD
+                          </div>
                         </td>
                       </tr>
                     );
@@ -282,6 +327,11 @@ export default function OnTrip({ role, tripID, trip }) {
               </table>
             )}
           </div>
+          {quickAddError && (
+            <div className="errorDisplayText">
+              There was an error quick-adding your expense
+            </div>
+          )}
         </div>
       </div>
     </>

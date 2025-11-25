@@ -227,11 +227,21 @@ export default function AddConfirmedExpense({
                 </label>
                 <input
                   id="confirmationDate"
-                  className="expenseInput"
+                  className={`expenseInput ${
+                    validationErrors.amount ? "borderRed" : ""
+                  }`}
                   type="date"
                   value={expenseConfDate}
                   onChange={(e) => setExpenseConfDate(e.target.value)}
                 />
+                {validationErrors.confDate && (
+                  <p
+                    className="errorDisplayText"
+                    style={{ gridColumn: "1 / -1", margin: 0 }}
+                  >
+                    {validationErrors.confDate}
+                  </p>
+                )}
               </div>
             </div>
             <div id="modalConfirmOptions">
