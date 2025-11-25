@@ -38,10 +38,14 @@ export default function EditExpense({
     formatDate(expense.expected_date)
   );
   const [expenseUpdateStatus, setExpenseUpdateStatus] = useState(null);
+  const [deleteExpenseStatus, setDeleteExpenseStatus] = useState(null);
+  const [expenseConf, setExpenseConf] = useState(expense.confirmed);
   const [role, setRole] = useState(tripRole);
   const [autoAdd, setAutoAdd] = useState(autoadd);
 
   const [validationErrors, setValidationErrors] = useState({});
+
+  console.log(expense);
 
   useEffect(() => {
     setValidationErrors({});
@@ -65,6 +69,47 @@ export default function EditExpense({
 
   if (isOpen == false) {
     return null;
+  }
+
+  async function deleteExpense() {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const deleteExpenseData = {
+        expenseID: expenseID,
+      };
+
+      const expenseDeletion = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/delete-expense",
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(deleteExpenseData),
+        }
+      );
+
+      console.log(await expenseDeletion.json());
+
+      if (expenseDeletion.ok) {
+        setDeleteExpenseStatus("success");
+        onUpdate();
+      } else {
+        setDeleteExpenseStatus("fail");
+      }
+
+      setTimeout(() => onCancel(), 1000);
+    } catch (e) {
+      console.log("There was an error" + e);
+      setDeleteExpenseStatus("fail");
+      setTimeout(() => onCancel(), 1000);
+    }
   }
 
   async function updateExpense() {
@@ -110,7 +155,6 @@ export default function EditExpense({
 
     updateExpense["role"] = role;
 
-
     try {
       const { data } = await supabase.auth.getSession();
       const token = data.session?.access_token;
@@ -151,7 +195,7 @@ export default function EditExpense({
     <div id="modalConfirm">
       <div id="modalConfirmCard">
         <h4>Edit Expense</h4>
-        {expenseUpdateStatus == null ? (
+        {expenseUpdateStatus == null && deleteExpenseStatus == null ? (
           <>
             <div id="addExpenseForm">
               <div className="expenseRow">
@@ -239,24 +283,45 @@ export default function EditExpense({
                 />
               </div>
             </div>
-            <div id="modalConfirmOptions">
-              <button
-                onClick={onCancel}
-                className="confirmButtons buttonConfirmCancel"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={updateExpense}
-                className="confirmButtons buttonConfirmOk"
-              >
-                Update
-              </button>
+            <div>
+              <div id="modalConfirmOptions">
+                <button
+                  onClick={onCancel}
+                  id="cancelGreyButton"
+                  className="confirmButtons buttonConfirmCancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={updateExpense}
+                  className="confirmButtons buttonConfirmOk"
+                >
+                  Update
+                </button>
+              </div>
+              {expenseConf != true && (
+                <div>
+                  <button
+                    onClick={deleteExpense}
+                    className="confirmButtons buttonConfirmCancel"
+                  >
+                    DELETE
+                  </button>
+                </div>
+              )}
             </div>
           </>
         ) : expenseUpdateStatus === "success" ? (
           <>
-            <p className="greenText">Expense updated succesfully!</p>
+            <p className="greenText">Expense updated successfully!</p>
+          </>
+        ) : deleteExpenseStatus === "success" ? (
+          <>
+            <p className="greenText">Expense deleted successfully!</p>
+          </>
+        ) : deleteExpenseStatus === "error" ? (
+          <>
+            <p className="redText">There was an error deleting your expense</p>
           </>
         ) : (
           <>

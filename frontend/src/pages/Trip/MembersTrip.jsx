@@ -37,7 +37,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
       };
 
       const removeMemberResponse = await fetch(
-        "http://localhost:3000/api/remove-member",
+        "https://wanderfunds-backend.onrender.com/api/remove-member",
         {
           method: "POST",
           headers: {
@@ -50,7 +50,6 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
 
       console.log(removeMemberResponse);
     } catch (e) {
-      
       console.log(e);
     }
   }
@@ -116,7 +115,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
                 {userRole === "Owner" && (
                   <div
                     className="removeRow"
-                    onClick={() => removeMember(member.userroleid, member.role)}
+                    onClick={() => removeMember(member.user_id, member.role)}
                   >
                     <FontAwesomeIcon icon={faX} /> Remove
                   </div>

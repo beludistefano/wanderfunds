@@ -1149,10 +1149,6 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
 app.post("/api/remove-member", requireAuth, async (req, res) => {
   const { memberID, tripID, memberRole } = req.body;
 
-  console.log(memberID);
-  console.log(tripID);
-  console.log(memberRole);
-
   if (!memberID || memberID == "") {
     return res.status(400).send("Error: Member cannot be empty");
   }
@@ -1200,30 +1196,22 @@ app.post("/api/remove-member", requireAuth, async (req, res) => {
       tripID,
     ]);
 
-    console.log(updateExpensesResult);
-
     const fullyOwnedResult = await pool.query(deleteFullyOwnedExpenses, [
       memberID,
       tripID,
     ]);
-
-    console.log(fullyOwnedResult);
 
     if (memberRole != "Guest") {
       const savingsFundResult = await pool.query(deleteSavingsFund, [
         tripID,
         memberID,
       ]);
-
-      console.log(savingsFundResult);
     }
 
     const deleteUserRole = await pool.query(deleteUserRoleQuery, [
       tripID,
       memberID,
     ]);
-
-    console.log(deleteUserRole);
 
     return res.status(200).json({ result: "Member removed succesfully" });
   } catch (e) {

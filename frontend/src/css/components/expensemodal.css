@@ -71,6 +71,10 @@ textarea {
   background-color: #8ebed8;
 }
 
+#cancelGreyButton {
+  background-color: #b3b3b3;
+}
+
 @media (max-width: 768px) {
   #modalConfirmCard {
     width: 90%;
