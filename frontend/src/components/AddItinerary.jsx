@@ -51,8 +51,6 @@ function validateFlight(flightNumber, flightDate, file) {
     flightErrors.date = "Flight date must be included";
   }
 
-  console.log(file);
-  console.log(file.type);
 
   if (file != null) {
     if (!allowedTypes.includes(file.type)) {

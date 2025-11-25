@@ -43,3 +43,8 @@
 #buttonCancel:hover {
   border: none;
 }
+
+.formHeaderPic {
+  display: flex;
+  justify-content: space-between;
+}

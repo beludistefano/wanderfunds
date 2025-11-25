@@ -5,11 +5,13 @@ import Confirm from "../../components/Confirmation";
 import { supabase } from "../../supabaseClient";
 import { useAuth } from "../../auth/AuthProvider";
 
+const allowedTypes = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+
 const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
 };
 
-function validateEdit(destination, fromDate, toDate) {
+function validateEdit(destination, fromDate, toDate, file) {
   const tripErrors = {};
 
   if (destination == "") {
@@ -33,6 +35,13 @@ function validateEdit(destination, fromDate, toDate) {
 
   if (formatToDate.getDate() == formatFromDate.getDate()) {
     tripErrors.tripLength = "Trip must last at least one day";
+  }
+
+  if (file != null) {
+    if (!allowedTypes.includes(file.type)) {
+      tripErrors.file =
+        "Invalid file type. Only images (PNG, JPG, WEBP) are allowed.";
+    }
   }
 
   return tripErrors;
@@ -60,6 +69,8 @@ export default function EditTrip({ trip, role }) {
   const [validationErrors, setValidationErrors] = useState({});
   const [updateErrors, setUpdateErrors] = useState(null);
 
+  const [headerPic, setHeaderPic] = useState(null);
+
   async function updateTripOwner(e) {
     e.preventDefault();
 
@@ -73,17 +84,41 @@ export default function EditTrip({ trip, role }) {
     const autoAdd = updateAutoAdd;
     const defaultSplit = updateDefaultSplit;
     const description = updateDescription;
+    const headerFile = headerPic;
 
     const today = new Date();
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
 
-    const formValidation = validateEdit(destination, fromDate, toDate);
+    const formValidation = validateEdit(
+      destination,
+      fromDate,
+      toDate,
+      headerFile
+    );
     setValidationErrors(formValidation);
 
     if (Object.keys(formValidation).length != 0) {
       return;
     }
+
+    const headerPath = `trips/${tripID}/headers/${headerFile.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("trip-headers")
+      .upload(headerPath, headerFile, { contentType: headerFile.type });
+
+    if (error) {
+      console.log(error);
+      throw new Error("File upload failed");
+    }
+
+    const publicUrl = supabase.storage
+      .from("trip-headers")
+      .getPublicUrl(`trips/${tripID}/headers/${headerFile.name}`)
+      .data.publicUrl;
+
+    console.log(publicUrl);
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
@@ -94,6 +129,7 @@ export default function EditTrip({ trip, role }) {
     updateTrip["status"] = status;
     updateTrip["auto_add"] = autoAdd;
     updateTrip["tripID"] = tripID;
+    updateTrip["trip_header_url"] = publicUrl;
 
     console.log(updateTrip);
 
@@ -141,17 +177,41 @@ export default function EditTrip({ trip, role }) {
     const toDate = updateToDate;
     const status = updateStatus;
     const description = updateDescription;
+    const headerFile = headerPic;
 
     const today = new Date();
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
 
-    const formValidation = validateEdit(destination, fromDate, toDate);
+    const formValidation = validateEdit(
+      destination,
+      fromDate,
+      toDate,
+      headerFile
+    );
     setValidationErrors(formValidation);
 
     if (Object.keys(formValidation).length != 0) {
       return;
     }
+
+    const headerPath = `trips/${tripID}/headers/${headerFile.name}`;
+
+    const { data, error } = await supabase.storage
+      .from("trip-headers")
+      .upload(headerPath, headerFile, { contentType: headerFile.type });
+
+    if (error) {
+      console.log(error);
+      throw new Error("File upload failed");
+    }
+
+    const publicUrl = supabase.storage
+      .from("trip-headers")
+      .getPublicUrl(`trips/${tripID}/headers/${headerFile.name}`)
+      .data.publicUrl;
+
+    console.log(publicUrl);
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
@@ -160,6 +220,7 @@ export default function EditTrip({ trip, role }) {
     updateTrip["description"] = description;
     updateTrip["status"] = status;
     updateTrip["tripID"] = tripID;
+    updateTrip["trip_header_url"] = publicUrl;
 
     console.log(updateTrip);
 
@@ -211,7 +272,7 @@ export default function EditTrip({ trip, role }) {
       }
 
       const deleteResp = await fetch(
-        "https://wanderfunds-backend.onrender.com/api/trip/" + trip.tripid,
+        "http://localhost:3000/api/trip/" + trip.tripid,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -309,6 +370,23 @@ export default function EditTrip({ trip, role }) {
           )}
           {validationErrors.tripLength && (
             <p className="errorDisplayText">{validationErrors.tripLength}</p>
+          )}
+        </div>
+        <div className="formRow formHeaderPic">
+          <label htmlFor="headerPic" className="formLabel">
+            Select header picture:
+          </label>
+          <input
+            id="headerPic"
+            type="file"
+            className={`${validationErrors.file ? "borderRed" : ""}`}
+            accept="image/png, image/jpeg"
+            onChange={(e) => setHeaderPic(e.target.files?.[0] || null)}
+          />
+          {validationErrors.file && (
+            <p className="errorDisplayText" style={{ margin: 0 }}>
+              {validationErrors.file}
+            </p>
           )}
         </div>
         <div className="formRow">

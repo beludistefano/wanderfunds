@@ -78,6 +78,7 @@ app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
             t.status,
             t.description,
             t.default_split,
+            t.trip_header_url,
             t.auto_add,
             t.members,
             r.role
@@ -226,11 +227,30 @@ app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
   WHERE tripid = $1
   RETURNING *`;
 
+  const deleteItinerary = `
+    DELETE FROM trip_itinerary
+    WHERE trip_id = $1
+    RETURNING *`;
+
+  const deleteHotel = `
+    DELETE FROM trip_hotel
+    WHERE trip_id = $1
+    RETURNING *`;
+
+  const deleteFlights = `
+    DELETE FROM trip_flights
+    WHERE trip_id = $1
+    RETURNING *`;
+
   try {
     const usersAssociated = await pool.query(relatedRolesQuery, [
       req.user.id,
       tripID,
     ]);
+
+    const deleteItineraryResult = await pool.query(deleteItinerary, [tripID]);
+    const deleteFlightsResult = await pool.query(deleteFlights, [tripID]);
+    const deleteHotelResul = await pool.query(deleteHotel, [tripID]);
 
     const deleteTripResult = await pool.query(deleteTrip, [tripID]);
 
@@ -277,6 +297,8 @@ app.delete("/api/trip/:tripID", requireAuth, async (req, res) => {
 
     return res.status(200).json(deleteTripResult);
   } catch (e) {
+    console.log(e);
+    console.log(e.message);
     return res.status(500).json({ error: e });
   }
 });
@@ -633,7 +655,7 @@ app.post("/api/confirmed-expenses", requireAuth, async (req, res) => {
           AND amount > $3
       `;
 
-      const share = Number(amount) / Number(members);
+      const share = Number((Number(amount) / Number(members)).toFixed(2));
 
       const updateSavingsValues = [share, tripID, share];
 
