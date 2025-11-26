@@ -53,6 +53,8 @@ export default function EditTrip({ trip, role }) {
   const [tripID, setTripID] = useState(trip.tripid);
   const [userRole, setUserRole] = useState(role);
 
+  const [tripHeaderURL, setTripHeaderURL] = useState(trip.trip_header_url);
+
   const [updateDestination, setUpdateDestination] = useState(trip.destination);
   const [updateFromDate, setUpdateFromDate] = useState(
     formatDate(trip.from_date)
@@ -102,11 +104,14 @@ export default function EditTrip({ trip, role }) {
       return;
     }
 
-    const headerPath = `trips/${tripID}/headers/${headerFile.name}`;
+    const headerPath = `trips/${tripID}/headers/header`;
 
     const { data, error } = await supabase.storage
       .from("trip-headers")
-      .upload(headerPath, headerFile, { contentType: headerFile.type });
+      .upload(headerPath, headerFile, {
+        contentType: headerFile.type,
+        upsert: true,
+      });
 
     if (error) {
       console.log(error);
@@ -115,8 +120,7 @@ export default function EditTrip({ trip, role }) {
 
     const publicUrl = supabase.storage
       .from("trip-headers")
-      .getPublicUrl(`trips/${tripID}/headers/${headerFile.name}`)
-      .data.publicUrl;
+      .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
 
     console.log(publicUrl);
 
@@ -195,11 +199,14 @@ export default function EditTrip({ trip, role }) {
       return;
     }
 
-    const headerPath = `trips/${tripID}/headers/${headerFile.name}`;
+    const headerPath = `trips/${tripID}/headers/header`;
 
     const { data, error } = await supabase.storage
       .from("trip-headers")
-      .upload(headerPath, headerFile, { contentType: headerFile.type });
+      .upload(headerPath, headerFile, {
+        contentType: headerFile.type,
+        upsert: true,
+      });
 
     if (error) {
       console.log(error);
@@ -208,8 +215,7 @@ export default function EditTrip({ trip, role }) {
 
     const publicUrl = supabase.storage
       .from("trip-headers")
-      .getPublicUrl(`trips/${tripID}/headers/${headerFile.name}`)
-      .data.publicUrl;
+      .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
 
     console.log(publicUrl);
 

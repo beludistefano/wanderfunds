@@ -316,6 +316,7 @@ app.put("/api/trip", requireAuth, async (req, res) => {
     status,
     default_split,
     auto_add,
+    trip_header_url,
   } = req.body;
 
   if (!tripID || !destination || destination == "" || tripID == "") {
@@ -337,8 +338,9 @@ app.put("/api/trip", requireAuth, async (req, res) => {
       to_date       = $4,
       status        = $5,
       default_split = $6,
-      auto_add      = $7
-    WHERE tripid    = $8
+      auto_add      = $7,
+      trip_header_url = $8
+    WHERE tripid    = $9
     RETURNING *;
     `;
 
@@ -350,6 +352,7 @@ app.put("/api/trip", requireAuth, async (req, res) => {
     status,
     default_split,
     auto_add,
+    trip_header_url,
     tripID,
   ];
 
@@ -366,8 +369,15 @@ app.put("/api/trip", requireAuth, async (req, res) => {
  * This PUT request will update a trip with participant fields
  */
 app.put("/api/trip-participant", requireAuth, async (req, res) => {
-  const { tripID, destination, description, from_date, to_date, status } =
-    req.body;
+  const {
+    tripID,
+    destination,
+    description,
+    from_date,
+    to_date,
+    status,
+    trip_header_url,
+  } = req.body;
 
   if (!tripID || !destination || destination == "" || tripID == "") {
     return res
@@ -386,8 +396,9 @@ app.put("/api/trip-participant", requireAuth, async (req, res) => {
       description   = $2,
       from_date     = $3,
       to_date       = $4,
-      status        = $5
-    WHERE tripid    = $6
+      status        = $5,
+      trip_header_url = $6
+    WHERE tripid    = $7
     RETURNING *;
     `;
 
@@ -397,6 +408,7 @@ app.put("/api/trip-participant", requireAuth, async (req, res) => {
     from_date,
     to_date,
     status,
+    trip_header_url,
     tripID,
   ];
 
