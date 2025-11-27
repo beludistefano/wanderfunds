@@ -1,13 +1,16 @@
 import "../css/components/tripheader.css";
 import bgImg from "../assets/backgroundPlaceholder.jpg";
 import nycImf from "../assets/nycSample.jpg";
+import { useState } from "react";
 
-export default function TripHeader({ status, destination }) {
+export default function TripHeader({ status, destination, url }) {
+  const [headerURL, setHeaderURL] = useState(url);
+
   return (
     <div
       id="tripHeaderContainer"
       style={{
-        backgroundImage: `url(${bgImg})`,
+        backgroundImage: `url(${headerURL ? headerURL : bgImg})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}

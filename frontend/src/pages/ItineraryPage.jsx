@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useAuth } from "../auth/AuthProvider";
 
-
 export default function ItineraryPage() {
   const { tripid } = useParams();
   const [tripMembers, setTripMembers] = useState();
@@ -64,6 +63,7 @@ export default function ItineraryPage() {
               <TripHeader
                 destination={tripData.destination}
                 status={tripData.status}
+                url={tripData.trip_header_url}
               />
               <TripMenu tripID={tripid} />
               <Itinerary role={role} tripID={tripid} />

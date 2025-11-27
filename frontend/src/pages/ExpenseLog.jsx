@@ -61,6 +61,7 @@ export default function ExpenseLog() {
               <TripHeader
                 destination={tripData.destination}
                 status={tripData.status}
+                url={tripData.trip_header_url}
               />
               <TripMenu tripID={tripid} />
               <ExpenseLogContent

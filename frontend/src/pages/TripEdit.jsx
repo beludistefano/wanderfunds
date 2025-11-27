@@ -65,7 +65,11 @@ export default function TripEdit() {
           <div id="mainContent">
             <MainSideBar id="mainSideBar" />
             <div id="dashboardCenterSection">
-              <TripHeader destination={trip.destination} status={trip.status} />
+              <TripHeader
+                destination={trip.destination}
+                status={trip.status}
+                url={trip.trip_header_url}
+              />
               <TripMenu tripID={tripid} />
               {(userRole == "Owner" || userRole == "Participant") && (
                 <EditTrip trip={trip} role={userRole} />

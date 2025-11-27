@@ -16,6 +16,8 @@ export default function Members() {
   const [role, setRole] = useState(null);
   const { session, initialized } = useAuth();
 
+  const [trip, setTrip] = useState();
+
   const token = session?.access_token;
 
   async function getTripMembers() {
@@ -33,6 +35,8 @@ export default function Members() {
       );
 
       const tripJson = await tripData.json();
+
+      setTrip(tripJson[0]);
 
       setRole(tripJson[0]["role"]);
 
@@ -69,6 +73,7 @@ export default function Members() {
               <TripHeader
                 destination={tripMembers[0].destination}
                 status={tripMembers[0].status}
+                url={trip.trip_header_url}
               />
               <TripMenu tripID={tripid} />
               <MembersTrip

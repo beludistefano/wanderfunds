@@ -1,7 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import Header from "../components/header";
 import MainSideBar from "../components/MainSideBar";
-import TripHeader from "../components/TripHeader";
 import TripMenu from "../components/TripMenu";
 import "../css/profile.css";
 import MembersTrip from "./Trip/MembersTrip";

@@ -69,7 +69,11 @@ export default function TripDashboard() {
           <div id="mainContent">
             <MainSideBar id="mainSideBar" />
             <div id="dashboardCenterSection">
-              <TripHeader destination={trip.destination} status={trip.status} />
+              <TripHeader
+                destination={trip.destination}
+                status={trip.status}
+                url={trip.trip_header_url}
+              />
               <TripMenu tripID={tripid} />
               {(trip.status === "Confirmed" || trip.status === "Planning") && (
                 <TripOverview trip={trip} userRole={role} />
