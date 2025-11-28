@@ -110,3 +110,18 @@
 .textRed {
   color: #ef5350;
 }
+
+@media (max-width: 768px) {
+  #expensesSavingsCont {
+    display: flex;
+    flex-direction: column;
+  }
+
+  #expenseLogContainerOnTrip {
+    width: 100%;
+  }
+
+  #quickAddContainer {
+    width: 100%;
+  }
+}

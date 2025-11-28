@@ -84,3 +84,9 @@
   color: white;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  #itineraryContainer {
+    width: 80%;
+  }
+}

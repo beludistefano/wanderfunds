@@ -12,3 +12,27 @@
 #expenseLogTable {
   width: 70%;
 }
+
+.expenseLogOwnerContainer {
+  padding: 5px 15px;
+  border-radius: 9999px;
+  background-color: #ff7373;
+  text-transform: uppercase;
+  color: white;
+  min-width: 100px;
+}
+
+.expenseLogOwnerContainer p {
+  margin: 0;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  #expenseLogTable {
+    width: 100%;
+  }
+
+  #expenseLogTitle {
+    width: 100%;
+  }
+}

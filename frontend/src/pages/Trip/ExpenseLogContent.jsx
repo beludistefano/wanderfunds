@@ -72,14 +72,14 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
         <>
           <div id="containerItineraryTop">
             <div
-              id="ownerContainerContainer"
+              id="expenseLogOwnerContainerContainer"
               style={{
                 display: "flex",
                 justifyContent: "flex-end",
                 paddingTop: "10px",
               }}
             >
-              <div className="ownerContainer">
+              <div className="expenseLogOwnerContainer">
                 <p>{userRole}</p>
               </div>
             </div>
