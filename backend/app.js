@@ -65,6 +65,10 @@ app.get("/api/trips", requireAuth, async (req, res) => {
 app.get("/api/trip/:tripID", requireAuth, async (req, res) => {
   const { tripID } = req.params;
 
+  if (tripID == "" || tripID == undefined) {
+    return res.status(400).send("Error: ID cannot be empty");
+  }
+
   try {
     const query = ` SELECT
             t.tripid,
@@ -105,6 +109,7 @@ app.post("/api/trip", requireAuth, async (req, res) => {
     default_split,
     auto_add,
     members,
+    status,
   } = req.body;
 
   if (destination == "") {
@@ -115,9 +120,13 @@ app.post("/api/trip", requireAuth, async (req, res) => {
     return res.status(400).send("Error: Trip must start before end date");
   }
 
+  if (status != "Planning" && status != "Confirmed") {
+    return res.status(400).send("Error: Status must be planning or confirmed");
+  }
+
   const tripQuery = `
-      INSERT INTO trips (ownerid, destination, from_date, to_date, description, default_split, auto_add, members)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO trips (ownerid, destination, from_date, to_date, description, default_split, auto_add, members, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING tripid
     `;
 
@@ -140,6 +149,7 @@ app.post("/api/trip", requireAuth, async (req, res) => {
     default_split,
     auto_add,
     members,
+    status,
   ];
 
   try {
