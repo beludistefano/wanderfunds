@@ -27,6 +27,64 @@
   text-align: center;
 }
 
+#searchContainer {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+  align-items: center;
+}
+
+.searchGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.searchGroup label,
+.groupDate label {
+  color: #838383;
+  font-weight: 500;
+}
+
+.searchGroupDate {
+  display: flex;
+  gap: 20px;
+}
+
+.groupDate {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.searchInput {
+  width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 3%;
+}
+
+.buttonSearch {
+  display: inline-block;
+  padding: 10px 15px !important;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+  border: none;
+  color: white;
+  min-width: 150px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+#buttonSearch {
+  background-color: #6fa0ba;
+}
+
+#buttonReset {
+  background-color: #b7b7b7;
+}
+
 @media (max-width: 768px) {
   #expenseLogTable {
     width: 100%;
