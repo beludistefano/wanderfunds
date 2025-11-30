@@ -8,11 +8,6 @@
   height: 100%;
 }
 
-#mainSideBar {
-  width: 15%;
-  min-height: 100%;
-}
-
 #mainContentInvitation {
   display: flex;
   flex-direction: column;
