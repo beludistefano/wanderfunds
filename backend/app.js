@@ -468,7 +468,8 @@ app.get("/api/expenses", requireAuth, async (req, res) => {
     const query = `
     SELECT *
     FROM expected_expenses
-    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared')`;
+    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared')
+    ORDER BY created_at ASC`;
 
     const expensesResult = await pool.query(query, [tripId, req.user.id]);
 
@@ -496,7 +497,8 @@ app.get("/api/confirmed-expenses", requireAuth, async (req, res) => {
     const query = `
     SELECT *
     FROM expected_expenses
-    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared') AND confirmed = true`;
+    WHERE trip_id = $1 AND (owner_id = $2 OR "split" = 'shared') AND confirmed = true
+    ORDER BY confirmed_date ASC`;
 
     const expensesResult = await pool.query(query, [tripId, req.user.id]);
 

@@ -1,6 +1,6 @@
 #mainSideBar {
   background-color: #6fa0ba;
-  height: 100%;
+  align-self: stretch;
 }
 
 #mainSideBar ul {
