@@ -167,73 +167,77 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
               </div>
             )}
           </div>
-          <div id="searchContainer">
-            <div className="searchGroup">
-              <label htmlFor="searchExpense">Expense:</label>
-              <input
-                type="text"
-                id="searchExpense"
-                className="searchInput searchInputText"
-                value={searchExpValue}
-                onChange={(e) => setSearchExpValue(e.target.value)}
-              />
-            </div>
-            <div className="searchGroup">
-              <label htmlFor="searchAmount">Min total amount:</label>
-              <input
-                type="number"
-                id="searchAmount"
-                className="searchInput searchInputAmount"
-                value={searchAmountValue}
-                onChange={(e) => setSearchAmountValue(e.target.value)}
-              />
-            </div>
-            <div className="searchGroup">
-              <label htmlFor="searchIndAmount">Min individual amount:</label>
-              <input
-                type="number"
-                id="searchIndAmount"
-                className="searchInput searchInputAmount"
-                value={searchIndValue}
-                onChange={(e) => setSearchIndValue(e.target.value)}
-              />
-            </div>
-            <div className="searchGroupDate">
-              <div className="groupDate">
-                <label htmlFor="searchFromDate">From:</label>
+          <div id="searchContainerSection">
+            <div id="searchContainer">
+              <div className="searchGroup searchGroupText">
+                <label htmlFor="searchExpense">Expense:</label>
                 <input
-                  type="date"
-                  id="searchFromDate"
+                  type="text"
+                  id="searchExpense"
                   className="searchInput searchInputText"
-                  value={searchFromValue}
-                  onChange={(e) => setSearchFromValue(e.target.value)}
+                  value={searchExpValue}
+                  onChange={(e) => setSearchExpValue(e.target.value)}
                 />
               </div>
-              <div className="groupDate">
-                <label htmlFor="searchToDate">To:</label>
+              <div className="searchGroup" id="totalAmountGroup">
+                <label htmlFor="searchAmount">Min total amount:</label>
                 <input
-                  type="date"
-                  id="searchToDate"
-                  className="searchInput searchInputText"
-                  value={searchToValue}
-                  onChange={(e) => setSearchToValue(e.target.value)}
+                  type="number"
+                  id="searchAmount"
+                  className="searchInput searchInputAmount"
+                  value={searchAmountValue}
+                  onChange={(e) => setSearchAmountValue(e.target.value)}
                 />
               </div>
+              <div className="searchGroup" id="indAmountGroup">
+                <label htmlFor="searchIndAmount">Min individual amount:</label>
+                <input
+                  type="number"
+                  id="searchIndAmount"
+                  className="searchInput searchInputAmount"
+                  value={searchIndValue}
+                  onChange={(e) => setSearchIndValue(e.target.value)}
+                />
+              </div>
+              <div className="searchGroupDate">
+                <div className="groupDate">
+                  <label htmlFor="searchFromDate">From:</label>
+                  <input
+                    type="date"
+                    id="searchFromDate"
+                    className="searchInput searchInputText"
+                    value={searchFromValue}
+                    onChange={(e) => setSearchFromValue(e.target.value)}
+                  />
+                </div>
+                <div className="groupDate">
+                  <label htmlFor="searchToDate">To:</label>
+                  <input
+                    type="date"
+                    id="searchToDate"
+                    className="searchInput searchInputText"
+                    value={searchToValue}
+                    onChange={(e) => setSearchToValue(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
-            <input
-              type="button"
-              id="buttonSearch"
-              className="buttonSearch"
-              value="Search"
-              onClick={search}
-            />
-            <input
-              type="button"
-              className="buttonSearch"
-              id="buttonReset"
-              value="Reset"
-              onClick={resetSearch}
-            />
+            <div id="searchButtonsContainer">
+              <input
+                type="button"
+                id="buttonSearch"
+                className="buttonSearch"
+                value="Search"
+                onClick={search}
+              />
+              <input
+                type="button"
+                className="buttonSearch"
+                id="buttonReset"
+                value="Reset"
+                onClick={resetSearch}
+              />
+            </div>
           </div>
           <div id="expenseLogTable">
             {expenses.length == 0 ? (

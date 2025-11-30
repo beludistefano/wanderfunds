@@ -30,7 +30,6 @@
 #searchContainer {
   display: flex;
   gap: 20px;
-  margin-bottom: 30px;
   align-items: center;
 }
 
@@ -73,7 +72,7 @@
   box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
   border: none;
   color: white;
-  min-width: 150px;
+  min-width: 120px;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -85,6 +84,33 @@
   background-color: #b7b7b7;
 }
 
+#searchContainerSection {
+  display: flex;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+#searchButtonsContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 25%;
+  align-items: center;
+}
+
+@media (max-width: 1200px) {
+  #searchContainerSection {
+    flex-direction: column;
+  }
+
+  #searchButtonsContainer {
+    gap: 20px;
+  }
+
+  #expenseLogTable {
+    width: 80%;
+  }
+}
+
 @media (max-width: 768px) {
   #expenseLogTable {
     width: 100%;
@@ -92,5 +118,35 @@
 
   #expenseLogTitle {
     width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  #searchContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .searchGroupText {
+    grid-column: 1 / 3;
+  }
+
+  #totalAmountGroup {
+    grid-column: 1 / 2;
+  }
+
+  #indAmountGroup {
+    grid-column: 2 / 3;
+  }
+
+  .searchGroupDate {
+    grid-column: 1 / 3;
+    display: flex;
+    gap: 20px;
+  }
+
+  .searchGroupDate .groupDate {
+    width: 50%;
   }
 }
