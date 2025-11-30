@@ -275,58 +275,66 @@ export default function OnTrip({ role, tripID, trip }) {
           />
         </div>
         <div id="quickAddContainer">
-          <h3 id="quickAddTitle">Quick Add</h3>
-          <div id="quickAddTableContainer">
-            {quickAddExp.length == 0 ? (
-              getRandomPhrase(noExpensesPhrases)
-            ) : (
-              <table id="quickAddTable">
-                <thead>
-                  <tr>
-                    <th>Expense</th>
-                    <th style={{ textAlign: "right" }}>Amount</th>
-                    <th style={{ textAlign: "right" }}>Split</th>
-                    <th style={{ textAlign: "right" }}>Individual Total</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {quickAddExp.map((e) => {
-                    return (
-                      <tr id={e.expense_id} key={e.expense_id}>
-                        <td>{e.name}</td>
-                        <td style={{ textAlign: "right" }}>$ {e.amount}</td>
-                        <td style={{ textAlign: "right" }}>
-                          {e.split === "own" ? "100%" : "Split equally"}
-                        </td>
-                        <td style={{ textAlign: "right" }}>
-                          {e.split === "own"
-                            ? "$ " + e.amount
-                            : "$ " + (e.amount / trip.members).toFixed(2)}
-                        </td>
-                        <td
-                          style={{
-                            textAlign: "center",
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <div
-                            className="quickAddButton"
-                            onClick={() => {
-                              quickAddExpense(e);
-                            }}
-                          >
-                            ADD
-                          </div>
-                        </td>
+          {userRole == "Guest" ? (
+            <></>
+          ) : (
+            <>
+              {" "}
+              <h3 id="quickAddTitle">Quick Add</h3>
+              <div id="quickAddTableContainer">
+                {quickAddExp.length == 0 ? (
+                  getRandomPhrase(noExpensesPhrases)
+                ) : (
+                  <table id="quickAddTable">
+                    <thead>
+                      <tr>
+                        <th>Expense</th>
+                        <th style={{ textAlign: "right" }}>Amount</th>
+                        <th style={{ textAlign: "right" }}>Split</th>
+                        <th style={{ textAlign: "right" }}>Individual Total</th>
+                        <th></th>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
+                    </thead>
+                    <tbody>
+                      {quickAddExp.map((e) => {
+                        return (
+                          <tr id={e.expense_id} key={e.expense_id}>
+                            <td>{e.name}</td>
+                            <td style={{ textAlign: "right" }}>$ {e.amount}</td>
+                            <td style={{ textAlign: "right" }}>
+                              {e.split === "own" ? "100%" : "Split equally"}
+                            </td>
+                            <td style={{ textAlign: "right" }}>
+                              {e.split === "own"
+                                ? "$ " + e.amount
+                                : "$ " + (e.amount / trip.members).toFixed(2)}
+                            </td>
+                            <td
+                              style={{
+                                textAlign: "center",
+                                display: "flex",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <div
+                                className="quickAddButton"
+                                onClick={() => {
+                                  quickAddExpense(e);
+                                }}
+                              >
+                                ADD
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                )}
+              </div>
+            </>
+          )}
+
           {quickAddError && (
             <div className="errorDisplayText">
               There was an error quick-adding your expense
