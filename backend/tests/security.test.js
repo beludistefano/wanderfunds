@@ -33,5 +33,23 @@ describe("POST /api/trip", () => {
       .set("Content-Type", "application/json");
 
     expect(res.statusCode).toBe(200);
+
+    const createdTripID = res.body.trip.rows[0];
+
+    const destinationIsText = await request(app).get(
+      `/api/trip/${createdTripID.tripid}`
+    );
+    expect(destinationIsText.statusCode).toBe(200);
+    expect(destinationIsText.body.length).toBe(1);
+    expect(destinationIsText.body[0].destination).toBe(SQLinjection);
+    expect(typeof destinationIsText.body[0].destination).toBe("string");
+
+    const tableStillExists = await request(app).get("/api/trips");
+    expect(tableStillExists.statusCode).toBe(200);
+    expect(Array.isArray(tableStillExists.body)).toBe(true);
+
+    await pool.query("DELETE FROM trips WHERE tripid = $1", [
+      createdTripID.tripid,
+    ]);
   });
 });
