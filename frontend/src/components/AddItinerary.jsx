@@ -194,7 +194,9 @@ export default function AddItinerary({
       const hotelData = await hotelCreation.json();
       const hotelID = hotelData.id;
 
-      const path = `trips/${tripId}/hotels/${hotelFile.name}`;
+      const fileName = crypto.randomUUID();
+
+      const path = `trips/${tripId}/hotels/${fileName}`;
 
       const { data, error } = await supabase.storage
         .from("trip-hotels")
@@ -206,8 +208,7 @@ export default function AddItinerary({
 
       const publicUrl = supabase.storage
         .from("trip-hotels")
-        .getPublicUrl(`trips/${tripId}/hotels/${hotelFile.name}`)
-        .data.publicUrl;
+        .getPublicUrl(`trips/${tripId}/hotels/${fileName}`).data.publicUrl;
 
       const hotelUpdateFile = await fetch(
         "https://wanderfunds-backend.onrender.com/api/update-hotel",
@@ -273,7 +274,9 @@ export default function AddItinerary({
       const flightData = await flightCreation.json();
       const flightId = flightData.id;
 
-      const path = `trips/${tripId}/flights/${flightFile.name}`;
+      const fileName = crypto.randomUUID();
+
+      const path = `trips/${tripId}/flights/${fileName}`;
 
       const { data, error } = await supabase.storage
         .from("trip-flights")
@@ -288,8 +291,7 @@ export default function AddItinerary({
 
       const publicUrl = supabase.storage
         .from("trip-flights")
-        .getPublicUrl(`trips/${tripId}/flights/${flightFile.name}`)
-        .data.publicUrl;
+        .getPublicUrl(`trips/${tripId}/flights/${fileName}`).data.publicUrl;
 
       const flightUpdateResult = await fetch(
         "https://wanderfunds-backend.onrender.com/api/update-flight",
@@ -330,9 +332,6 @@ export default function AddItinerary({
       return;
     }
 
-    const buckets = await supabase.storage.listBuckets();
-    console.log(buckets);
-
     const otherItCreation = await fetch(
       "https://wanderfunds-backend.onrender.com/api/add-itinerary",
       {
@@ -353,7 +352,9 @@ export default function AddItinerary({
       const itineraryData = await otherItCreation.json();
       const itId = itineraryData.id;
 
-      const path = `trips/${tripId}/itinerary/${otherFile.name}`;
+      const fileName = crypto.randomUUID();
+
+      const path = `trips/${tripId}/itinerary/${fileName}`;
 
       const { data, error } = await supabase.storage
         .from("trip-items")
@@ -365,8 +366,7 @@ export default function AddItinerary({
 
       const publicUrl = supabase.storage
         .from("trip-items")
-        .getPublicUrl(`trips/${tripId}/itinerary/${otherFile.name}`)
-        .data.publicUrl;
+        .getPublicUrl(`trips/${tripId}/itinerary/${fileName}`).data.publicUrl;
 
       const itineraryUpdateResult = await fetch(
         "https://wanderfunds-backend.onrender.com/api/update-itinerary",

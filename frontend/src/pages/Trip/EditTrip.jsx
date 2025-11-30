@@ -104,25 +104,29 @@ export default function EditTrip({ trip, role }) {
       return;
     }
 
-    const headerPath = `trips/${tripID}/headers/header`;
+    var publicUrl = "";
 
-    const { data, error } = await supabase.storage
-      .from("trip-headers")
-      .upload(headerPath, headerFile, {
-        contentType: headerFile.type,
-        upsert: true,
-      });
+    if (headerFile != null) {
+      const headerPath = `trips/${tripID}/headers/header`;
 
-    if (error) {
-      console.log(error);
-      throw new Error("File upload failed");
+      const { data, error } = await supabase.storage
+        .from("trip-headers")
+        .upload(headerPath, headerFile, {
+          contentType: headerFile.type,
+          upsert: true,
+        });
+
+      if (error) {
+        console.log(error);
+        throw new Error("File upload failed");
+      }
+
+      publicUrl = supabase.storage
+        .from("trip-headers")
+        .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
+
+      console.log(publicUrl);
     }
-
-    const publicUrl = supabase.storage
-      .from("trip-headers")
-      .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
-
-    console.log(publicUrl);
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
@@ -133,7 +137,12 @@ export default function EditTrip({ trip, role }) {
     updateTrip["status"] = status;
     updateTrip["auto_add"] = autoAdd;
     updateTrip["tripID"] = tripID;
-    updateTrip["trip_header_url"] = publicUrl;
+
+    if (publicUrl.trim() == "") {
+      updateTrip["trip_header_url"] = tripHeaderURL;
+    } else {
+      updateTrip["trip_header_url"] = publicUrl;
+    }
 
     console.log(updateTrip);
 
@@ -199,25 +208,29 @@ export default function EditTrip({ trip, role }) {
       return;
     }
 
-    const headerPath = `trips/${tripID}/headers/header`;
+    var publicUrl = "";
 
-    const { data, error } = await supabase.storage
-      .from("trip-headers")
-      .upload(headerPath, headerFile, {
-        contentType: headerFile.type,
-        upsert: true,
-      });
+    if (headerFile != null) {
+      const headerPath = `trips/${tripID}/headers/header`;
 
-    if (error) {
-      console.log(error);
-      throw new Error("File upload failed");
+      const { data, error } = await supabase.storage
+        .from("trip-headers")
+        .upload(headerPath, headerFile, {
+          contentType: headerFile.type,
+          upsert: true,
+        });
+
+      if (error) {
+        console.log(error);
+        throw new Error("File upload failed");
+      }
+
+      publicUrl = supabase.storage
+        .from("trip-headers")
+        .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
+
+      console.log(publicUrl);
     }
-
-    const publicUrl = supabase.storage
-      .from("trip-headers")
-      .getPublicUrl(`trips/${tripID}/headers/header`).data.publicUrl;
-
-    console.log(publicUrl);
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
@@ -226,7 +239,12 @@ export default function EditTrip({ trip, role }) {
     updateTrip["description"] = description;
     updateTrip["status"] = status;
     updateTrip["tripID"] = tripID;
-    updateTrip["trip_header_url"] = publicUrl;
+
+    if (publicUrl.trim() == "") {
+      updateTrip["trip_header_url"] = tripHeaderURL;
+    } else {
+      updateTrip["trip_header_url"] = publicUrl;
+    }
 
     console.log(updateTrip);
 
