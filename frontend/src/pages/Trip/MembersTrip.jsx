@@ -126,15 +126,15 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
         </div>
         {errorMessages && <p className="errorDisplay">{errorMessages}</p>}
         <div id="memberButtonsContainer">
-          {(userRole === "Owner" || userRole === "Participant") && (
-            <>
-              <button
-                id="buttonSave"
-                onClick={() => setInviteGuestOpen(true)}
-                className="button"
-              >
-                ADD GUEST
-              </button>
+          <>
+            <button
+              id="buttonSave"
+              onClick={() => setInviteGuestOpen(true)}
+              className="button"
+            >
+              ADD GUEST
+            </button>
+            {(userRole === "Owner" || userRole === "Participant") && (
               <button
                 id="buttonSave"
                 onClick={() => setInviteParticipantOpen(true)}
@@ -142,8 +142,9 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
               >
                 ADD PARTICIPANT
               </button>
-            </>
-          )}
+            )}
+          </>
+
           {(userRole === "Guest" || userRole === "Participant") && (
             <button
               onClick={() => {

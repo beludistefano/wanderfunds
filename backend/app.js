@@ -925,6 +925,8 @@ app.post("/api/addmember", requireAuth, async (req, res) => {
       memberType,
     ]);
 
+    console.log(tripInvitationResult);
+
     if (tripInvitationResult.rows.length === 0) {
       return res.status(500).send("Error sending invitation");
     }
@@ -937,12 +939,15 @@ app.post("/api/addmember", requireAuth, async (req, res) => {
       destinationEmail
     );
 
+    console.log(invitationEmail);
+
     if (!invitationEmail.ok) {
       return res.status(500).json({ error: invitationEmail.error });
     }
 
     return res.status(200).json(invitationEmail);
   } catch (e) {
+    console.log(e);
     return res.status(500).json({ error: e.message });
   }
 });
@@ -1966,7 +1971,7 @@ async function sendInvitationEmail(invitationID, username, email) {
   });
 
   const sentFrom = new Sender(
-    "no-reply@test-y7zpl98q6qo45vx6.mlsender.net",
+    "no-reply@test-r83ql3pmonzgzw1j.mlsender.net",
     username + " via Wanderfunds"
   );
 

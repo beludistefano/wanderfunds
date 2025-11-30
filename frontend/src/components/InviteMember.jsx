@@ -68,6 +68,8 @@ export default function InviteMember({ isOpen, onCancel, memberType, tripID }) {
         }
       );
 
+      console.log(memberInvite);
+
       if (memberInvite.ok) {
         setInviteStatus("success");
       } else {
@@ -90,7 +92,7 @@ export default function InviteMember({ isOpen, onCancel, memberType, tripID }) {
           <>
             <div id="addExpenseForm">
               <div className="expenseRow">
-                <label for="expenseName" className="expenseLabel">
+                <label htmlFor="expenseName" className="expenseLabel">
                   Email:
                 </label>
                 <input
