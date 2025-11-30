@@ -201,7 +201,11 @@ export default function TripOverview({ trip, userRole }) {
         setTotalTripCost(totalTripCost);
 
         var pendingExpenses = expenses
-          .filter((e) => e.confirmed === null || e.confirmed === false)
+          .filter(
+            (e) =>
+              (e.confirmed === null || e.confirmed === false) &&
+              e.expense_status === "accepted"
+          )
           .reduce((sum, e) => {
             if (e.split === "shared") {
               return sum + (Number(e.amount) || 0) / trip.members;
