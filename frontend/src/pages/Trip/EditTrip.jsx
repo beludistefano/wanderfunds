@@ -11,7 +11,7 @@ const formatDate = (dateString) => {
   return dateString ? dateString.split("T")[0] : "";
 };
 
-function validateEdit(destination, fromDate, toDate, file) {
+function validateEdit(destination, fromDate, toDate, file, members) {
   const tripErrors = {};
 
   if (destination.trim() == "") {
@@ -42,6 +42,10 @@ function validateEdit(destination, fromDate, toDate, file) {
       tripErrors.file =
         "Invalid file type. Only images (PNG, JPG, WEBP) are allowed.";
     }
+  }
+
+  if (members == 0) {
+    tripErrors.members = "Trips must have at least 1 member";
   }
 
   return tripErrors;
@@ -88,6 +92,8 @@ export default function EditTrip({ trip, role }) {
     const description = updateDescription;
     const headerFile = headerPic;
 
+    const members = updateMembers;
+
     const today = new Date();
     const formatFromDate = new Date(fromDate);
     const formatToDate = new Date(toDate);
@@ -96,7 +102,8 @@ export default function EditTrip({ trip, role }) {
       destination,
       fromDate,
       toDate,
-      headerFile
+      headerFile,
+      members
     );
     setValidationErrors(formValidation);
 
@@ -132,11 +139,18 @@ export default function EditTrip({ trip, role }) {
     updateTrip["destination"] = destination;
     updateTrip["from_date"] = formatFromDate;
     updateTrip["to_date"] = formatToDate;
-    updateTrip["default_split"] = defaultSplit;
     updateTrip["description"] = description;
     updateTrip["status"] = status;
-    updateTrip["auto_add"] = autoAdd;
     updateTrip["tripID"] = tripID;
+    updateTrip["members"] = members;
+
+    if (members == 1) {
+      updateTrip["auto_add"] = null;
+      updateTrip["default_split"] = "own";
+    } else {
+      updateTrip["auto_add"] = autoAdd;
+      updateTrip["default_split"] = defaultSplit;
+    }
 
     if (publicUrl.trim() == "") {
       updateTrip["trip_header_url"] = tripHeaderURL;
@@ -450,13 +464,17 @@ export default function EditTrip({ trip, role }) {
               <input
                 id="members"
                 name="members"
-                className="formInput"
+                className={`formInput ${
+                  validationErrors.members ? "borderRed" : ""
+                }`}
                 type="number"
                 min="0"
                 value={updateMembers}
                 onChange={(e) => setUpdateMembers(e.target.value)}
-                disabled
               />
+              {validationErrors.members && (
+                <p className="errorDisplayText">{validationErrors.members}</p>
+              )}
             </div>
             {updateMembers > 1 ? (
               <>

@@ -324,12 +324,17 @@ app.put("/api/trip", requireAuth, async (req, res) => {
     default_split,
     auto_add,
     trip_header_url,
+    members,
   } = req.body;
 
   if (!tripID || !destination || destination == "" || tripID == "") {
     return res
       .status(400)
       .send("Error: destination and trip ID cannot be empty");
+  }
+
+  if (members <= 0) {
+    return res.status(400).send("Error: Trips must have at least 1 member");
   }
 
   if (from_date > to_date) {
@@ -346,8 +351,9 @@ app.put("/api/trip", requireAuth, async (req, res) => {
       status        = $5,
       default_split = $6,
       auto_add      = $7,
-      trip_header_url = $8
-    WHERE tripid    = $9
+      trip_header_url = $8,
+      members = $9
+    WHERE tripid    = $10
     RETURNING *;
     `;
 
@@ -360,6 +366,7 @@ app.put("/api/trip", requireAuth, async (req, res) => {
     default_split,
     auto_add,
     trip_header_url,
+    members,
     tripID,
   ];
 

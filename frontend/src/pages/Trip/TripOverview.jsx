@@ -94,6 +94,7 @@ export default function TripOverview({ trip, userRole }) {
       const expenses = await expensesData.json();
 
       setExpenses(expenses);
+      console.log(expenses);
     } catch (e) {
       console.log(e);
     }
