@@ -11,7 +11,7 @@ import { useAuth } from "../auth/AuthProvider";
 function validateEdit(name) {
   const profileErrors = {};
 
-  if (name == "") {
+  if (name.trim() == "") {
     profileErrors.name = "Name cannot be empty";
   }
 

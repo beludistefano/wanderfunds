@@ -14,7 +14,7 @@ const allowedTypes = [
 function validateHotel(hotelName, checkIn, checkOut, file) {
   const errors = {};
 
-  if (hotelName == "" || hotelName == null) {
+  if (hotelName.trim() == "" || hotelName == null) {
     errors.hotelName = "Hotel name must be included";
   }
   if (checkIn == null || checkIn == "") {
@@ -43,14 +43,13 @@ function validateHotel(hotelName, checkIn, checkOut, file) {
 function validateFlight(flightNumber, flightDate, file) {
   const flightErrors = {};
 
-  if (flightNumber == "") {
+  if (flightNumber.trim() == "") {
     flightErrors.number = "Flight number must be included";
   }
 
   if (flightDate == "" || flightDate == null) {
     flightErrors.date = "Flight date must be included";
   }
-
 
   if (file != null) {
     if (!allowedTypes.includes(file.type)) {
@@ -65,7 +64,7 @@ function validateFlight(flightNumber, flightDate, file) {
 function validateItinerary(itItem, file) {
   const itineraryItemErrors = {};
 
-  if (itItem == "") {
+  if (itItem.trim() == "") {
     itineraryItemErrors.itItem = "Itinerary item cannot be empty";
   }
 

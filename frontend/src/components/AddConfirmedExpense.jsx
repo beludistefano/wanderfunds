@@ -6,7 +6,7 @@ import { useAuth } from "../auth/AuthProvider";
 function validateExpense(name, amount, date) {
   const expenseErrors = {};
 
-  if (name == "") {
+  if (name.trim() == "") {
     expenseErrors.name = "Expense name must be included";
   }
   if (amount <= 0) {

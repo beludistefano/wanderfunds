@@ -14,7 +14,7 @@ const formatDate = (dateString) => {
 function validateEdit(destination, fromDate, toDate, file) {
   const tripErrors = {};
 
-  if (destination == "") {
+  if (destination.trim() == "") {
     tripErrors.destination = "Destination cannot be empty";
   }
 

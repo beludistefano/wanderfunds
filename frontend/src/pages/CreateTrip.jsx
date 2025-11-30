@@ -11,7 +11,7 @@ import Header from "../components/header";
 function validateTrip(destination, fromDate, toDate, members) {
   const tripErrors = {};
 
-  if (destination == "") {
+  if (destination.trim() == "") {
     tripErrors.destination = "Destination cannot be empty";
   }
 

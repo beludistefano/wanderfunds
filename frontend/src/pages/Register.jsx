@@ -9,15 +9,15 @@ import Header from "../components/header";
 function validateRegistration(name, email, pass, repPass) {
   const registrationErrors = {};
 
-  if (name == "") {
+  if (name.trim() == "") {
     registrationErrors.name = "Name cannot be empty";
   }
 
-  if (email == "") {
+  if (email.trim() == "") {
     registrationErrors.email = "Email cannot be empty";
   }
 
-  if (pass == "" || pass == null) {
+  if (pass.trim() == "" || pass == null) {
     registrationErrors.pass = "Password cannot be empty";
   }
 
@@ -25,7 +25,7 @@ function validateRegistration(name, email, pass, repPass) {
     registrationErrors.passLength = "Password must have at least 8 characters";
   }
 
-  if (repPass == "") {
+  if (repPass.trim() == "") {
     registrationErrors.repPass = "You must repeat your password";
   }
 

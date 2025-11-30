@@ -8,7 +8,7 @@ import Header from "../components/header";
 function validateUpdate(pass, repPass) {
   const registrationErrors = {};
 
-  if (pass == "") {
+  if (pass.trim() == "") {
     registrationErrors.pass = "Password cannot be empty";
   }
 
@@ -16,7 +16,7 @@ function validateUpdate(pass, repPass) {
     registrationErrors.passLength = "Password must have at least 8 characters";
   }
 
-  if (repPass == "") {
+  if (repPass.trim() == "") {
     registrationErrors.repPass = "You must repeat your password";
   }
 

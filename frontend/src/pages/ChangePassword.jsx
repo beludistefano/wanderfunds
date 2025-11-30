@@ -11,11 +11,11 @@ import MainSideBar from "../components/MainSideBar";
 function validateUpdate(old, pass, repPass) {
   const registrationErrors = {};
 
-  if (old == "") {
+  if (old.trim() == "") {
     registrationErrors.oldpass = "Please insert your old password";
   }
 
-  if (pass == "") {
+  if (pass.trim() == "") {
     registrationErrors.pass = "Password cannot be empty";
   }
 
@@ -23,7 +23,7 @@ function validateUpdate(old, pass, repPass) {
     registrationErrors.passLength = "Password must have at least 8 characters";
   }
 
-  if (repPass == "") {
+  if (repPass.trim() == "") {
     registrationErrors.repPass = "You must repeat your password";
   }
 

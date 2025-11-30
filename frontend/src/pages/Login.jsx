@@ -10,11 +10,11 @@ import Header from "../components/header";
 function validateLogin(username, password) {
   const loginErrors = {};
 
-  if (username == "") {
+  if (username.trim() == "") {
     loginErrors.username = "Email cannot be empty";
   }
 
-  if (password == "") {
+  if (password.trim() == "") {
     loginErrors.password = "Password cannot be empty";
   }
 
@@ -24,7 +24,7 @@ function validateLogin(username, password) {
 function validateEmail(username) {
   const loginErrors = {};
 
-  if (username == "") {
+  if (username.trim() == "") {
     loginErrors.username = "Email cannot be empty";
   }
 

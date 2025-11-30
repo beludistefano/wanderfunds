@@ -10,7 +10,7 @@ const formatDate = (dateString) => {
 function validateExpense(name, amount) {
   const expenseErrors = {};
 
-  if (name == "") {
+  if (name.trim() == "") {
     expenseErrors.name = "Expense name must be included";
   }
   if (amount <= 0) {

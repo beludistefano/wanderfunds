@@ -6,7 +6,7 @@ import { useAuth } from "../auth/AuthProvider";
 function validateEmail(email) {
   const expenseErrors = {};
 
-  if (email == "") {
+  if (email.trim() == "") {
     expenseErrors.email = "Email cannot be empty";
   } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())) {
     expenseErrors.email = "Please enter a valid email address";
