@@ -310,7 +310,7 @@ export default function EditTrip({ trip, role }) {
       }
 
       const deleteResp = await fetch(
-        "http://localhost:3000/api/trip/" + trip.tripid,
+        "https://wanderfunds-backend.onrender.com/api/trip/" + trip.tripid,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
