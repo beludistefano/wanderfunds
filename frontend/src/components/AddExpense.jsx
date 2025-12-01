@@ -169,6 +169,11 @@ export default function AddExpense({
                   type="number"
                   step="0.01"
                   min="0.01"
+                  onFocus={(e) => {
+                    if (e.target.value === "0") {
+                      e.target.value = "";
+                    }
+                  }}
                   className={`expenseInput ${
                     validationErrors.amount ? "borderRed" : ""
                   }`}
