@@ -5,7 +5,7 @@ import { useAuth } from "../auth/AuthProvider";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import "../css/login.css";
-import Header from "../components/header";
+import LoggedOutHeader from "../components/LoggedOutHeader";
 
 function validateLogin(username, password) {
   const loginErrors = {};
@@ -144,7 +144,7 @@ export default function Login() {
 
   return (
     <div id="centralDiv">
-      <Header></Header>
+      <LoggedOutHeader></LoggedOutHeader>
       <div id="mainContent">
         <form className="loginForm" onSubmit={handleSubmit}>
           <div className="formGroup loginFormGroup">

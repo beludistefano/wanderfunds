@@ -9,6 +9,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import AddItinerary from "../../components/AddItinerary";
+import ViewItinerary from "../../components/ViewItinerary";
 
 const formatDate = (d) => new Date(d).toISOString().slice(0, 10);
 
@@ -25,6 +26,15 @@ export default function Itinerary({ role, tripID }) {
   const [isFlightOpen, setIsFlightOpen] = useState(false);
   const [isHotelOpen, setIsHotelOpen] = useState(false);
   const [isOtherOpen, setIsOtherOpen] = useState(false);
+
+  const [viewFlightOpen, setViewFlightOpen] = useState(false);
+  const [selectedFlight, setSelectedFlight] = useState(null);
+
+  const [viewHotelOpen, setViewHotelOpen] = useState(false);
+  const [selectedHotel, setSelectedHotel] = useState(null);
+
+  const [viewItOpen, setViewItOpen] = useState(false);
+  const [selectedIt, setSelectedIt] = useState(null);
 
   const token = session?.access_token;
 
@@ -139,14 +149,14 @@ export default function Itinerary({ role, tripID }) {
         style={{ paddingRight: "2%", paddingLeft: "2%" }}
       >
         <div
-          id="ownerContainerContainer"
+          id="expenseLogOwnerContainerContainer"
           style={{
             display: "flex",
             justifyContent: "flex-end",
             paddingTop: "10px",
           }}
         >
-          <div className="ownerContainer">
+          <div className="expenseLogOwnerContainer">
             <p>{userRole}</p>
           </div>
         </div>
@@ -186,7 +196,16 @@ export default function Itinerary({ role, tripID }) {
                       {formatDate(f.flight_date)} - {f.airport_from}
                     </p>
                   </div>
-                  <div>
+                  <div className="itineraryActions">
+                    <div
+                      className="itineraryMore"
+                      onClick={() => {
+                        setViewFlightOpen(true);
+                        setSelectedFlight(f);
+                      }}
+                    >
+                      More
+                    </div>
                     {f.file_url ? (
                       <a href={f.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
@@ -252,7 +271,16 @@ export default function Itinerary({ role, tripID }) {
                       {formatDate(h.date_from)} - {formatDate(h.date_to)}
                     </p>
                   </div>
-                  <div>
+                  <div className="itineraryActions">
+                    <div
+                      className="itineraryMore"
+                      onClick={() => {
+                        setViewHotelOpen(true);
+                        setSelectedHotel(h);
+                      }}
+                    >
+                      More
+                    </div>
                     {h.file_url ? (
                       <a href={h.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
@@ -316,7 +344,16 @@ export default function Itinerary({ role, tripID }) {
                     )}
                     <p>{i.itinerary_desc}</p>
                   </div>
-                  <div>
+                  <div className="itineraryActions">
+                    <div
+                      className="itineraryMore"
+                      onClick={() => {
+                        setViewItOpen(true);
+                        setSelectedIt(i);
+                      }}
+                    >
+                      More
+                    </div>
                     {i.file_url ? (
                       <a href={i.file_url} className="fileLink" target="_blank">
                         <FontAwesomeIcon
@@ -352,7 +389,7 @@ export default function Itinerary({ role, tripID }) {
           )}
           <div>
             <Link id="calendarViewButton" to={`/trip/calendar/${tripID}`}>
-              See Calendar View
+              Expenses Calendar
             </Link>
           </div>
         </div>
@@ -380,6 +417,24 @@ export default function Itinerary({ role, tripID }) {
         tripID={tripId}
         dataType={"other"}
         role={userRole}
+      />
+      <ViewItinerary
+        isOpen={viewFlightOpen}
+        onCancel={() => setViewFlightOpen(false)}
+        type={"flight"}
+        data={selectedFlight}
+      />
+      <ViewItinerary
+        isOpen={viewHotelOpen}
+        onCancel={() => setViewHotelOpen(false)}
+        type={"hotel"}
+        data={selectedHotel}
+      />
+      <ViewItinerary
+        isOpen={viewItOpen}
+        onCancel={() => setViewItOpen(false)}
+        type={"other"}
+        data={selectedIt}
       />
     </>
   );

@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 
 import "../css/login.css";
-import Header from "../components/header";
+import LoggedOutHeader from "../components/LoggedOutHeader";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export default function Index() {
 
   return (
     <div id="centralDiv">
-      <Header></Header>
+      <LoggedOutHeader></LoggedOutHeader>
       <div id="mainContentIndex">
         <Link to="/login" className="loginButton" state={location.state}>
           Login

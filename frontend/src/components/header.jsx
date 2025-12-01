@@ -25,7 +25,9 @@ export default function Header() {
     <>
       <header id="header">
         <div id="logoSection">
-          <img src={logo} alt="WanderFunds Logo" />
+          <Link to="/">
+            <img src={logo} alt="WanderFunds Logo" />
+          </Link>
         </div>
         <div id="functionalitiesHeader">
           <Link to="/notifications">

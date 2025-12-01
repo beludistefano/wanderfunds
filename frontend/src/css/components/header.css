@@ -9,8 +9,9 @@
   display: flex;
 }
 
-#logoSection > img {
+#logoSection img {
   width: 100%;
+  height: auto;
 }
 
 .profileLogo {

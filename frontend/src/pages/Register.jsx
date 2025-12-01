@@ -4,7 +4,7 @@ import { supabase } from "../supabaseClient";
 import HCaptcha from "@hcaptcha/react-hcaptcha";
 
 import "../css/login.css";
-import Header from "../components/header";
+import LoggedOutHeader from "../components/LoggedOutHeader";
 
 function validateRegistration(name, email, pass, repPass) {
   const registrationErrors = {};
@@ -163,7 +163,7 @@ export default function Register() {
 
   return (
     <div id="centralDiv">
-      <Header></Header>
+      <LoggedOutHeader></LoggedOutHeader>
       <div id="registerMainContent">
         <h2>Register to WanderFunds</h2>
         <form

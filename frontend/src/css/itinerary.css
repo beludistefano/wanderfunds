@@ -86,6 +86,17 @@
   cursor: pointer;
 }
 
+.itineraryActions {
+  display: flex;
+  gap: 20px;
+}
+
+.itineraryMore {
+  cursor: pointer;
+  color: #d33378;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   #itineraryContainer {
     width: 80%;

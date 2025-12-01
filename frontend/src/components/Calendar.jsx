@@ -72,6 +72,7 @@ export default function Calendar({ startDate, endDate, expenses }) {
                   {itemsForDay.map((it) => (
                     <li key={it.id} className="itineraryCard">
                       <div className="itineraryCardTitle">{it.name}</div>
+                      <div className="itineraryCardAmount">${it.amount}</div>
                     </li>
                   ))}
                 </ul>

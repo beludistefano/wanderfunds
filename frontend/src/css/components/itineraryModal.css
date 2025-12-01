@@ -35,6 +35,11 @@ input[type="file"] {
   align-self: flex-end !important;
 }
 
+.itineraryValue {
+  margin-left: 8px;
+  font-weight: 500;
+}
+
 input[type="file"]::file-selector-button {
   padding: 6px 18px;
   border-radius: 20px;
