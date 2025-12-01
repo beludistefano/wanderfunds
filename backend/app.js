@@ -1105,6 +1105,24 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
     DELETE FROM trip_invitations
     WHERE sender_id = $1`;
 
+  const tripItineraryQuery = `
+    DELETE FROM trip_itinerary ti
+    USING trips t
+    WHERE ti.trip_id = t.tripid
+      AND t.ownerid = $1;`;
+
+  const tripFlightsQuery = `
+    DELETE FROM trip_flights ti
+    USING trips t
+    WHERE ti.trip_id = t.tripid
+      AND t.ownerid = $1;`;
+
+  const tripHotelQuery = `
+    DELETE FROM trip_hotel ti
+    USING trips t
+    WHERE ti.trip_id = t.tripid
+      AND t.ownerid = $1;`;
+
   try {
     const relatedUsersResult = await pool.query(relatedRolesQuery, [
       req.user.id,
@@ -1115,11 +1133,21 @@ app.delete("/api/profile", requireAuth, async (req, res) => {
 
     console.log(updateExpenses);
 
+    const deleteFlights = await pool.query(tripFlightsQuery, [req.user.id]);
+    const deleteHotel = await pool.query(tripHotelQuery, [req.user.id]);
+    const deleteItinerary = await pool.query(tripItineraryQuery, [req.user.id]);
+
+    console.log(deleteFlights);
+    console.log(deleteHotel);
+    console.log(deleteItinerary);
+
     const deleteProfile = await pool.query(deleteProfileQuery, [req.user.id]);
 
-    if (deleteProfile.rowCount == 0) {
-      return res.status(500).json({ result: "Error deleting profile" });
-    }
+    // if (deleteProfile.rowCount == 0) {
+    //   return res.status(500).json({ result: "Error deleting profile" });
+    // }
+
+    console.log(deleteProfile);
 
     const deleteSavingsFund = await pool.query(deleteSavingsFundQuery, [
       req.user.id,
