@@ -299,7 +299,7 @@ export default function TripOverview({ trip, userRole }) {
                         </td>
                         <td style={{ textAlign: "right" }}>
                           {e.split === "own"
-                            ? "$ " + e.amount
+                            ? "$ " + Number(e.amount).toFixed(2)
                             : "$ " + (e.amount / trip.members).toFixed(2)}
                         </td>
                         <td style={{ textAlign: "center" }}>
@@ -511,7 +511,8 @@ export default function TripOverview({ trip, userRole }) {
           onCancel={() => setConfirmExpenseOpen(false)}
           expenseID={selectedConfExpense.expense_id}
           tripID={theTripID}
-          amount={selectedConfExpense.amount / trip.members}
+          amount={selectedConfExpense.amount}
+          members={trip.members}
           split={selectedConfExpense.split}
         />
       )}

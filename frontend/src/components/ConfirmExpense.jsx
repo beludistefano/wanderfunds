@@ -20,17 +20,21 @@ export default function ConfirmExpense({
   expenseID,
   tripID,
   amount,
+  members,
   split,
 }) {
   const [expenseId, setExpenseId] = useState(expenseID);
   const [confDate, setConfDate] = useState(() => {
     const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
     return today.toISOString().split("T")[0];
   });
 
   const [tripId, setTripId] = useState(tripID);
   const [expenseAmount, setExpenseAmount] = useState(amount);
   const [expenseSplit, setExpenseSplit] = useState(split);
+
+  const [expenseMembers, setExpenseMembers] = useState(members);
 
   const [expenseConfStatus, setExpenseConfStatus] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
@@ -42,6 +46,7 @@ export default function ConfirmExpense({
       setExpenseConfStatus(null);
       setConfDate(() => {
         const today = new Date();
+        today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
         return today.toISOString().split("T")[0];
       });
       setValidationErrors({});
@@ -66,8 +71,14 @@ export default function ConfirmExpense({
     confExpense["expenseID"] = expenseId;
     confExpense["confirmed_date"] = confDate;
     confExpense["tripID"] = tripId;
-    confExpense["amount"] = expenseAmount;
+    if (expenseSplit == "own") {
+      confExpense["amount"] = expenseAmount;
+    } else {
+      confExpense["amount"] = Number(expenseAmount) / Number(expenseMembers);
+    }
     confExpense["split"] = expenseSplit;
+
+    console.log(confExpense);
 
     try {
       const { data } = await supabase.auth.getSession();

@@ -7,11 +7,16 @@ import bgPlaceholder from "../assets/backgroundplaceholder.png";
 export default function TripCard({ trip }) {
   const { tripID, destination, from_date, to_date, status, members } = trip;
 
-  const from_date_raw = new Date(from_date);
-  const formattedFrom = from_date_raw.toLocaleDateString();
+  function normalizeDbDate(value) {
+    if (!value) return "";
+    return value.slice(0, 10);
+  }
 
-  const to_date_raw = new Date(to_date);
-  const formattedTo = to_date_raw.toLocaleDateString();
+  console.log(trip);
+
+  const from_date_normalized = normalizeDbDate(from_date);
+
+  const to_date_normalized = normalizeDbDate(to_date);
 
   return (
     <div className="mainCardContainer">
@@ -27,7 +32,7 @@ export default function TripCard({ trip }) {
           <div className="tripDataContainer">
             <p className="textMain">{destination}</p>
             <p className="textSecondary">
-              {formattedFrom} - {formattedTo}
+              {from_date_normalized} - {to_date_normalized}
             </p>
             <p className="textSecondary">
               {members} <FontAwesomeIcon icon={faUser} />

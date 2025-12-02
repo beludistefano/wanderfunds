@@ -11,7 +11,7 @@ import {
 import AddItinerary from "../../components/AddItinerary";
 import ViewItinerary from "../../components/ViewItinerary";
 
-const formatDate = (d) => new Date(d).toISOString().slice(0, 10);
+const formatDate = (d) => (d ? d.slice(0, 10) : "");
 
 export default function Itinerary({ role, tripID }) {
   const { session, initialized } = useAuth();

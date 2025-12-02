@@ -5,7 +5,7 @@ import AddConfirmedExpense from "../../components/AddConfirmedExpense";
 import { useAuth } from "../../auth/AuthProvider";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
-const formatDate = (d) => new Date(d).toISOString().slice(0, 10);
+const formatDate = (d) => (d ? d.slice(0, 10) : "");
 
 export default function ExpenseLogContent({ role, tripID, trip }) {
   const { session, initialized } = useAuth();

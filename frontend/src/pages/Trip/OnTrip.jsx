@@ -126,10 +126,20 @@ export default function OnTrip({ role, tripID, trip }) {
   async function quickAddExpense(expenseData) {
     const confExpense = {};
     confExpense["expenseID"] = expenseData.expense_id;
-    confExpense["confirmed_date"] = new Date().toISOString();
+    const today = new Date();
+    today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+    confExpense["confirmed_date"] = today.toISOString().split("T")[0];
     confExpense["tripID"] = expenseData.trip_id;
-    confExpense["amount"] = expenseData.amount;
+    if (expenseData.split == "own") {
+      confExpense["amount"] = expenseData.amount;
+    } else {
+      confExpense["amount"] = (
+        Number(expenseData.amount) / Number(tripData.members)
+      ).toFixed(2);
+    }
     confExpense["split"] = expenseData.split;
+
+    console.log(confExpense);
 
     try {
       if (!token) {

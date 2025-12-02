@@ -94,9 +94,9 @@ export default function EditTrip({ trip, role }) {
 
     const members = updateMembers;
 
-    const today = new Date();
-    const formatFromDate = new Date(fromDate);
-    const formatToDate = new Date(toDate);
+    // const today = new Date();
+    // const formatFromDate = new Date(fromDate);
+    // const formatToDate = new Date(toDate);
 
     const formValidation = validateEdit(
       destination,
@@ -137,8 +137,8 @@ export default function EditTrip({ trip, role }) {
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
-    updateTrip["from_date"] = formatFromDate;
-    updateTrip["to_date"] = formatToDate;
+    updateTrip["from_date"] = fromDate;
+    updateTrip["to_date"] = toDate;
     updateTrip["description"] = description;
     updateTrip["status"] = status;
     updateTrip["tripID"] = tripID;
@@ -206,9 +206,9 @@ export default function EditTrip({ trip, role }) {
     const description = updateDescription;
     const headerFile = headerPic;
 
-    const today = new Date();
-    const formatFromDate = new Date(fromDate);
-    const formatToDate = new Date(toDate);
+    // const today = new Date();
+    // const formatFromDate = new Date(fromDate);
+    // const formatToDate = new Date(toDate);
 
     const formValidation = validateEdit(
       destination,
@@ -248,8 +248,8 @@ export default function EditTrip({ trip, role }) {
 
     const updateTrip = {};
     updateTrip["destination"] = destination;
-    updateTrip["from_date"] = formatFromDate;
-    updateTrip["to_date"] = formatToDate;
+    updateTrip["from_date"] = fromDate;
+    updateTrip["to_date"] = toDate;
     updateTrip["description"] = description;
     updateTrip["status"] = status;
     updateTrip["tripID"] = tripID;

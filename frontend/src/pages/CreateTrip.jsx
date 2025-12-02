@@ -64,6 +64,9 @@ export default function CreateTrip() {
     const toDate = document.getElementById("toDate").value;
     const members = document.getElementById("members").value.trim();
 
+    console.log(fromDate);
+    console.log(toDate);
+
     const description = document.getElementById("description").value;
     const status = document.getElementById("status").value;
 
@@ -85,13 +88,10 @@ export default function CreateTrip() {
       return;
     }
 
-    const formatFromDate = new Date(fromDate);
-    const formatToDate = new Date(toDate);
-
     const newTrip = {};
     newTrip["destination"] = destination;
-    newTrip["from_date"] = formatFromDate;
-    newTrip["to_date"] = formatToDate;
+    newTrip["from_date"] = fromDate;
+    newTrip["to_date"] = toDate;
     newTrip["default_split"] = defaultSplit;
     newTrip["description"] = description;
     newTrip["status"] = status;
