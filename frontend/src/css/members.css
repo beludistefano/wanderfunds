@@ -14,6 +14,16 @@
   border: none;
 }
 
+.errorDisplay {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.successDisplay {
+  color: #3dac55;
+  font-weight: 500;
+}
+
 .memberDiv {
   display: grid;
   grid-template-columns: auto 1fr;

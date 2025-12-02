@@ -1251,7 +1251,7 @@ app.post("/api/remove-member", requireAuth, async (req, res) => {
   `;
 
   const deleteSavingsFund = `
-    DELETE FROM savings_fund
+    DELETE FROM savings_funds
     WHERE trip_id = $1
     AND owner_id = $2
   `;
@@ -1298,7 +1298,76 @@ app.post("/api/remove-member", requireAuth, async (req, res) => {
 
     return res.status(200).json({ result: "Member removed succesfully" });
   } catch (e) {
+    return res.status(500).json({ error: e });
+  }
+});
+
+/**
+ * This POST request will allow a member to leave a trip
+ */
+app.post("/api/leave-trip", requireAuth, async (req, res) => {
+  const { tripID, memberRole } = req.body;
+
+  if (!tripID || tripID == "") {
+    return res.status(400).send("Error: Trip ID cannot be empty");
+  }
+
+  const deleteUserRoleQuery = `
+    DELETE FROM user_role
+    WHERE tripid = $1
+    AND user_id = $2
+  `;
+
+  const deleteSavingsFund = `
+    DELETE FROM savings_funds
+    WHERE trip_id = $1
+    AND owner_id = $2
+  `;
+
+  const updateExpensesQuery = `
+    UPDATE expected_expenses e
+    SET owner_id = t.ownerid
+    FROM trips t
+    WHERE e.owner_id = $1
+      AND e.trip_id = $2
+      AND e.split = 'shared'
+      AND e.trip_id = t.tripid
+    RETURNING e.*`;
+
+  const deleteFullyOwnedExpenses = `
+    DELETE FROM expected_expenses
+    WHERE owner_id = $1
+    AND trip_id = $2
+    AND split = 'own'
+  `;
+
+  try {
+    const updateExpensesResult = await pool.query(updateExpensesQuery, [
+      req.user.id,
+      tripID,
+    ]);
+
+    const fullyOwnedResult = await pool.query(deleteFullyOwnedExpenses, [
+      req.user.id,
+      tripID,
+    ]);
+
+    if (memberRole != "Guest") {
+      const savingsFundResult = await pool.query(deleteSavingsFund, [
+        tripID,
+        req.user.id,
+      ]);
+    }
+
+    const deleteUserRole = await pool.query(deleteUserRoleQuery, [
+      tripID,
+      req.user.id,
+    ]);
+
+    return res.status(200).json({ result: "Member removed succesfully" });
+  } catch (e) {
     console.log(e);
+    console.log(e.message);
     return res.status(500).json({ error: e });
   }
 });

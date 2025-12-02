@@ -12,6 +12,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
   const [tripId, setTripId] = useState(tripID);
 
   const [errorMessages, setErrorMessages] = useState(null);
+  const [successMessages, setSuccessMessages] = useState(null);
 
   const [inviteGuestOpen, setInviteGuestOpen] = useState(false);
   const [inviteParticipantOpen, setInviteParticipantOpen] = useState(false);
@@ -48,9 +49,45 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
         }
       );
 
+      setSuccessMessages("Member removed succesfully!");
+      console.log(removeMemberResponse);
+    } catch (e) {
+      setErrorMessages("Error removing member");
+      console.log(e);
+    }
+  }
+
+  async function leaveTrip() {
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (!token) {
+        return;
+      }
+
+      const removeMemberData = {
+        tripID: tripId,
+        memberRole: userRole,
+      };
+
+      const removeMemberResponse = await fetch(
+        "https://wanderfunds-backend.onrender.com/api/leave-trip",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(removeMemberData),
+        }
+      );
+
+      setSuccessMessages("You've succesfully left this trip!");
+      setTimeout(() => navigate("/"), 1000);
       console.log(removeMemberResponse);
     } catch (e) {
       console.log(e);
+      setErrorMessages("Error leaving trip!");
     }
   }
 
@@ -75,9 +112,10 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
         return;
       }
 
-      setErrorMessages("Trip deleted succesfully!");
+      setSuccessMessages("Trip deleted succesfully!");
       setTimeout(() => navigate("/"), 1000);
     } catch (e) {
+      setErrorMessages("Error deleting your trip");
       console.log(e);
     }
   }
@@ -125,6 +163,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
           })}
         </div>
         {errorMessages && <p className="errorDisplay">{errorMessages}</p>}
+        {successMessages && <p className="successDisplay">{successMessages}</p>}
         <div id="memberButtonsContainer">
           <>
             <button
@@ -146,13 +185,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
           </>
 
           {(userRole === "Guest" || userRole === "Participant") && (
-            <button
-              onClick={() => {
-                navigate(`/trip/${trip.tripid}`);
-              }}
-              id="buttonLeave"
-              className="button"
-            >
+            <button onClick={leaveTrip} id="buttonLeave" className="button">
               LEAVE TRIP
             </button>
           )}
