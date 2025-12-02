@@ -150,7 +150,7 @@ export default function MembersTrip({ tripMembers, role, tripID }) {
                 <FontAwesomeIcon className="fa-icon" icon={faUser} />
                 <div className="memberName">{member.name}</div>
                 <div className="memberRole">{"(" + member.role + ")"}</div>
-                {userRole === "Owner" && (
+                {userRole === "Owner" && member.role !== "Owner" && (
                   <div
                     className="removeRow"
                     onClick={() => removeMember(member.user_id, member.role)}
