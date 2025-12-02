@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../css/components/expenselog.css";
 import AddConfirmedExpense from "../../components/AddConfirmedExpense";
 import { useAuth } from "../../auth/AuthProvider";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus, faSort } from "@fortawesome/free-solid-svg-icons";
 
 const formatDate = (d) => (d ? d.slice(0, 10) : "");
 
@@ -25,11 +25,63 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
   const [searchFromValue, setSearchFromValue] = useState("");
   const [searchToValue, setSearchToValue] = useState("");
 
+  const [currentSort, setCurrentSort] = useState({ sort: "", order: "asc" });
+
   const noExpensesPhrases = [
     "You haven't paid for anything... yet 💸",
     "Zero adventures logged here yet ✨",
     "If you pay it before the trip... then it's free 🌍",
   ];
+
+  function sortExp(sortBy) {
+    const direction =
+      sortBy === currentSort.sort && currentSort.order === "asc"
+        ? "desc"
+        : "asc";
+
+    const sortedExpenses = [...expenses];
+
+    if (sortBy == "ind") {
+      if (direction == "asc") {
+        sortedExpenses.sort(
+          (a, b) =>
+            Number(a.amount) / Number(tripData.members) -
+            Number(b.amount) / Number(tripData.members)
+        );
+      } else {
+        sortedExpenses.sort(
+          (a, b) =>
+            Number(b.amount) / Number(tripData.members) -
+            Number(a.amount) / Number(tripData.members)
+        );
+      }
+    } else if (sortBy == "total") {
+      if (direction == "asc") {
+        sortedExpenses.sort((a, b) => Number(a.amount) - Number(b.amount));
+      } else {
+        sortedExpenses.sort((a, b) => Number(b.amount) - Number(a.amount));
+      }
+    } else if (sortBy == "expense") {
+      if (direction == "asc") {
+        sortedExpenses.sort((a, b) => a.name.localeCompare(b.name));
+      } else {
+        sortedExpenses.sort((a, b) => b.name.localeCompare(a.name));
+      }
+    } else if (sortBy == "date") {
+      if (direction == "asc") {
+        sortedExpenses.sort(
+          (a, b) => new Date(a.confirmed_date) - new Date(b.confirmed_date)
+        );
+      } else {
+        sortedExpenses.sort(
+          (a, b) => new Date(b.confirmed_date) - new Date(a.confirmed_date)
+        );
+      }
+    }
+
+    setExpenses(sortedExpenses);
+    setCurrentSort({ sort: sortBy, order: direction });
+  }
 
   function getRandomPhrase(phrases) {
     const randomIndex = Math.floor(Math.random() * phrases.length);
@@ -246,11 +298,39 @@ export default function ExpenseLogContent({ role, tripID, trip }) {
               <table id="expensesTable">
                 <thead>
                   <tr>
-                    <th>Expense</th>
-                    <th style={{ textAlign: "right" }}>Amount</th>
-                    <th style={{ textAlign: "right" }}>Split</th>
-                    <th style={{ textAlign: "right" }}>Date</th>
-                    <th style={{ textAlign: "right" }}>Individual Total</th>
+                    <th>
+                      Expense{" "}
+                      <FontAwesomeIcon
+                        className="sortIcon"
+                        onClick={() => sortExp("expense")}
+                        icon={faSort}
+                      />
+                    </th>
+                    <th style={{ textAlign: "right" }}>
+                      Amount{" "}
+                      <FontAwesomeIcon
+                        className="sortIcon"
+                        onClick={() => sortExp("total")}
+                        icon={faSort}
+                      />
+                    </th>
+                    <th style={{ textAlign: "right" }}>Split </th>
+                    <th style={{ textAlign: "right" }}>
+                      Date{" "}
+                      <FontAwesomeIcon
+                        className="sortIcon"
+                        onClick={() => sortExp("date")}
+                        icon={faSort}
+                      />
+                    </th>
+                    <th style={{ textAlign: "right" }}>
+                      Individual Total{" "}
+                      <FontAwesomeIcon
+                        className="sortIcon"
+                        onClick={() => sortExp("ind")}
+                        icon={faSort}
+                      />
+                    </th>
                     <th></th>
                   </tr>
                 </thead>

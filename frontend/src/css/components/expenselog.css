@@ -97,6 +97,10 @@
   align-items: center;
 }
 
+.sortIcon {
+  cursor: pointer;
+}
+
 @media (max-width: 1200px) {
   #searchContainerSection {
     flex-direction: column;
