@@ -262,7 +262,7 @@ export default function OnTrip({ role, tripID, trip }) {
                         </td>
                         <td style={{ textAlign: "right" }}>
                           {e.split === "own"
-                            ? "$ " + e.amount
+                            ? "$ " + Number(e.amount).toFixed(2)
                             : "$ " + (e.amount / tripData.members).toFixed(2)}
                         </td>
                       </tr>
