@@ -903,7 +903,6 @@ app.post("/api/addmember", requireAuth, async (req, res) => {
       .send("Error: Member type must be member or participant");
   }
 
-  // Get logged in user's name to add to the email
   const loggedinUserQuery = `
     SELECT *
     FROM profiles
@@ -917,8 +916,6 @@ app.post("/api/addmember", requireAuth, async (req, res) => {
     }
 
     const user = userData.rows[0];
-
-    // Create an invitation record on the db with the sent invitation
 
     const tripInvitation = `
       INSERT INTO trip_invitations (trip_id, sender_id, recipient_email, status, member_type)

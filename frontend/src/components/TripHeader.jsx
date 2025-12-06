@@ -1,6 +1,5 @@
 import "../css/components/tripheader.css";
 import bgImg from "../assets/backgroundPlaceholder.jpg";
-import nycImf from "../assets/nycSample.jpg";
 import { useState } from "react";
 
 export default function TripHeader({ status, destination, url }) {
